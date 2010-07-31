@@ -17,10 +17,13 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from filemanager import FileManager
 from q3serverquery import Q3ServerQuery
 import gobject
 import thread
-from filemanager import FileManager
+import time
+
+
 
 class GuiController(object):
     """
@@ -60,8 +63,7 @@ class GuiController(object):
         
         tab.clearServerList()
         thread.start_new_thread(self.loadMasterServerList
-                                ,(serverlistfilter.checkbox_showempty.get_active()
-                                ,serverlistfilter.checkbox_showfull.get_active()
+                                ,(serverlistfilter
                                 ,tab)) 
         
     def executeFavoritesLoading(self, tab):
@@ -124,7 +126,7 @@ class GuiController(object):
         fm = FileManager()
         tab.clearServerList()
         serverlist = fm.getFavorites().values()
-        self.addServerListToTab(serverlist, tab)
+        self.addServerListToTab(serverlist, tab, None)
         
     def loadRecentServer(self, tab):
         """
@@ -138,16 +140,16 @@ class GuiController(object):
         fm = FileManager()
         tab.clearServerList()
         serverlist = fm.getRecentServers().values()
-        self.addServerListToTab(serverlist, tab)
+        self.addServerListToTab(serverlist, tab, None)
 
-    def loadMasterServerList(self, empty, full, tab):
+    def loadMasterServerList(self, serverlistfilter, tab):
         """
         Loads the Serverlist from the masterserver.
         This method is executed in a background thread which is triggered by 
         the executeMasterServerQuery method
         
-        @param empty - empty parameter for the query
-        @param full - full parameter for the query
+        @param serverlistfilter - instance of the serverlistfilter profiding
+                                  query and filter paramters
         @tab - the tab requesting the serverlist
         """
         print 'load_serverlist'
@@ -155,6 +157,9 @@ class GuiController(object):
         
         self.window.progressbar.pulse()
         self.window.progressbar.set_text('asking Masterserver for list of server IPs')
+        
+        empty = serverlistfilter.checkbox_showempty.get_active()    
+        full = serverlistfilter.checkbox_showfull.get_active()
         
         #query the urban terror master server
         serverlist = query.getServerList('master.urbanterror.info'
@@ -168,10 +173,10 @@ class GuiController(object):
 #                                         ,full)
         
         # start updating the ui with the serverlist
-        self.addServerListToTab(serverlist, tab)
+        self.addServerListToTab(serverlist, tab, serverlistfilter)
 
 
-    def addServerListToTab(self, serverlist, tab):
+    def addServerListToTab(self, serverlist, tab, serverlistfilter):
         """
         Gets the status of each server in the passed serverlist and 
         add it to the serverlist of the passed tab.
@@ -179,6 +184,7 @@ class GuiController(object):
         
         @param serverlist - the list of servers 
         @param tab - the tab 
+        param serverlistfilter - filters that should be applied
         """
         if serverlist: 
             #needed for updating the progressbar
@@ -194,14 +200,17 @@ class GuiController(object):
                         partition = serverlist[index_low:len(serverlist)]
                     else:
                         partition = serverlist[index_low:index_high]
-                    thread.start_new_thread(self.populateServerView, (partition, fraction4oneserver, tab))
+                    thread.start_new_thread(self.populateServerView, \
+                         (partition, fraction4oneserver, tab, serverlistfilter))
                     index_low = index_high
                     index_high = index_high*i 
             else:
-                thread.start_new_thread(self.populateServerView, (serverlist, fraction4oneserver, tab))
+                thread.start_new_thread(self.populateServerView, \
+                        (serverlist, fraction4oneserver, tab, serverlistfilter))
         else:
             self.window.progressbar.set_text("failed getting serverlist from masterserver")
             self.window.progressbar.set_fraction(0.0)
+
 
     def appendProgressFraction(self, fraction2add):
         """
@@ -218,13 +227,14 @@ class GuiController(object):
             self.window.progressbar.set_fraction(0.0)
             self.window.progressbar.set_text('')
         
-    def populateServerView(self, serverlist, fraction4oneserver, tab):   
+    def populateServerView(self, serverlist, fraction4oneserver, tab, serverlistfilter):   
         """
         Populates the serverlisttreeview of a tab with the servers of a passed
         serverlist. Also updates the status of each server.
         
         @param serverlist - the serverlist that should be displayed
         @param fraction4oneserver- for updating the progressbar
+        @param serverlistfiler - filters that should be applied
         @tab - the tab whichs serverlist should be updated
         """
         query = Q3ServerQuery()   
@@ -236,8 +246,62 @@ class GuiController(object):
             # getStatus for a server is needed, because getStatus will not return
             # every needed information (e.g. if a server is passworded)
             server = query.getServerStatus(server)
-            
-            # update the UI
+            if not self.does_filter_match_server(server, serverlistfilter):    
+                # update the UI
+                gobject.idle_add(tab.addServer, server)
             gobject.idle_add(self.appendProgressFraction, fraction4oneserver)
-            gobject.idle_add(tab.addServer, server)
     
+    def does_filter_match_server(self, server, filter):
+        """
+        Checks if the passed filter matches the passed server.
+        If filter matches the server return True, which means the server
+        is filtered and should not be displayed. 
+        Otherwise return False
+        
+        @param server - the server to check
+        @param filter - the filter to be applied
+        """
+        
+        if not filter: # no filter passed
+            return False
+        
+        # hide non responsove servers 
+        if (server.getPing() == 999) \
+                           and filter.checkbox_hide_non_responsive.get_active():
+            return True
+        # hide passworded servers
+        if server.needsPassword() \
+                               and filter.checkbox_hide_passworded.get_active():
+            return True
+        
+        
+        gametype = server.getGameType()
+        if gametype == '8' and not filter.checkbox_show_gametype_bomb.get_active():
+            return True
+        elif gametype == '6' and not filter.checkbox_show_gametype_cah.get_active():
+            return True
+        elif gametype == '7' and not filter.checkbox_show_gametype_ctf.get_active(): 
+            return True
+        elif gametype == '0' and not filter.checkbox_show_gametype_ffa.get_active():
+            return True
+        elif gametype == '3' and not filter.checkbox_show_gametype_tdm.get_active():
+            return True
+        elif gametype == '4' and not filter.checkbox_show_gametype_survivor.get_active():
+            return True
+        elif gametype == '5' and not filter.checkbox_show_gametype_ftl.get_active():
+            return True
+        
+        filter_min_player = filter.minplayerentry.get_value_as_int()
+        filter_max_player = filter.maxplayerentry.get_value_as_int()
+        
+        
+        if filter_min_player > server.getClientCount():
+            return True
+        
+        if filter_max_player < server.getClientCount():
+            return True
+   
+        #no filtermatch so far, return false which results in displaying the server
+        return False
+    
+        

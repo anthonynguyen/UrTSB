@@ -19,7 +19,7 @@
 
 from guicontroller import GuiController
 import gtk
-#from guicontroller import GuiController
+
 
 
 class ServerListFilter(gtk.HBox):
@@ -39,7 +39,7 @@ class ServerListFilter(gtk.HBox):
         filterframe = gtk.Frame('Filter')
         filterframe.set_border_width(2)
         
-        gametypesframe = gtk.Frame('Gametypes')
+        gametypesframe = gtk.Frame('Gametypes to show')
         gametypesframe.set_border_width(2)
         
         self.pack_start(queryframe, False, False)
@@ -68,13 +68,13 @@ class ServerListFilter(gtk.HBox):
         self.checkbox_hide_passworded = gtk.CheckButton('hide passworded')
         minplayerlabel = gtk.Label('min. players:')
         maxplayerlabel = gtk.Label('max. players:')
-        self.minplayerentry = gtk.Entry()
-        self.maxplayerentry = gtk.Entry()
+      
+        self.minplayerentry = gtk.SpinButton()
+        self.maxplayerentry = gtk.SpinButton()
         
-        self.minplayerentry.set_width_chars(5)
-        self.maxplayerentry.set_width_chars(5)
-        
-        
+        self.minplayerentry.set_range(0,99)
+        self.maxplayerentry.set_range(0,99)
+             
         filtertable.attach(self.checkbox_hide_non_responsive, 0,1,0,1 )
         filtertable.attach(self.checkbox_hide_passworded, 0,1,1,2 )
         filtertable.attach(minplayerlabel, 1,2,0,1 )
@@ -184,6 +184,10 @@ class ServerListFilter(gtk.HBox):
         self.checkbox_show_gametype_cah.set_active(state)
         self.checkbox_show_gametype_ftl.set_active(state)
         self.checkbox_show_gametype_ffa.set_active(state)
+        
+        #defaults for min and maxplayer spinbuttons
+        self.minplayerentry.set_value(0)
+        self.maxplayerentry.set_value(99)
         
     def set_default_values(self):
         """
