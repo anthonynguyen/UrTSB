@@ -22,6 +22,7 @@ class Server(object):
     Represents a UrT game server. 
     """
     password = ''
+    connections = 0
     
     def __init__(self, host, port):
         """

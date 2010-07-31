@@ -31,7 +31,7 @@ class ServerTab(gtk.VBox):
     Contents of the Servers tab. Displays the servers retreived from 
     the master server
     """
-
+    
 
     def __init__(self):
         """
@@ -104,10 +104,17 @@ class ServerTab(gtk.VBox):
         buttonbox.pack_start(addfav_button, True, True)
         refresh_button.connect("clicked", self.onRefreshButtonClicked)
         addfav_button.connect("clicked", self.onAddFavButtonClicked)
+        connect_button.connect("clicked", self.connect_button_clicked)
         
         self.show_all()
         
         # self.pack_start(button,False)
+       
+    def connect_button_clicked(self, widget):
+        gui = GuiController()
+        server = self.detailsbox.current_server
+        if server:
+            gui.connectToServer(server)
        
     def onAddFavButtonClicked(self, widget):   
         """

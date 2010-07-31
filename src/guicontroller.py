@@ -20,6 +20,7 @@
 from filemanager import FileManager
 from q3serverquery import Q3ServerQuery
 import gobject
+import os
 import thread
 import time
 
@@ -51,6 +52,13 @@ class GuiController(object):
         """
         fm = FileManager()
         fm.removeFavorite(server)
+        
+    def removeRecent(self, server):
+        """
+        Removes a server from the list of recent servers
+        """
+        fm = FileManager()
+        fm.removeRecentServer(server)
       
     def executeMasterServerQuery(self, serverlistfilter, tab):
         """
@@ -304,4 +312,19 @@ class GuiController(object):
         #no filtermatch so far, return false which results in displaying the server
         return False
     
+    def connectToServer(self, server):
+        """
+        Launches Urban Terror and connect to the passed server
         
+        @param server - the server to connect to 
+        """
+        fm = FileManager()
+        fm.addRecent(server)
+        #build the connect parameters
+        #format of the commandline command:
+        #urbanterror + connect <adress> + password <pw>
+        cmd = 'urbanterror + connect ' + server.getAdress()
+        if server.needsPassword():
+            cmd = cmd + ' + password ' + server.getPassword()
+        #finally execute the command
+        os.popen(cmd)        

@@ -82,20 +82,50 @@ class RecentTab(gtk.VBox):
         connectimage.set_from_stock(gtk.STOCK_CONNECT, gtk.ICON_SIZE_BUTTON)
         connect_button.set_image(connectimage)
         
-        removefav_button = gtk.Button('Remove Server from List')
+        removerecent_button = gtk.Button('Remove Server from List')
         removeimage = gtk.Image()
         removeimage.set_from_stock(gtk.STOCK_DELETE, gtk.ICON_SIZE_BUTTON)
-        removefav_button.set_image(removeimage)
+        removerecent_button.set_image(removeimage)
         
         
         buttonbox.pack_start(refresh_button, True, True)
         buttonbox.pack_start(connect_button, True, True)
-        buttonbox.pack_start(removefav_button, False, False)
+        buttonbox.pack_start(removerecent_button, False, False)
         refresh_button.connect("clicked", self.onRefreshButtonClicked)
+        connect_button.connect("clicked", self.connect_button_clicked)
+        removerecent_button.connect("clicked", self.onRemoveRecentClicked)
         
         self.show_all()
         
+    def connect_button_clicked(self, widget):
+        gui = GuiController()
+        server = self.detailsbox.current_server
+        if server:
+            gui.connectToServer(server)    
+
+    def onRemoveRecentClicked(self, widget):
+        """
+        Callback method for the remove button. Triggers the removal of 
+        the recent server entry by calling the gui controller which then 
+        removes the recent server (from list in memory and also from file)
+        Also removes the recent server directly from the liststore.
         
+        @param widget - the widget that emitted the clicked signal - the button 
+        """
+        
+        #the current selected server displayed in the details
+        server = self.detailsbox.current_server
+         
+        #remove it from the favoriteslist
+        gui = GuiController()
+        gui.removeRecent(server)
+        
+        #remove row from liststore
+        selection = self.serverlist.serverlistview.get_selection()
+        result = selection.get_selected()
+        if result: 
+            model, iter = result
+            model.remove(iter)
        
     def onRefreshButtonClicked(self, widget):
         """

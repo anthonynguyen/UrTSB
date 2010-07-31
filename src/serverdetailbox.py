@@ -26,6 +26,7 @@ class ServerDetailBox(gtk.HBox):
     server variables and a shortinfo table with some basic server informations.
     """
 
+    current_server = None
 
     def __init__(self):
         """

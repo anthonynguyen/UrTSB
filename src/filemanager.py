@@ -19,6 +19,7 @@
 
 from server import Server
 import os
+import time
 
 class FileManager(object):
     """
@@ -120,19 +121,44 @@ class FileManager(object):
         if server.getAdress() in favs:
             del self.favorites[server.getAdress()]
             self.saveFavorites()
+            
+    def removeRecentServer(self, server):
+        """
+        Removes a existing recent server entry from the list.
+        Note: Immediately updates the recent servers file.
+        
+        @param server - the server object to be removed
+        """
+        recents = self.getRecentServers() # this makes sure it is initialized  
+        if server.getAdress() in recents:
+            del self.recentservers[server.getAdress()]
+            self.saveRecentServers()
     
     def addRecent(self, server):
         """
         Adds a new server to the list of recent connected servers.
         Note: Immediately writes the current state of the list 
-        into the recent servers file. 
+        into the recent servers file.
+        Or if server exists, updates the existing entry 
         
         @param server - the server object to add
         """
+        recent_servers = self.getRecentServers()
         if server.getAdress() not in self.recentservers:
+            server.setConnections(1)
             self.recentservers[server.getAdress()] = server
-            #immdediately save to file in order to avoid a loss of data (crash etc.)
-            self.saveRecentServers()
+        else:
+            
+            existing_entry = recent_servers[server.getAdress()] 
+            conns = existing_entry.getConnections()
+            conns += 1
+            existing_entry.setConnections(conns)
+            server = existing_entry
+            
+        server.setLastConnect(time.strftime("%Y.%m.%d - %H:%M"))
+        #immdediately save to file in order to avoid a loss of data (crash etc.)
+        self.saveRecentServers()
+            
             
     def saveFavorites(self):
         """
@@ -150,11 +176,13 @@ class FileManager(object):
         """
         Performs the writing to the recent servers file
         """
-        fobj = open(self.rec_file, "w") 
-        for server in self.recentservers:
+        fobj = open(self.rec_file, "w")
+         
+        for key in self.recentservers:
+            server = self.recentservers[key]
             #format: ip,port,password, connectioncount,dateoflastconnection,name
             fobj.write(server.getHost() + ',' + str(server.getPort()) 
-                     + ',' + server.getPassword() + ',' + server.getConnections() + ','
+                     + ',' + server.getPassword() + ',' + str(server.getConnections()) + ','
                      + server.getLastConnect() + ',' + server.getName() + '\n')
         fobj.close()
     
@@ -180,9 +208,9 @@ class FileManager(object):
             line = line.strip() 
             serverinfo = line.split(',') # file is a csv
             #format: ip,port,password, connectioncount,dateoflastconnection,name
-            server = Server(serverinfo[0], serverinfo[1])
+            server = Server(serverinfo[0], int(serverinfo[1]))
             server.setPassword(serverinfo[2])
-            server.setConnections(serverinfo[3])
+            server.setConnections(int(serverinfo[3]))
             server.setLastConnect(serverinfo[4])
             server.setName(serverinfo[5])
             self.recentservers[server.getAdress()] = server

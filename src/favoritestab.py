@@ -103,11 +103,17 @@ class FavoritesTab(gtk.VBox):
         buttonbox.pack_start(removefav_button, False, False)
         refresh_button.connect("clicked", self.onRefreshButtonClicked)
         removefav_button.connect("clicked", self.onRemoveFavoriteClicked)
+        connect_button.connect("clicked", self.connect_button_clicked)
         
         self.show_all()
         
         # self.pack_start(button,False)
-    
+    def connect_button_clicked(self, widget):
+        gui = GuiController()
+        server = self.detailsbox.current_server
+        if server:
+            gui.connectToServer(server)
+                
     def onRemoveFavoriteClicked(self, widget):
         """
         Callback method for the remove button. Triggers the removal of 
