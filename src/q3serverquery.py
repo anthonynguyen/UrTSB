@@ -116,11 +116,13 @@ class Q3ServerQuery(object):
             elif '1' == needpass:
                 server.setNeedsPassword(True)
                 
-        # two alternative keys for max players
+        # there are some alternative keys for max players
         if 'g_maxGameClients' in vars:
             server.setMaxPlayers(vars['g_maxGameClients'])
         if 'sv_maxclients' in vars:
             server.setMaxPlayers(vars['sv_maxclients'])
+        if 'sv_maxClients' in vars:
+            server.setMaxPlayers(vars['sv_maxClients'])
         
         # there is no explicit value for count of currently connected clients 
         # like the infoResponse provides so use the length of the player list
