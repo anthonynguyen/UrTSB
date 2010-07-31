@@ -19,10 +19,13 @@
 
 from guicontroller import GuiController
 from playerlist import PlayerList
+from recentserverfilter import RecentSeversFilter
+from recentserverslist import RecentServersList
 from serverdetailbox import ServerDetailBox
 from serverlist import ServerList
-
 import gtk
+import recentserverfilter
+
 
 
 
@@ -40,13 +43,18 @@ class RecentTab(gtk.VBox):
         """
         gtk.VBox.__init__(self)
         
+        
+        self.filter = RecentSeversFilter()
+        self.filter.show()
+        self.pack_start(self.filter, False, False)
+        
         # top pane area 
         paned = gtk.VPaned() 
         paned.show()
         self.pack_start(paned)   
         
         # serverlist window
-        self.serverlist = ServerList()
+        self.serverlist = RecentServersList()
         paned.pack1(self.serverlist, True, False)
         #paned.add1(self.serverlist)
         
@@ -82,6 +90,11 @@ class RecentTab(gtk.VBox):
         connectimage.set_from_stock(gtk.STOCK_CONNECT, gtk.ICON_SIZE_BUTTON)
         connect_button.set_image(connectimage)
         
+        addfav_button = gtk.Button('Add to Favorites')
+        favimage = gtk.Image()
+        favimage.set_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_BUTTON)
+        addfav_button.set_image(favimage)
+        
         removerecent_button = gtk.Button('Remove Server from List')
         removeimage = gtk.Image()
         removeimage.set_from_stock(gtk.STOCK_DELETE, gtk.ICON_SIZE_BUTTON)
@@ -90,12 +103,23 @@ class RecentTab(gtk.VBox):
         
         buttonbox.pack_start(refresh_button, True, True)
         buttonbox.pack_start(connect_button, True, True)
-        buttonbox.pack_start(removerecent_button, False, False)
+        buttonbox.pack_start(addfav_button, True, True)
+        buttonbox.pack_start(removerecent_button, True, True)
+        
         refresh_button.connect("clicked", self.onRefreshButtonClicked)
         connect_button.connect("clicked", self.connect_button_clicked)
         removerecent_button.connect("clicked", self.onRemoveRecentClicked)
+        addfav_button.connect("clicked", self.onAddFavButtonClicked)
         
         self.show_all()
+        
+    def onAddFavButtonClicked(self, widget):   
+        """
+        Callback to handle adding a favorite
+        """
+        server = self.detailsbox.current_server
+        gui = GuiController()
+        gui.addFavorite(server)
         
     def connect_button_clicked(self, widget):
         gui = GuiController()

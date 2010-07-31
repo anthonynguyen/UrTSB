@@ -56,9 +56,21 @@ class GuiController(object):
     def removeRecent(self, server):
         """
         Removes a server from the list of recent servers
+        
+        @param server - server to be removed
         """
         fm = FileManager()
         fm.removeRecentServer(server)
+      
+    def clearRecentServers(self, tab):
+        """
+        clears the recent server list.
+        
+        @param tab - tab requesting the action
+        """
+        fm = FileManager()
+        fm.clearRecentServerList()
+        tab.clearServerList()
       
     def executeMasterServerQuery(self, serverlistfilter, tab):
         """

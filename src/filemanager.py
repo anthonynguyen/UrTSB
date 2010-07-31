@@ -133,6 +133,14 @@ class FileManager(object):
         if server.getAdress() in recents:
             del self.recentservers[server.getAdress()]
             self.saveRecentServers()
+            
+            
+    def clearRecentServerList(self):
+        """
+        Clears the list of recent servers.
+        """
+        self.recentservers = {}
+        self.saveRecentServers()
     
     def addRecent(self, server):
         """
