@@ -54,8 +54,6 @@ class ServerListFilter(gtk.HBox):
         self.checkbox_showfull.show()
         self.checkbox_showempty = gtk.CheckButton('show empty')
         self.checkbox_showempty.show()
-        # checkbox_showpassworded = gtk.CheckButton('show passworded')
-        # checkbox_showpassworded.show()
         
         
         
@@ -96,7 +94,7 @@ class ServerListFilter(gtk.HBox):
         
         self.checkbox_show_gametype_all = gtk.CheckButton('all')
         self.checkbox_show_gametype_bomb = gtk.CheckButton('Bomb')
-        self.checkbox_show_gametype_survivor = gtk.CheckButton('Survivor')
+        self.checkbox_show_gametype_survivor = gtk.CheckButton('Team Survivor')
         self.checkbox_show_gametype_ctf = gtk.CheckButton('Capture the Flag')
         self.checkbox_show_gametype_tdm = gtk.CheckButton('Team Deathmatch')
         self.checkbox_show_gametype_cah = gtk.CheckButton('Capture and Hold')
@@ -112,8 +110,16 @@ class ServerListFilter(gtk.HBox):
         gametypetable.attach(self.checkbox_show_gametype_ftl, 2,3,1,2 )
         gametypetable.attach(self.checkbox_show_gametype_ffa, 3,4,1,2 )
         
-        
-        
+        #callback connections
+        self.gametype_all_handler = self.checkbox_show_gametype_all. \
+                               connect('toggled', self.on_all_gametypes_toggled) 
+        self.checkbox_show_gametype_bomb.connect('toggled', self.on_gametype_checkbox_toggle) 
+        self.checkbox_show_gametype_survivor.connect('toggled', self.on_gametype_checkbox_toggle) 
+        self.checkbox_show_gametype_ctf.connect('toggled', self.on_gametype_checkbox_toggle) 
+        self.checkbox_show_gametype_tdm.connect('toggled', self.on_gametype_checkbox_toggle) 
+        self.checkbox_show_gametype_cah.connect('toggled', self.on_gametype_checkbox_toggle) 
+        self.checkbox_show_gametype_ftl.connect('toggled', self.on_gametype_checkbox_toggle) 
+        self.checkbox_show_gametype_ffa.connect('toggled', self.on_gametype_checkbox_toggle) 
         
         #buttonbox
         buttonbox = gtk.VBox()
@@ -135,13 +141,65 @@ class ServerListFilter(gtk.HBox):
         searchbutton.set_image(searchimage)
         buttonbox.pack_start(searchbutton)
         
+        
+        self.set_default_values()
+        
         self.show_all()
         
-    def on_reset_clicked(self):
+   
+        
+    def on_gametype_checkbox_toggle(self, togglebutton):
+        """
+        Callback for all gametype checkboxes except the 'all' (has its own
+        callback).
+        When an checbox is deactivated and the 'all' is active, then deactivate
+        the all checkbox. 
+        """    
+        if not togglebutton.get_active():
+            # deactivate callback for the all checkbutton
+            # don't wan't to deacticate all other checkbutton!
+            self.checkbox_show_gametype_all.disconnect(self.gametype_all_handler)
+            
+            # deactivate the all checkbutton 
+            self.checkbox_show_gametype_all.set_active(False)
+            
+            # reactivate callback for the  all checkbutton
+            self.gametype_all_handler = self.checkbox_show_gametype_all. \
+                               connect('toggled', self.on_all_gametypes_toggled)
+            
+            
+             
+    def on_all_gametypes_toggled(self, togglebutton):
+        """
+        Callback for the 'all' gametypes checkbox on 'toggled' signal.
+        Activates/Deactivates all other gametype checkboxes.
+        """
+        state =  togglebutton.get_active() 
+        
+        #set all other gametype checkboxes to the same state as the all checkbox
+        self.checkbox_show_gametype_bomb.set_active(state)
+        self.checkbox_show_gametype_survivor.set_active(state)
+        self.checkbox_show_gametype_ctf.set_active(state)
+        self.checkbox_show_gametype_tdm.set_active(state)
+        self.checkbox_show_gametype_cah.set_active(state)
+        self.checkbox_show_gametype_ftl.set_active(state)
+        self.checkbox_show_gametype_ffa.set_active(state)
+        
+    def set_default_values(self):
+        """
+        Set default values to all input elements of the filter.
+        """    
+        self.checkbox_show_gametype_all.set_active(True)
+        self.checkbox_show_gametype_all.toggled() # emits the 'toggled' signal
+        
+        self.checkbox_hide_non_responsive.set_active(True)
+        self.checkbox_hide_passworded.set_active(True)
+        
+    def on_reset_clicked(self, button):
         """
         Callback for reset the values of the filter to defaults
         """
-        print 'reset'    
+        self.set_default_values()
         
     def on_search_clicked(self, widget):
         """
