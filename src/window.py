@@ -44,7 +44,8 @@ class Window():
         
         #window creation and basic window settings
         self.window = gtk.Window()
-        self.window.set_title('UrTSB v.0.1 - a Urban Terror Server Browser ')
+        gc = GuiController()
+        self.window.set_title(gc.appname + ' v.' + gc.appver + ' - ' + gc.appdesc)
         self.window.set_default_size(1024, 768)
         self.window.set_position(gtk.WIN_POS_CENTER)
         self.window.connect('destroy', gtk.main_quit)

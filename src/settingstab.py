@@ -19,6 +19,7 @@
 
 import gtk
 from filemanager import FileManager
+from aboutdialog import AboutDialog
 
 class SettingsTab(gtk.VBox):
     """
@@ -132,6 +133,8 @@ class SettingsTab(gtk.VBox):
         """
         Callback of the about button
         """
-        print ''
+        about_dialog = AboutDialog()
+        about_dialog.run()
+        about_dialog.hide()
         
         

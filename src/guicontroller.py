@@ -33,6 +33,10 @@ class GuiController(object):
     
     __shared_state = {} # borg pattern
     
+    appname = 'UrTSB'
+    appver = '0.1'
+    appdesc = 'a Urban Terror Server Browser'
+    
     def __init__(self):
         self.__dict__ = self.__shared_state # borg pattern
         
