@@ -18,6 +18,7 @@
 #
 
 from guicontroller import GuiController
+from server import Server
 import gtk
 
 
@@ -34,11 +35,43 @@ class FavoritesFilter(gtk.HBox):
         """
         gtk.HBox.__init__(self)    
         
+        addbox = gtk.HBox()
+        self.pack_start(addbox, False, False)
+        
+        add_fav_label = gtk.Label('enter IP:Port and press "Add" to manually add a server')
+        self.addentry = gtk.Entry()
+        self.addentry.set_width_chars(40)
+        addbutton = gtk.Button('Add')
+        addbox.pack_start(add_fav_label, False, False)
+        addbox.pack_start(self.addentry, False, False)
+        addbox.pack_start(addbutton, False, False)
+        addbutton.connect("clicked", self.on_add_clicked)
+        
+        
         refresh_button = gtk.Button('Refresh List')
         self.pack_end(refresh_button, False, False)
         refresh_button.connect("clicked", self.on_refresh_clicked)
     
+        self.show_all()
         
+    def on_add_clicked(self, widget):    
+        enteredserver = self.addentry.get_text()
+        guicontroller = GuiController()
+        try:
+            host, port = enteredserver.split(':', 1)
+            port = int(port)
+            server = Server(host, port)
+        except:
+            self.parent.statusbar.progressbar.set_text('Failed to add server!')
+            return
+        guicontroller.addFavorite(server)
+        guicontroller.executeFavoritesLoading(self.parent) 
+        if server.isFavorite():
+            self.parent.statusbar.progressbar.set_text('Server successfully added')
+            self.addentry.set_text('')
+        else:
+            self.parent.statusbar.progressbar.set_text('Failed to add server!')
+            
     def on_refresh_clicked(self, widget):
         """
         Callback for the refresh button

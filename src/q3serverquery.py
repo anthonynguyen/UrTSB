@@ -240,16 +240,19 @@ class Q3ServerQuery(object):
         @param command - the command to send to the game server
         @param server - the server  
         """
-        
-        # open an socket to the game server
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect((server.getHost(), server.getPort()))
-        # set timeout to 1s 
-        s.settimeout(1)
-        # all packets send to an q3 server must beging with the OOB command bytes
-        cmd = self.packet_prefix+command 
-        s.send(cmd)
-       
+        try:
+            # open an socket to the game server
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect((server.getHost(), server.getPort()))
+            # set timeout to 1s 
+            s.settimeout(1)
+            # all packets send to an q3 server must beging with the OOB command bytes
+            cmd = self.packet_prefix+command 
+            s.send(cmd)
+        except:
+            print 'Something went wrong opening socket to ' + server.getAdress()
+            server.reset()
+            return server
         response = None
         time_start = time.time() # start time measurement (pinging)
         try:

@@ -24,6 +24,7 @@ class Server(object):
     password = ''
     connections = 0
     
+    
     def __init__(self, host, port):
         """
         Constructor
@@ -34,6 +35,7 @@ class Server(object):
         self.host = host
         self.port = port
         self.setDefaults()
+        self.favorite = False
        
     def setDefaults(self):
         """
@@ -158,5 +160,11 @@ class Server(object):
     
     def setPassword(self, password):
         self.password = password
+        
+    def isFavorite(self):
+        return self.favorite
+    
+    def setIsFavorite(self, isfavorite):
+        self.favorite = isfavorite
         
     

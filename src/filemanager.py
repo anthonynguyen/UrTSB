@@ -109,6 +109,7 @@ class FileManager(object):
             self.favorites[server.getAdress()] = server
             #immdediately save to file in order to avoid a loss of data (crash etc.)
             self.saveFavorites()
+            server.setIsFavorite(True)
     
     def removeFavorite(self, server):
         """

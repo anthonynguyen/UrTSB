@@ -22,7 +22,7 @@ from q3serverquery import Q3ServerQuery
 import gobject
 import os
 import thread
-import time
+
 
 
 
