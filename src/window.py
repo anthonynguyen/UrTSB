@@ -83,12 +83,12 @@ class Window():
         notebook.append_page(self.settingsstab, settingslabel)
         
         # add a statusbar with a progressbar inside
-        statusbar = gtk.Statusbar()
-        statusbar.set_border_width(2)
-        
-        self.progressbar = gtk.ProgressBar()
-        statusbar.add(self.progressbar)
-        mainbox.pack_start(statusbar, False, False) 
+#        statusbar = gtk.Statusbar()
+#        statusbar.set_border_width(2)
+#        
+#        self.progressbar = gtk.ProgressBar()
+#        statusbar.add(self.progressbar)
+#        mainbox.pack_start(statusbar, False, False) 
        
         self.window.show_all()
        

@@ -175,8 +175,8 @@ class GuiController(object):
         print 'load_serverlist'
         query = Q3ServerQuery()
         
-        self.window.progressbar.pulse()
-        self.window.progressbar.set_text('asking Masterserver for list of server IPs')
+        tab.statusbar.progressbar.pulse()
+        tab.statusbar.progressbar.set_text('asking Masterserver for list of server IPs')
         
         empty = serverlistfilter.checkbox_showempty.get_active()    
         full = serverlistfilter.checkbox_showfull.get_active()
@@ -210,7 +210,7 @@ class GuiController(object):
             #needed for updating the progressbar
             fraction4oneserver = 1./float(len(serverlist)) 
             
-            self.window.progressbar.set_text("fetching serverinfos...")
+            tab.statusbar.progressbar.set_text("fetching serverinfos...")
             #if serverlist > 50 create 10 worker threads to speed up server query
             if len(serverlist) > 50 :
                 index_low = 0
@@ -228,24 +228,25 @@ class GuiController(object):
                 thread.start_new_thread(self.populateServerView, \
                         (serverlist, fraction4oneserver, tab, serverlistfilter))
         else:
-            self.window.progressbar.set_text("failed getting serverlist from masterserver")
-            self.window.progressbar.set_fraction(0.0)
+            tab.statusbar.progressbar.set_text("failed getting serverlist from masterserver")
+            tab.statusbar.progressbar.set_fraction(0.0)
 
 
-    def appendProgressFraction(self, fraction2add):
+    def appendProgressFraction(self, fraction2add, tab):
         """
         Appends the passed fractionvalue to the progressbar.
         
         @param fraction2add- the value that should be added to the current
                              fraction of the progressbar
+        @param tab - the tab on which the progressbar to be updated is located
         """
-        cur = self.window.progressbar.get_fraction()
+        cur = tab.statusbar.progressbar.get_fraction()
         new = cur+fraction2add
         if 1.0>new+fraction2add: 
-            self.window.progressbar.set_fraction(cur+fraction2add)
+            tab.statusbar.progressbar.set_fraction(cur+fraction2add)
         else:
-            self.window.progressbar.set_fraction(0.0)
-            self.window.progressbar.set_text('')
+            tab.statusbar.progressbar.set_fraction(0.0)
+            tab.statusbar.progressbar.set_text('')
         
     def populateServerView(self, serverlist, fraction4oneserver, tab, serverlistfilter):   
         """
@@ -269,7 +270,7 @@ class GuiController(object):
             if not self.does_filter_match_server(server, serverlistfilter):    
                 # update the UI
                 gobject.idle_add(tab.addServer, server)
-            gobject.idle_add(self.appendProgressFraction, fraction4oneserver)
+            gobject.idle_add(self.appendProgressFraction, fraction4oneserver, tab)
     
     def does_filter_match_server(self, server, filter):
         """

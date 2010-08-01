@@ -23,6 +23,7 @@ from serverdetailbox import ServerDetailBox
 from serverlist import ServerList
 from serverlistfilter import ServerListFilter
 import gtk
+from statusbar import StatusBar
 
 
 
@@ -50,6 +51,11 @@ class ServerTab(gtk.VBox):
         paned = gtk.VPaned() 
         paned.show()
         self.pack_start(paned)   
+        
+        # bottom add a statusbar
+        self.statusbar = StatusBar()
+        self.pack_start(self.statusbar, False, False)
+        
         
         # serverlist window
         self.serverlist = ServerList()

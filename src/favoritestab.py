@@ -17,13 +17,14 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from favoritesfilter import FavoritesFilter
 from guicontroller import GuiController
 from playerlist import PlayerList
 from serverdetailbox import ServerDetailBox
 from serverlist import ServerList
-
+from statusbar import StatusBar
 import gtk
-from favoritesfilter import FavoritesFilter
+
 
 
 
@@ -50,6 +51,11 @@ class FavoritesTab(gtk.VBox):
         paned = gtk.VPaned() 
         paned.show()
         self.pack_start(paned)   
+        
+        
+        # bottom add a statusbar
+        self.statusbar = StatusBar()
+        self.pack_start(self.statusbar, False, False)
         
         # serverlist window
         self.serverlist = ServerList()

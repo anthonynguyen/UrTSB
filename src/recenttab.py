@@ -23,6 +23,7 @@ from recentserverfilter import RecentSeversFilter
 from recentserverslist import RecentServersList
 from serverdetailbox import ServerDetailBox
 from serverlist import ServerList
+from statusbar import StatusBar
 import gtk
 import recentserverfilter
 
@@ -52,6 +53,10 @@ class RecentTab(gtk.VBox):
         paned = gtk.VPaned() 
         paned.show()
         self.pack_start(paned)   
+        
+        # bottom add a statusbar
+        self.statusbar = StatusBar()
+        self.pack_start(self.statusbar, False, False)
         
         # serverlist window
         self.serverlist = RecentServersList()
