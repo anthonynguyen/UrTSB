@@ -333,11 +333,22 @@ class GuiController(object):
         """
         fm = FileManager()
         fm.addRecent(server)
+        
         #build the connect parameters
         #format of the commandline command:
         #urbanterror + connect <adress> + password <pw>
-        cmd = 'urbanterror + connect ' + server.getAdress()
+        
+        #get the executablename, the path and the additional commands
+        #from the configuration
+        config = fm.getConfiguration()
+        executable = config['urt_executable']
+        path = config['path_to_executable']
+        additionalcommands = config['additional_commands']
+                
+        cmd = path + executable + ' + connect ' + server.getAdress()
         if server.needsPassword():
             cmd = cmd + ' + password ' + server.getPassword()
+        cmd = cmd + ' ' + additionalcommands
         #finally execute the command
+        print 'launching UrT with cmd = ' + cmd
         os.popen(cmd)        

@@ -38,6 +38,7 @@ class Server(object):
         self.favorite = False
         self.lastconnect = ''
         self.connections = 0
+        self.name = '-'
        
     def setDefaults(self):
         """

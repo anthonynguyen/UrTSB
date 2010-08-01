@@ -36,6 +36,7 @@ class FileManager(object):
 
     favorites = None
     recentservers = None
+    configuration = None
     
     #filenames
     conf_file = 'urtsb.cfg'
@@ -226,3 +227,53 @@ class FileManager(object):
         fobj.close()
         
         return self.recentservers        
+    
+    def getConfiguration(self):
+        """
+        Returns the configuration dict.
+        If not already loaded from fail, else returned from memory.
+        """
+        if self.configuration:
+            return self.configuration
+        
+        self.configuration = self.init_configuration()
+        
+        fobj = None
+        try:
+            fobj = open(self.conf_file, "r") 
+        except IOError:
+            #the file does not exist! just return the default dict created earlier
+            return self.configuration
+        
+        for line in fobj: 
+            #format of the configuration file is a key value pair on each 
+            #line separated by a '='
+            
+            key, value = line.split('=', 1)
+            self.configuration[key] = value.strip('\n') #strip linebreak
+        return self.configuration
+    
+    def saveConfiguration(self):
+        """
+        Writes the current configuration dict into the configuration file.
+        """
+        fobj = open(self.conf_file, "w")
+         
+        for key in self.configuration:
+            value = self.configuration[key]
+            #format of each line:  key=value
+            fobj.write(key+'='+value+'\n')
+        fobj.close()
+        
+    def init_configuration(self):
+        """
+        Performs initialisation of the configuration dict
+        by setting all available options to default values
+        """
+        configuration = {}
+        
+        configuration['urt_executable'] = 'urbanterror'
+        configuration['path_to_executable'] = ''
+        configuration['additional_commands'] = ''
+
+        return configuration
