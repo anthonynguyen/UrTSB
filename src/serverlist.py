@@ -177,3 +177,14 @@ class ServerList(gtk.ScrolledWindow):
         Completely clears the serverlist.
         """
         self.liststore.clear()
+        
+    def update_selected_row(self, server):
+        selection = self.serverlistview.get_selection()
+        result = selection.get_selected()
+        if result: 
+            iter = result[1]
+            self.liststore.set_value(iter, 3, server.getPing())
+            self.liststore.set_value(iter, 4, server.getPlayerString())
+            self.liststore.set_value(iter, 4, server.getPlayerString())
+            self.liststore.set_value(iter, 5, server.getMap())
+            self.liststore.set_value(iter, 6, server.getGameTypeName())

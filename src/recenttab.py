@@ -135,7 +135,8 @@ class RecentTab(gtk.VBox):
                 passdialog = PasswordDialog(server)
                 passdialog.run()
             else:
-                gui.connectToServer(server)  
+                gui.connectToServer(server)
+                  
 
     def onRemoveRecentClicked(self, widget):
         """
@@ -201,4 +202,5 @@ class RecentTab(gtk.VBox):
         
         # set the other serverdetail            
         self.detailsbox.setServerDetails(server) 
-        
+        # update row in list
+        self.serverlist.update_selected_row(server)

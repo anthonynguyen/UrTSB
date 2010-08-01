@@ -187,4 +187,7 @@ class FavoritesTab(gtk.VBox):
             self.playerlist.addPlayer(player)
             
         self.detailsbox.setServerDetails(server) 
+        # update row in list
+        self.serverlist.update_selected_row(server)
+       
         
