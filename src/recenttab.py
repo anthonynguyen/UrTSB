@@ -23,10 +23,10 @@ from playerlist import PlayerList
 from recentserverfilter import RecentSeversFilter
 from recentserverslist import RecentServersList
 from serverdetailbox import ServerDetailBox
-from serverlist import ServerList
+
 from statusbar import StatusBar
 import gtk
-import recentserverfilter
+
 
 
 

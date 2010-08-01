@@ -36,12 +36,14 @@ class Server(object):
         self.port = port
         self.setDefaults()
         self.favorite = False
+        self.lastconnect = ''
+        self.connections = 0
        
     def setDefaults(self):
         """
         Sets values to defaults. 
         """
-        self.name = '-'
+        #self.name = '-'
         self.ping = 999
         self.max_players = 0
         self.clientcount = 0
@@ -49,8 +51,6 @@ class Server(object):
         self.gametype = '-'
         self.playerlist = []
         self.vars = []
-        self.lastconnect = ''
-        self.connections = 0
         self.needspw = None
         
         
