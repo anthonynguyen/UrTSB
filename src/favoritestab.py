@@ -19,6 +19,7 @@
 
 from favoritesfilter import FavoritesFilter
 from guicontroller import GuiController
+from passworddialog import PasswordDialog
 from playerlist import PlayerList
 from serverdetailbox import ServerDetailBox
 from serverlist import ServerList
@@ -118,7 +119,11 @@ class FavoritesTab(gtk.VBox):
         gui = GuiController()
         server = self.detailsbox.current_server
         if server:
-            gui.connectToServer(server)
+            if server.needsPassword():
+                passdialog = PasswordDialog(server)
+                passdialog.run()
+            else:
+                gui.connectToServer(server)
                 
     def onRemoveFavoriteClicked(self, widget):
         """

@@ -18,6 +18,7 @@
 #
 
 from guicontroller import GuiController
+from passworddialog import PasswordDialog
 from playerlist import PlayerList
 from recentserverfilter import RecentSeversFilter
 from recentserverslist import RecentServersList
@@ -130,7 +131,11 @@ class RecentTab(gtk.VBox):
         gui = GuiController()
         server = self.detailsbox.current_server
         if server:
-            gui.connectToServer(server)    
+            if server.needsPassword():
+                passdialog = PasswordDialog(server)
+                passdialog.run()
+            else:
+                gui.connectToServer(server)  
 
     def onRemoveRecentClicked(self, widget):
         """

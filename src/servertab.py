@@ -18,12 +18,13 @@
 #
 
 from guicontroller import GuiController
+from passworddialog import PasswordDialog
 from playerlist import PlayerList
 from serverdetailbox import ServerDetailBox
 from serverlist import ServerList
 from serverlistfilter import ServerListFilter
-import gtk
 from statusbar import StatusBar
+import gtk
 
 
 
@@ -120,7 +121,11 @@ class ServerTab(gtk.VBox):
         gui = GuiController()
         server = self.detailsbox.current_server
         if server:
-            gui.connectToServer(server)
+            if server.needsPassword():
+                passdialog = PasswordDialog(server)
+                passdialog.run()
+            else:
+                gui.connectToServer(server)
        
     def onAddFavButtonClicked(self, widget):   
         """
