@@ -174,6 +174,6 @@ class ServerTab(gtk.VBox):
             
         self.detailsbox.setServerDetails(server) 
         # update row in list
-        self.serverlist.update_selected_row(server)
+        #self.serverlist.update_selected_row(server)
         
         

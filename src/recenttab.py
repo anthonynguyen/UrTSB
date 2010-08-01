@@ -203,4 +203,4 @@ class RecentTab(gtk.VBox):
         # set the other serverdetail            
         self.detailsbox.setServerDetails(server) 
         # update row in list
-        self.serverlist.update_selected_row(server)
+        #self.serverlist.update_selected_row(server)
