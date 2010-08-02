@@ -18,10 +18,10 @@
 #
 
 from player import Player
-from server import Server
 import re
 import socket
 import time
+from servermanager import ServerManager
 
 
 class Q3ServerQuery(object):
@@ -299,6 +299,8 @@ class Q3ServerQuery(object):
                       
         @return list of server objects
         """
+        #server manager
+        srvman = ServerManager()
         
         #open socket to the master server
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -355,9 +357,9 @@ class Q3ServerQuery(object):
                 #port
                 port = 256*ord(packet[index+5]) + ord(packet[index+6])
                 index+=7
-                # create sercer object and add it to the serverlist that will
+                # create server object and add it to the serverlist that will
                 # be returned
-                server = Server(ip, int(port))
+                server = srvman.getServer(ip, int(port))
                 self.serverlist.append(server)
          
         s.close()

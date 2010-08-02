@@ -17,9 +17,9 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from server import Server
 import os
 import time
+from servermanager import ServerManager
 
 class FileManager(object):
     """
@@ -51,6 +51,8 @@ class FileManager(object):
         
         if not self.instance:
             self.instance = True
+            
+            self.srvman = ServerManager()
             
             # linux specific! if someday UrTSB should run on another OS
             # this definitely needs to be extended
@@ -88,9 +90,10 @@ class FileManager(object):
             line = line.strip() 
             serverinfo = line.split(',') # file is a csv
             #format: ip,port,password,servername
-            server = Server(serverinfo[0], int(serverinfo[1]))
+            server = self.srvman.getServer(serverinfo[0], int(serverinfo[1]))
             server.setPassword(serverinfo[2])
             server.setName(serverinfo[3])
+            server.setIsFavorite(True)
             #use the adress (ip:port) as key to avoid duplicate entries
             self.favorites[server.getAdress()] = server
         fobj.close()
@@ -218,7 +221,7 @@ class FileManager(object):
             line = line.strip() 
             serverinfo = line.split(',') # file is a csv
             #format: ip,port,password, connectioncount,dateoflastconnection,name
-            server = Server(serverinfo[0], int(serverinfo[1]))
+            server = self.srvman.getServer(serverinfo[0], int(serverinfo[1]))
             server.setPassword(serverinfo[2])
             server.setConnections(int(serverinfo[3]))
             server.setLastConnect(serverinfo[4])
@@ -275,5 +278,6 @@ class FileManager(object):
         configuration['urt_executable'] = 'urbanterror'
         configuration['path_to_executable'] = ''
         configuration['additional_commands'] = ''
+        configuration['save_passwords'] = True
 
         return configuration

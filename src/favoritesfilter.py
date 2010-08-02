@@ -20,6 +20,7 @@
 from guicontroller import GuiController
 from server import Server
 import gtk
+from servermanager import ServerManager
 
 
 
@@ -54,13 +55,14 @@ class FavoritesFilter(gtk.HBox):
     
         self.show_all()
         
-    def on_add_clicked(self, widget):    
+    def on_add_clicked(self, widget):   
+        srvman = ServerManager() 
         enteredserver = self.addentry.get_text()
         guicontroller = GuiController()
         try:
             host, port = enteredserver.split(':', 1)
             port = int(port)
-            server = Server(host, port)
+            server = srvman.getServer(host, port)
         except:
             self.parent.statusbar.progressbar.set_text('Failed to add server!')
             return
