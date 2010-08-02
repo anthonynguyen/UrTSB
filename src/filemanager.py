@@ -265,7 +265,7 @@ class FileManager(object):
         for key in self.configuration:
             value = self.configuration[key]
             #format of each line:  key=value
-            fobj.write(key+'='+value+'\n')
+            fobj.write(key+'='+str(value)+'\n')
         fobj.close()
         
     def init_configuration(self):

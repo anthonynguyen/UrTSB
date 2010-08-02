@@ -353,7 +353,7 @@ class GuiController(object):
         cmd = path + executable + ' + connect ' + server.getAdress()
         if server.needsPassword():
             cmd = cmd + ' + password ' + server.getPassword()
-            if not save_password:
+            if not 'True' == save_password:
                 #reset password to blank string
                 server.setPassword('')
             else:
