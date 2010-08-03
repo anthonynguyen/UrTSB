@@ -19,6 +19,7 @@
 
 from guicontroller import GuiController
 import gtk
+from filemanager import FileManager
 
 class PasswordDialog(gtk.Dialog):
     """
@@ -54,11 +55,21 @@ class PasswordDialog(gtk.Dialog):
         self.passentry = gtk.Entry()
         self.passentry.set_visibility(False)
         self.passentry.set_text(server.getPassword())
+        self.remembercheckbutton = gtk.CheckButton('remember password')
         
         self.vbox.pack_start(desc_label, False, False)
         self.vbox.pack_start(namelabel, False, False)
         self.vbox.pack_start(adresslabel, False, False)
         self.vbox.pack_start(self.passentry, False, False)
+        self.vbox.pack_start(self.remembercheckbutton, False, False)
+        
+        fm = FileManager()
+        config = fm.getConfiguration()
+        save_password = config['save_passwords']
+        if 'True' == save_password:
+            self.remembercheckbutton.set_active(True)
+        else:
+            self.remembercheckbutton.set_active(False)
         
         self.show_all()
         
@@ -71,6 +82,10 @@ class PasswordDialog(gtk.Dialog):
             password = self.passentry.get_text()
             #set the password at the server object
             self.server.setPassword(password)
+            
+            #set rememberpassword option
+            self.server.setRememberPassword(self.remembercheckbutton.get_active())
+            
             #and connect...
             gui = GuiController()
             gui.connectToServer(self.server)

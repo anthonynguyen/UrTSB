@@ -348,18 +348,15 @@ class GuiController(object):
         executable = config['urt_executable']
         path = config['path_to_executable']
         additionalcommands = config['additional_commands']
-        save_password = config['save_passwords']
                 
         cmd = path + executable + ' + connect ' + server.getAdress()
         if server.needsPassword():
             cmd = cmd + ' + password ' + server.getPassword()
-            if not 'True' == save_password:
-                #reset password to blank string
-                server.setPassword('')
-            else:
-                #this updates the password in the favorites file
+            if server.getRememberPassword():
                 if server.isFavorite():
-                    fm.saveFavorites() 
+                    fm.saveFavorites()
+            else:
+                server.setPassword('')
         
         fm.addRecent(server)
             

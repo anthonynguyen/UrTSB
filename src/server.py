@@ -40,6 +40,7 @@ class Server(object):
         self.connections = 0
         self.name = '-'
         self.favorite = False
+        self.rememberpass = False
        
     def setDefaults(self):
         """
@@ -169,4 +170,8 @@ class Server(object):
     def setIsFavorite(self, isfavorite):
         self.favorite = isfavorite
         
+    def getRememberPassword(self):
+        return self.rememberpass
     
+    def setRememberPassword(self, rememberpassword):
+        self.rememberpass = rememberpassword
