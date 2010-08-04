@@ -27,6 +27,7 @@ from settingstab import SettingsTab
 
 import gtk
 from guicontroller import GuiController
+from filemanager import FileManager
 
 
 
@@ -82,6 +83,12 @@ class Window():
         self.settingsstab = SettingsTab()
         settingslabel = gtk.Label('Settings')        
         notebook.append_page(self.settingsstab, settingslabel)
+        
+        #set default tab
+        fm = FileManager()
+        config = fm.getConfiguration()
+        defaulttab = int(config['default_tab'])
+        notebook.set_current_page(defaulttab)
         
         # add a statusbar with a progressbar inside
 #        statusbar = gtk.Statusbar()

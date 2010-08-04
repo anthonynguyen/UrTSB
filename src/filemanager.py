@@ -279,5 +279,6 @@ class FileManager(object):
         configuration['path_to_executable'] = ''
         configuration['additional_commands'] = ''
         configuration['save_passwords'] = True
+        configuration['default_tab'] = 0
 
         return configuration
