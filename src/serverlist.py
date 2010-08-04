@@ -52,50 +52,50 @@ class ServerList(gtk.ScrolledWindow):
         
         
         
-        column_number = gtk.TreeViewColumn('needs PW')
-        column_name = gtk.TreeViewColumn('Servername')
-        column_adress = gtk.TreeViewColumn('Adress')
-        column_ping = gtk.TreeViewColumn('Ping')
-        column_player = gtk.TreeViewColumn('Players')
-        column_map = gtk.TreeViewColumn('Map')
-        column_gametype = gtk.TreeViewColumn('Gametype')
+        self.column_number = gtk.TreeViewColumn('needs PW')
+        self.column_name = gtk.TreeViewColumn('Servername')
+        self.column_adress = gtk.TreeViewColumn('Adress')
+        self.column_ping = gtk.TreeViewColumn('Ping')
+        self.column_player = gtk.TreeViewColumn('Players')
+        self.column_map = gtk.TreeViewColumn('Map')
+        self.column_gametype = gtk.TreeViewColumn('Gametype')
         
         #sizing
-        column_number.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_number.set_expand(True)
-        column_number.set_fixed_width(15)
+        self.column_number.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_number.set_expand(True)
+        self.column_number.set_fixed_width(15)
         
-        column_name.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_name.set_expand(True)
-        column_name.set_fixed_width(250)
+        self.column_name.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_name.set_expand(True)
+        self.column_name.set_fixed_width(250)
         
-        column_adress.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_adress.set_expand(True)
-        column_adress.set_fixed_width(75)
+        self.column_adress.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_adress.set_expand(True)
+        self.column_adress.set_fixed_width(75)
                 
-        column_ping.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_ping.set_expand(True)
-        column_ping.set_fixed_width(15)
+        self.column_ping.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_ping.set_expand(True)
+        self.column_ping.set_fixed_width(15)
         
-        column_player.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_player.set_expand(True)
-        column_player.set_fixed_width(15)
+        self.column_player.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_player.set_expand(True)
+        self.column_player.set_fixed_width(15)
         
-        column_map.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_map.set_expand(True)
-        column_map.set_fixed_width(75)
+        self.column_map.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_map.set_expand(True)
+        self.column_map.set_fixed_width(75)
         
-        column_gametype.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_gametype.set_expand(True)
-        column_gametype.set_fixed_width(50)
+        self.column_gametype.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_gametype.set_expand(True)
+        self.column_gametype.set_fixed_width(50)
         
-        self.serverlistview.append_column(column_number)
-        self.serverlistview.append_column(column_name)
-        self.serverlistview.append_column(column_adress)
-        self.serverlistview.append_column(column_ping)
-        self.serverlistview.append_column(column_player)
-        self.serverlistview.append_column(column_map)
-        self.serverlistview.append_column(column_gametype)
+        self.serverlistview.append_column(self.column_number)
+        self.serverlistview.append_column(self.column_name)
+        self.serverlistview.append_column(self.column_adress)
+        self.serverlistview.append_column(self.column_ping)
+        self.serverlistview.append_column(self.column_player)
+        self.serverlistview.append_column(self.column_map)
+        self.serverlistview.append_column(self.column_gametype)
         
         cell0=gtk.CellRendererText()
         cell1=gtk.CellRendererText()
@@ -105,36 +105,94 @@ class ServerList(gtk.ScrolledWindow):
         cell5=gtk.CellRendererText()
         cell6=gtk.CellRendererText()
         
-        column_number.pack_start(cell0, expand=False)
-        column_name.pack_start(cell1, expand=True)
-        column_adress.pack_start(cell2, expand=False)
-        column_ping.pack_start(cell3, expand=False)
-        column_player.pack_start(cell4, expand=False)
-        column_map.pack_start(cell5, expand=False)
-        column_gametype.pack_start(cell6, expand=False)
+        self.column_number.pack_start(cell0, expand=False)
+        self.column_name.pack_start(cell1, expand=True)
+        self.column_adress.pack_start(cell2, expand=False)
+        self.column_ping.pack_start(cell3, expand=False)
+        self.column_player.pack_start(cell4, expand=False)
+        self.column_map.pack_start(cell5, expand=False)
+        self.column_gametype.pack_start(cell6, expand=False)
         
-        column_number.add_attribute(cell0, 'text', 0)
-        column_name.add_attribute(cell1, 'text', 1)  
-        column_adress.add_attribute(cell2, 'text', 2)
-        column_ping.add_attribute(cell3, 'text', 3)
-        column_player.add_attribute(cell4, 'text', 4)
-        column_map.add_attribute(cell5, 'text', 5)
-        column_gametype.add_attribute(cell6, 'text',6)
+        self.column_number.add_attribute(cell0, 'text', 0)
+        self.column_name.add_attribute(cell1, 'text', 1)  
+        self.column_adress.add_attribute(cell2, 'text', 2)
+        self.column_ping.add_attribute(cell3, 'text', 3)
+        self.column_player.add_attribute(cell4, 'text', 4)
+        self.column_map.add_attribute(cell5, 'text', 5)
+        self.column_gametype.add_attribute(cell6, 'text',6)
+        
+        self.column_name.set_clickable(True)
+        self.column_adress.set_clickable(True)
+        self.column_ping.set_clickable(True)
+        self.column_player.set_clickable(True)
+        self.column_map.set_clickable(True)
+        self.column_gametype.set_clickable(True)
+        
+        
+        self.column_name.connect('clicked', self.on_table_column_clicked, 1)  
+        self.column_adress.connect('clicked', self.on_table_column_clicked, 2)
+        self.column_ping.connect('clicked', self.on_table_column_clicked, 3)
+        self.column_player.connect('clicked', self.on_table_column_clicked, 4)
+        self.column_map.connect('clicked', self.on_table_column_clicked, 5)
+        self.column_gametype.connect('clicked', self.on_table_column_clicked,6)
         
      
         
-        column_number.set_reorderable(True)
-        column_name.set_reorderable(True)  
-        column_adress.set_reorderable(True)
-        column_ping.set_reorderable(True)
-        column_player.set_reorderable(True)
-        column_map.set_reorderable(True)
-        column_gametype.set_reorderable(True)
+        self.column_number.set_reorderable(True)
+        self.column_name.set_reorderable(True)  
+        self.column_adress.set_reorderable(True)
+        self.column_ping.set_reorderable(True)
+        self.column_player.set_reorderable(True)
+        self.column_map.set_reorderable(True)
+        self.column_gametype.set_reorderable(True)
         
-        self.liststore.set_sort_column_id(3, gtk.SORT_ASCENDING)
+        # set intial values for sorting order and column
+        self.sortorder = gtk.SORT_ASCENDING
+        self.sortcolumn = 3
+        # and apply sorting
+        self.liststore.set_sort_column_id(self.sortcolumn, self.sortorder)
+        self.column_ping.set_sort_order(self.sortorder)
+        self.column_ping.set_sort_indicator(True)
         
         selection = self.serverlistview.get_selection()
         selection.connect('changed', self.onSelectionChanged)
+    
+    def reset_sort_indicators(self):
+        """
+        Reset all sort indicators of the table headers
+        """
+        self.column_name.set_sort_indicator(False)  
+        self.column_adress.set_sort_indicator(False)
+        self.column_ping.set_sort_indicator(False)
+        self.column_player.set_sort_indicator(False)
+        self.column_map.set_sort_indicator(False)
+        self.column_gametype.set_sort_indicator(False)
+        
+    def on_table_column_clicked(self, treecolumn, colnum):    
+        """
+        Callback for the headers of sortable columns.
+        Performs sorting.
+        """
+    
+        #reset all indicators before sorting new
+        self.reset_sort_indicators()
+    
+        #check sort order to apply
+        #if the the clicked treecolumn is the current sorted column
+        #the sort order needs to be changed:
+        if self.sortcolumn == colnum:
+            if treecolumn.get_sort_order() == gtk.SORT_ASCENDING:
+                treecolumn.set_sort_order(gtk.SORT_DESCENDING)
+            else:
+                treecolumn.set_sort_order(gtk.SORT_ASCENDING)
+        else:
+            treecolumn.set_sort_order(gtk.SORT_ASCENDING)
+        
+        treecolumn.set_sort_indicator(True)
+        self.sortorder = treecolumn.get_sort_order()
+        self.sortcolumn = colnum
+        
+        self.liststore.set_sort_column_id(self.sortcolumn, self.sortorder)
         
     def onSelectionChanged(self, selection):
         """
@@ -170,7 +228,7 @@ class ServerList(gtk.ScrolledWindow):
                             , server]) 
         
         # default hardcoded sorting by ping ascending
-        self.liststore.set_sort_column_id(3, gtk.SORT_ASCENDING)
+        self.liststore.set_sort_column_id(self.sortcolumn, self.sortorder)
         
     def clear(self):
         """

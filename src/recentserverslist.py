@@ -38,33 +38,60 @@ class RecentServersList(ServerList):
         
         self.serverlistview.set_model(self.liststore)
         
-        column_connections = gtk.TreeViewColumn('Connections')
-        column_lastconnection = gtk.TreeViewColumn('Last Connection')
+        self.column_connections = gtk.TreeViewColumn('Connections')
+        self.column_lastconnection = gtk.TreeViewColumn('Last Connection')
         
-        column_connections.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_connections.set_expand(True)
-        column_connections.set_fixed_width(30)
+        self.column_connections.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_connections.set_expand(True)
+        self.column_connections.set_fixed_width(30)
         
-        column_lastconnection.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_lastconnection.set_expand(True)
-        column_lastconnection.set_fixed_width(75)
+        self.column_lastconnection.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_lastconnection.set_expand(True)
+        self.column_lastconnection.set_fixed_width(75)
         
-        self.serverlistview.append_column(column_connections)
-        self.serverlistview.append_column(column_lastconnection)
+        self.serverlistview.append_column(self.column_connections)
+        self.serverlistview.append_column(self.column_lastconnection)
         
         cell8=gtk.CellRendererText()
         cell9=gtk.CellRendererText()
         
-        column_connections.pack_start(cell8, expand=False)
-        column_lastconnection.pack_start(cell9, expand=False)
+        self.column_connections.pack_start(cell8, expand=False)
+        self.column_lastconnection.pack_start(cell9, expand=False)
         
-        column_connections.add_attribute(cell8, 'text', 8)
-        column_lastconnection.add_attribute(cell9, 'text',9)
+        self.column_connections.add_attribute(cell8, 'text', 8)
+        self.column_lastconnection.add_attribute(cell9, 'text',9)
         
-        column_connections.set_reorderable(True)
-        column_lastconnection.set_reorderable(True)  
+        self.column_connections.set_reorderable(True)
+        self.column_lastconnection.set_reorderable(True)  
+        
+        self.column_connections.set_clickable(True)
+        self.column_lastconnection.set_clickable(True)  
+        
+        self.column_connections.connect('clicked', self.on_table_column_clicked, 8)
+        self.column_lastconnection.connect('clicked', self.on_table_column_clicked,9)
+        
+        # set intial values for sorting order and column
+        self.sortorder = gtk.SORT_DESCENDING
+        self.sortcolumn = 9
+        # and apply sorting
+        self.liststore.set_sort_column_id(self.sortcolumn, self.sortorder)
+        self.column_lastconnection.set_sort_order(self.sortorder)
+        self.column_lastconnection.set_sort_indicator(True)
+        
         
         self.show_all()
+
+    def reset_sort_indicators(self):
+        """
+        Reset all sort indicators of the table headers
+        """
+        
+        #call method from superclass
+        super(RecentServersList, self).reset_sort_indicators()
+        
+        self.column_connections.set_sort_indicator(False)  
+        self.column_lastconnection.set_sort_indicator(False)
+
 
     def addServer(self, server):
         """
