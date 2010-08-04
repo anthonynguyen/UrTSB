@@ -287,6 +287,14 @@ class GuiController(object):
         @param filter - the filter to be applied
         """
         
+        #basic filtering on UrT Servers.
+        #also UrTSB uses the UrT Masterserver sometimes a Q3 server appears 
+        #in the list
+        vars = server.getServerVars()
+        if 'gamename' in vars:
+            if not vars['gamename'] == 'q3ut4':
+                return True
+        
         if not filter: # no filter passed
             return False
         
