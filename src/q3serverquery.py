@@ -145,7 +145,7 @@ class Q3ServerQuery(object):
         toks = playerlines.split('\n')
         # regular expression for extracting the information of a line
         # format of playerinformation is "kills  ping playername" 
-        regexp = re.compile(r'^(\d+) (\d+) "(.*)"')
+        regexp = re.compile(r'^(-?\d+) (\d+) "(.*)"')
         #this can also be an update, so clear the playerlist of the server first
         playerlist = server.getPlayerList()
         del playerlist[:] 
