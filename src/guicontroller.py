@@ -22,6 +22,7 @@ from q3serverquery import Q3ServerQuery
 import gobject
 import os
 import thread
+from querymanager import QueryManager
 
 
 
@@ -34,7 +35,7 @@ class GuiController(object):
     __shared_state = {} # borg pattern
     
     appname = 'UrTSB'
-    appver = '0.1'
+    appver = '0.2'
     appdesc = 'a Urban Terror Server Browser'
     
     def __init__(self):
@@ -177,27 +178,30 @@ class GuiController(object):
         @tab - the tab requesting the serverlist
         """
         print 'load_serverlist'
-        query = Q3ServerQuery()
-        
-        tab.statusbar.progressbar.pulse()
-        tab.statusbar.progressbar.set_text('asking Masterserver for list of server IPs')
-        
-        empty = serverlistfilter.checkbox_showempty.get_active()    
-        full = serverlistfilter.checkbox_showfull.get_active()
-        
-        #query the urban terror master server
-        serverlist = query.getServerList('master.urbanterror.info'
-                                         ,27950
-                                         ,empty
-                                         ,full)
-        # alternate master server        
-#        serverlist = query.getServerList('master.uaaportal.com'
+#        query = Q3ServerQuery()
+#        
+#        tab.statusbar.progressbar.pulse()
+#        tab.statusbar.progressbar.set_text('asking Masterserver for list of server IPs')
+#        
+#        empty = serverlistfilter.checkbox_showempty.get_active()    
+#        full = serverlistfilter.checkbox_showfull.get_active()
+#        
+#        #query the urban terror master server
+#        serverlist = query.getServerList('master.urbanterror.info'
 #                                         ,27950
 #                                         ,empty
 #                                         ,full)
-        
-        # start updating the ui with the serverlist
-        self.addServerListToTab(serverlist, tab, serverlistfilter)
+#        # alternate master server        
+##        serverlist = query.getServerList('master.uaaportal.com'
+##                                         ,27950
+##                                         ,empty
+##                                         ,full)
+#        
+#        # start updating the ui with the serverlist
+#        self.addServerListToTab(serverlist, tab, serverlistfilter)
+
+        qm = QueryManager()
+        qm.startMasterServerQueryThread(serverlistfilter, tab)
 
 
     def addServerListToTab(self, serverlist, tab, serverlistfilter):
@@ -276,6 +280,44 @@ class GuiController(object):
                 gobject.idle_add(tab.addServer, server)
             gobject.idle_add(self.appendProgressFraction, fraction4oneserver, tab)
     
+
+    
+    def connectToServer(self, server):
+        """
+        Launches Urban Terror and connect to the passed server
+        
+        @param server - the server to connect to 
+        """
+        fm = FileManager()
+        
+        
+        #build the connect parameters
+        #format of the commandline command:
+        #urbanterror + connect <adress> + password <pw>
+        
+        #get the executablename, the path and the additional commands
+        #from the configuration
+        config = fm.getConfiguration()
+        executable = config['urt_executable']
+        path = config['path_to_executable']
+        additionalcommands = config['additional_commands']
+                
+        cmd = path + executable + ' + connect ' + server.getAdress()
+        if server.needsPassword():
+            cmd = cmd + ' + password ' + server.getPassword()
+            if server.getRememberPassword():
+                if server.isFavorite():
+                    fm.saveFavorites()
+            else:
+                server.setPassword('')
+        
+        fm.addRecent(server)
+            
+        cmd = cmd + ' ' + additionalcommands
+        #finally execute the command
+        print 'launching UrT with cmd = ' + cmd
+        os.popen(cmd) 
+        
     def does_filter_match_server(self, server, filter):
         """
         Checks if the passed filter matches the passed server.
@@ -335,40 +377,4 @@ class GuiController(object):
             return True
    
         #no filtermatch so far, return false which results in displaying the server
-        return False
-    
-    def connectToServer(self, server):
-        """
-        Launches Urban Terror and connect to the passed server
-        
-        @param server - the server to connect to 
-        """
-        fm = FileManager()
-        
-        
-        #build the connect parameters
-        #format of the commandline command:
-        #urbanterror + connect <adress> + password <pw>
-        
-        #get the executablename, the path and the additional commands
-        #from the configuration
-        config = fm.getConfiguration()
-        executable = config['urt_executable']
-        path = config['path_to_executable']
-        additionalcommands = config['additional_commands']
-                
-        cmd = path + executable + ' + connect ' + server.getAdress()
-        if server.needsPassword():
-            cmd = cmd + ' + password ' + server.getPassword()
-            if server.getRememberPassword():
-                if server.isFavorite():
-                    fm.saveFavorites()
-            else:
-                server.setPassword('')
-        
-        fm.addRecent(server)
-            
-        cmd = cmd + ' ' + additionalcommands
-        #finally execute the command
-        print 'launching UrT with cmd = ' + cmd
-        os.popen(cmd)        
+        return False       

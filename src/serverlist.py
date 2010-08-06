@@ -236,6 +236,7 @@ class ServerList(gtk.ScrolledWindow):
         """
         self.liststore.clear()
         
+        
     def update_selected_row(self, server):
         selection = self.serverlistview.get_selection()
         result = selection.get_selected()

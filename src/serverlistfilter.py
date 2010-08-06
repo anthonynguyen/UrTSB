@@ -134,12 +134,12 @@ class ServerListFilter(gtk.HBox):
         buttonbox.pack_start(resetbutton)
         
                 
-        searchbutton = gtk.Button('Search')
-        searchbutton.connect("clicked", self.on_search_clicked)
+        self.searchbutton = gtk.Button('Search')
+        self.searchbutton.connect("clicked", self.on_search_clicked)
         searchimage = gtk.Image()
         searchimage.set_from_stock(gtk.STOCK_FIND, gtk.ICON_SIZE_BUTTON)
-        searchbutton.set_image(searchimage)
-        buttonbox.pack_start(searchbutton)
+        self.searchbutton.set_image(searchimage)
+        buttonbox.pack_start(self.searchbutton)
         
         
         self.set_default_values()
@@ -210,5 +210,9 @@ class ServerListFilter(gtk.HBox):
         Callback for the search button - triggers the execution of the 
         master server query
         """
+        #disable the button, so that no multiple queries are launched while
+        #still one is active
+        widget.set_sensitive(False)
+        
         guicontroller = GuiController()
         guicontroller.executeMasterServerQuery(self, self.parent)    
