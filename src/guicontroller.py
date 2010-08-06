@@ -178,28 +178,11 @@ class GuiController(object):
         @tab - the tab requesting the serverlist
         """
         print 'load_serverlist'
-#        query = Q3ServerQuery()
-#        
-#        tab.statusbar.progressbar.pulse()
-#        tab.statusbar.progressbar.set_text('asking Masterserver for list of server IPs')
-#        
-#        empty = serverlistfilter.checkbox_showempty.get_active()    
-#        full = serverlistfilter.checkbox_showfull.get_active()
-#        
-#        #query the urban terror master server
-#        serverlist = query.getServerList('master.urbanterror.info'
-#                                         ,27950
-#                                         ,empty
-#                                         ,full)
-#        # alternate master server        
-##        serverlist = query.getServerList('master.uaaportal.com'
-##                                         ,27950
-##                                         ,empty
-##                                         ,full)
-#        
-#        # start updating the ui with the serverlist
-#        self.addServerListToTab(serverlist, tab, serverlistfilter)
-
+        
+        #clear the current serverlist
+        tab.clearServerList()
+        
+        #perform the master server query
         qm = QueryManager()
         qm.startMasterServerQueryThread(serverlistfilter, tab)
 

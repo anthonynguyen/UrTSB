@@ -42,8 +42,7 @@ class Q3ServerQuery(object):
     # all packets begins with 0xFFFFFFFF indicating a q3 OOB command
     packet_prefix = '\xff' * 4
     
-    #initialize an empty severlist
-    serverlist = []
+
    
    
     def parseInfoResponse(self, response, server):
@@ -301,6 +300,7 @@ class Q3ServerQuery(object):
         """
         #server manager
         srvman = ServerManager()
+        self.serverlist = []
         
         #open socket to the master server
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
