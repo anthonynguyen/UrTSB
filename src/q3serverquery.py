@@ -239,6 +239,7 @@ class Q3ServerQuery(object):
         @param command - the command to send to the game server
         @param server - the server  
         """
+        
         try:
             # open an socket to the game server
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -253,14 +254,19 @@ class Q3ServerQuery(object):
             server.reset()
             return server
         response = None
-        time_start = time.time() # start time measurement (pinging)
-        try:
-            response = s.recv(2048) # a bit more buffer than needed
-             
-        except:
-            # handle failure case - usually this is a timeout
-            print server.getAdress() +  '  - timeout!' 
-            server.reset() # reset server object
+        
+        
+        for retries in range(3):
+        
+            time_start = time.time() # start time measurement (pinging)       
+            try:
+                response = s.recv(2048) # a bit more buffer than needed
+                break 
+            except:
+                if retries == 2:
+                    # handle failure case - usually this is a timeout
+                    print server.getAdress() +  '  - timeout!' 
+                    server.reset() # reset server object
         time_end = time.time() # end time measurement (pinging)
         ping = int((time_end-time_start)*1000) # calculate ping
         if response: # yeah got a response :-)

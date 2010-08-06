@@ -17,6 +17,7 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 from Queue import Queue, Empty
+from filemanager import FileManager
 from q3serverquery import Q3ServerQuery
 from threading import Thread
 import gobject
@@ -26,25 +27,17 @@ import threading
 class QueryManager(object):
     """
     Implements handling multiple threads used to speed up serverqueries
+    
+    
     """
 
     def __init__(self):
         """
         Constructor -
-        """
-    
-    def startMasterServerQueryThread(self, filter, tab):
-        """
-        Starts the masterserver query.
-        It starts with some basic initialisations and spawning a the coordinator
-        threads which creates more threads to perform the master server query 
+        It starts with some basic initialisations and spawns a coordinator
+        thread which creates more threads to perform the master server query 
         and also the status updates for the servers.
-        
-        @param filter - filter to apply
-        @param tab - tab requesting the serverlist
-        
         """
-        
         self.serverqueue = Queue()
         self.messageque = Queue()
         self.pulsemessageque = Queue() 
@@ -56,20 +49,67 @@ class QueryManager(object):
         
         self.gui_lock = None
         
+        coord = Thread(target=self.coordinator)
+        coord.daemon = True
+        coord.start()
+        
+    def startMasterServerQueryThread(self, filter, tab):
+        """
+        Starts the masterserver query.
+        
+        @param filter - filter to apply
+        @param tab - tab requesting the serverlist
+        
+        """
+        
         self.tab = tab
         self.filter = filter
         tab.clearServerList()
         
-
-        coord = Thread(target=self.coordinator)
-        coord.daemon = True
-        coord.start()
+        
         #this message will cause the coordinator to start querying the master
         #server
-        
         self.messageque.put('start_master_server_query')
         
-    
+    def startRecentServersLoadingThread(self, tab):
+        """
+        Starts loading the recent servers list
+        
+        @param tab - tab rquesting the recent servers
+        """
+        fm = FileManager()
+        self.tab = tab
+        self.filter = None
+        
+        serverdict = fm.getRecentServers()
+        for key in serverdict:
+            self.serverqueue.put(serverdict[key])
+        
+        self.servercount = len(serverdict)
+        
+        #notify the coordinator thread, that the serverlist is loaded
+        self.messageque.put('serverlist_loaded')
+        
+        
+    def startFavoritesLoadingThread(self, tab):
+        """
+        Starts loading the favorites
+        
+        @param tab - the tab requesting the favoriteslist
+        """
+        fm = FileManager()
+        self.tab = tab
+        self.filter = None
+        
+        serverlist = fm.getFavorites().values()
+        for server in serverlist:
+            self.serverqueue.put(server)
+            
+        self.servercount = len(serverlist)
+        
+        #notify the coordinator thread, that the serverlist is loaded
+        self.messageque.put('serverlist_loaded')
+        
     def coordinator(self):
         """
         Method that runs as coordinator thread.
@@ -223,7 +263,7 @@ class QueryManager(object):
         
         bartext = None
         if 1.0 == fraction:
-            bartext = 'finished server search - displaying ' \
+            bartext = 'finished getting server status - displaying ' \
                      + str((self.processedserver-self.filterdcount)) + \
                      ' servers (' + str(self.filterdcount) + ' filtered)'
             self.tab.statusbar.progressbar.set_fraction(0.0)

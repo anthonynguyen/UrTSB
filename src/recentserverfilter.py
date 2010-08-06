@@ -38,9 +38,9 @@ class RecentSeversFilter(gtk.HBox):
         self.pack_start(clear_button, False, False)
         clear_button.connect("clicked", self.on_clear_button_clicked)
         
-        refresh_button = gtk.Button('Refresh List')
-        self.pack_end(refresh_button, False, False)
-        refresh_button.connect("clicked", self.on_refresh_clicked)
+        self.refresh_button = gtk.Button('Refresh List')
+        self.pack_end(self.refresh_button, False, False)
+        self.refresh_button.connect("clicked", self.on_refresh_clicked)
     
     def on_clear_button_clicked(self, widget):
         """
@@ -53,6 +53,8 @@ class RecentSeversFilter(gtk.HBox):
         """
         Callback for the refresh button
         """
+        self.refresh_button.set_sensitive(False)
+        
         guicontroller = GuiController()
         guicontroller.executeRecentServersLoading(self.parent)    
         

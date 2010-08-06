@@ -49,9 +49,9 @@ class FavoritesFilter(gtk.HBox):
         addbutton.connect("clicked", self.on_add_clicked)
         
         
-        refresh_button = gtk.Button('Refresh List')
-        self.pack_end(refresh_button, False, False)
-        refresh_button.connect("clicked", self.on_refresh_clicked)
+        self.refresh_button = gtk.Button('Refresh List')
+        self.pack_end(self.refresh_button, False, False)
+        self.refresh_button.connect("clicked", self.on_refresh_clicked)
     
         self.show_all()
         
@@ -78,6 +78,8 @@ class FavoritesFilter(gtk.HBox):
         """
         Callback for the refresh button
         """
+        self.refresh_button.set_sensitive(False)  
+        
         guicontroller = GuiController()
         guicontroller.executeFavoritesLoading(self.parent)    
         

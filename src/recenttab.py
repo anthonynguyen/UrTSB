@@ -204,3 +204,10 @@ class RecentTab(gtk.VBox):
         self.detailsbox.setServerDetails(server) 
         # update row in list
         #self.serverlist.update_selected_row(server)
+        
+    def serverlist_loading_finished(self):
+        """
+        Callback method executed when the search has finished
+        """
+        #reactivate the search button
+        self.filter.refresh_button.set_sensitive(True)             

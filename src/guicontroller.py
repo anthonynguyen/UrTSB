@@ -143,29 +143,29 @@ class GuiController(object):
         """
         Loads the favorite server list from a file using the FileManager and
         update the serverlist on the requesting tab.
-        This method is executed in a background thread which is triggered by 
-        the executeFavoritesLoading method.
+        All of this is done
+        on background threads using the QueryManager
         
         @param tab - the tab requesting the favorite servers list
         """
-        fm = FileManager()
+
         tab.clearServerList()
-        serverlist = fm.getFavorites().values()
-        self.addServerListToTab(serverlist, tab, None)
+        qm = QueryManager()
+        qm.startFavoritesLoadingThread(tab)
         
     def loadRecentServer(self, tab):
         """
         Loads the list of recent servers from a file using the FileManager
-        and update the serverlist on the requesting tab.
-        This methid is executed in a background thread which is triggered by
-        the executeRecentServersLoading method
+        and update the serverlist on the requesting tab. All of this is done
+        on background threads using the QueryManager
+
         
         @param tab - the tab requesting the recent server list
         """
-        fm = FileManager()
+
         tab.clearServerList()
-        serverlist = fm.getRecentServers().values()
-        self.addServerListToTab(serverlist, tab, None)
+        qm = QueryManager()
+        qm.startRecentServersLoadingThread(tab)
 
     def loadMasterServerList(self, serverlistfilter, tab):
         """
