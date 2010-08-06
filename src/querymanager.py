@@ -220,10 +220,19 @@ class QueryManager(object):
         """
         fraction = float(self.processedserver) / float(self.servercount)
         
-        self.tab.statusbar.progressbar.set_fraction(fraction)
-        bartext = 'fetching server status (' + str(self.processedserver) + \
-                  ' / ' + str(self.servercount) + ') - ' + \
-                  str(self.filterdcount) + ' servers filtered'     
+        
+        bartext = None
+        if 1.0 == fraction:
+            bartext = 'finished server search - displaying ' \
+                     + str((self.processedserver-self.filterdcount)) + \
+                     ' servers (' + str(self.filterdcount) + ' filtered)'
+            self.tab.statusbar.progressbar.set_fraction(0.0)
+            
+        else:
+            bartext = 'fetching server status (' + str(self.processedserver) + \
+                      ' / ' + str(self.servercount) + ') - ' + \
+                      str(self.filterdcount) + ' servers filtered'
+            self.tab.statusbar.progressbar.set_fraction(fraction)     
         self.tab.statusbar.progressbar.set_text(bartext)
                     
     def pulse_progressbar(self):
