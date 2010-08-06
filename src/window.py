@@ -28,6 +28,7 @@ from settingstab import SettingsTab
 import gtk
 from guicontroller import GuiController
 from filemanager import FileManager
+from buddiestab import BuddiesTab
 
 
 
@@ -78,6 +79,11 @@ class Window():
         self.recenttab = RecentTab()
         recentlabel = gtk.Label('Recently Played')        
         notebook.append_page(self.recenttab, recentlabel)
+        
+        # add the buddies tab
+        self.buddiestab = BuddiesTab()
+        buddieslabel = gtk.Label('Buddies')
+        notebook.append_page(self.buddiestab, buddieslabel)
         
         # add the settings tab
         self.settingsstab = SettingsTab()

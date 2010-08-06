@@ -162,6 +162,11 @@ class SettingsTab(gtk.VBox):
         vbox.pack_start(self.reclist_radio, True, True, 0)
         self.reclist_radio.set_border_width(5)
         
+        self.buddies_radio = gtk.RadioButton(self.srvlist_radio, 'Start with' \
+                                                      + '"Buddies" tab')
+        vbox.pack_start(self.buddies_radio, True, True, 0)
+        self.buddies_radio.set_border_width(5)
+        
         return launchframe
     
     def on_save_clicked(self, widget):
@@ -181,6 +186,8 @@ class SettingsTab(gtk.VBox):
             defaulttab = 1
         elif self.reclist_radio.get_active():
             defaulttab = 2
+        elif self.buddies_radio.get_active():
+            defaulttab = 3
         
         config['default_tab'] = defaulttab
         
