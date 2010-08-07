@@ -189,7 +189,7 @@ class FileManager(object):
         @param server - the server object to be removed
         """
         recents = self.getRecentServers() # this makes sure it is initialized  
-        if server.getAdress() in recents:
+        if server.getAdress() in recents.keys():
             del self.recentservers[server.getAdress()]
             self.saveRecentServers()
             

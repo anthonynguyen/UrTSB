@@ -148,18 +148,19 @@ class RecentTab(gtk.VBox):
         @param widget - the widget that emitted the clicked signal - the button 
         """
         
-        #the current selected server displayed in the details
-        server = self.detailsbox.current_server
          
-        #remove it from the favoriteslist
-        gui = GuiController()
-        gui.removeRecent(server)
-        
-        #remove row from liststore
+                
+        #remove row from liststore and also the server from the recent list
         selection = self.serverlist.serverlistview.get_selection()
         result = selection.get_selected()
         if result: 
             model, iter = result
+            
+            server = self.serverlist.liststore.get_value(iter, 7)
+            #remove it from the favoriteslist
+            gui = GuiController()
+            gui.removeRecent(server)
+            
             model.remove(iter)
        
     def onRefreshButtonClicked(self, widget):
