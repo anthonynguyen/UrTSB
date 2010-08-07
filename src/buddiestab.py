@@ -97,6 +97,11 @@ class BuddiesTab(gtk.VBox):
         vbox.pack_start(buttonbox, False, False)
         vbox.pack_start(self.detailsbox)
         
+        addfav_button = gtk.Button('Add to Favorites')
+        favimage = gtk.Image()
+        favimage.set_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_BUTTON)
+        addfav_button.set_image(favimage)
+        
         
         refresh_button = gtk.Button('Refresh')
         refreshimage = gtk.Image()
@@ -111,14 +116,21 @@ class BuddiesTab(gtk.VBox):
         
         buttonbox.pack_start(refresh_button, True, True)
         buttonbox.pack_start(connect_button, True, True)
+        buttonbox.pack_start(addfav_button, True, True)
         
         refresh_button.connect("clicked", self.onRefreshButtonClicked)
-        
+        addfav_button.connect("clicked", self.onAddFavButtonClicked)
         connect_button.connect("clicked", self.connect_button_clicked)
         
         self.show_all()
         
-        
+    def onAddFavButtonClicked(self, widget):   
+        """
+        Callback to handle adding a favorite
+        """
+        server = self.detailsbox.current_server
+        gui = GuiController()
+        gui.addFavorite(server)    
         
     def connect_button_clicked(self, widget):
         """
@@ -188,7 +200,6 @@ class BuddiesTab(gtk.VBox):
         column_buddyname.pack_start(player_cell0, expand=False)
         
         column_buddyname.add_attribute(player_cell0, 'text', 0)
-        
         
         buttonbox = gtk.HBox()
         buddybox.pack_start(buttonbox, False, False)
