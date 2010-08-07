@@ -86,7 +86,6 @@ class PlayerList(gtk.ScrolledWindow):
         column_playerping.set_reorderable(True)
         
     def clear(self):
-        print 'playerlist clear called'
         self.playerliststore.clear()
         
     def addPlayer(self, player):
