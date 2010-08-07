@@ -108,18 +108,13 @@ class BuddiesTab(gtk.VBox):
         connectimage.set_from_stock(gtk.STOCK_CONNECT, gtk.ICON_SIZE_BUTTON)
         connect_button.set_image(connectimage)
         
-        removefav_button = gtk.Button('Remove from Favorites')
-        removeimage = gtk.Image()
-        removeimage.set_from_stock(gtk.STOCK_DELETE, gtk.ICON_SIZE_BUTTON)
-        removefav_button.set_image(removeimage)
-        
         
         buttonbox.pack_start(refresh_button, True, True)
         buttonbox.pack_start(connect_button, True, True)
-        buttonbox.pack_start(removefav_button, False, False)
-#       refresh_button.connect("clicked", self.onRefreshButtonClicked)
-#       removefav_button.connect("clicked", self.onRemoveFavoriteClicked)
-#       connect_button.connect("clicked", self.connect_button_clicked)
+        
+        refresh_button.connect("clicked", self.onRefreshButtonClicked)
+        
+        connect_button.connect("clicked", self.connect_button_clicked)
         
         self.show_all()
         
