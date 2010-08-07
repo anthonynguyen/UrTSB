@@ -250,7 +250,7 @@ class Q3ServerQuery(object):
             cmd = self.packet_prefix+command 
             s.send(cmd)
         except:
-            print 'Something went wrong opening socket to ' + server.getAdress()
+            print 'Something went wrong opening socket to ' + server.getaddress()
             server.reset()
             return server
         response = None
@@ -265,7 +265,7 @@ class Q3ServerQuery(object):
             except:
                 if retries == 2:
                     # handle failure case - usually this is a timeout
-                    print server.getAdress() +  '  - timeout!' 
+                    print server.getaddress() +  '  - timeout!' 
                     server.reset() # reset server object
         time_end = time.time() # end time measurement (pinging)
         ping = int((time_end-time_start)*1000) # calculate ping

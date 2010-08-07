@@ -29,7 +29,7 @@ class Server(object):
         """
         Constructor
         
-        @param host - hostadress of the game server
+        @param host - hostaddress of the game server
         @param port - port number of the game server
         """
         self.host = host
@@ -72,7 +72,7 @@ class Server(object):
     def getPort(self):
         return self.port
     
-    def getAdress(self):
+    def getaddress(self):
         return self.host+':'+str(self.port)
     
     def getPing(self):

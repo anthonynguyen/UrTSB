@@ -114,7 +114,7 @@ class FileManager(object):
         Get the Favorites. If already loaded from file, return the instance from
         memory, otherwise load from file. 
         
-        @return dict of server objects (key = adress)
+        @return dict of server objects (key = address)
         """
         if self.favorites:
             return self.favorites
@@ -135,8 +135,8 @@ class FileManager(object):
             server.setPassword(serverinfo[2])
             server.setName(serverinfo[3])
             server.setIsFavorite(True)
-            #use the adress (ip:port) as key to avoid duplicate entries
-            self.favorites[server.getAdress()] = server
+            #use the address (ip:port) as key to avoid duplicate entries
+            self.favorites[server.getaddress()] = server
         fobj.close()
         
         return self.favorites
@@ -150,8 +150,8 @@ class FileManager(object):
         @param server - the server object to add
         """
         favs = self.getFavorites() # this makes sure it is initialized 
-        if server.getAdress() not in favs:
-            self.favorites[server.getAdress()] = server
+        if server.getaddress() not in favs:
+            self.favorites[server.getaddress()] = server
             #immdediately save to file in order to avoid a loss of data (crash etc.)
             self.saveFavorites()
             server.setIsFavorite(True)
@@ -164,8 +164,8 @@ class FileManager(object):
         @param server - the server object to be removed
         """
         favs = self.getFavorites() # this makes sure it is initialized  
-        if server.getAdress() in favs:
-            del self.favorites[server.getAdress()]
+        if server.getaddress() in favs:
+            del self.favorites[server.getaddress()]
             self.saveFavorites()
             
     def remove_buddy(self, name):
@@ -189,8 +189,8 @@ class FileManager(object):
         @param server - the server object to be removed
         """
         recents = self.getRecentServers() # this makes sure it is initialized  
-        if server.getAdress() in recents.keys():
-            del self.recentservers[server.getAdress()]
+        if server.getaddress() in recents.keys():
+            del self.recentservers[server.getaddress()]
             self.saveRecentServers()
             
             
@@ -211,12 +211,12 @@ class FileManager(object):
         @param server - the server object to add
         """
         recent_servers = self.getRecentServers()
-        if server.getAdress() not in self.recentservers:
+        if server.getaddress() not in self.recentservers:
             server.setConnections(1)
-            self.recentservers[server.getAdress()] = server
+            self.recentservers[server.getaddress()] = server
         else:
             
-            existing_entry = recent_servers[server.getAdress()] 
+            existing_entry = recent_servers[server.getaddress()] 
             conns = existing_entry.getConnections()
             conns += 1
             existing_entry.setConnections(conns)
@@ -258,7 +258,7 @@ class FileManager(object):
         Get the Recent Servers. If already loaded from file, return the instance from
         memory, otherwise load from file. 
         
-        @return dict of server objects (key = adress)
+        @return dict of server objects (key = address)
         """
         if self.recentservers:
             return self.recentservers
@@ -280,7 +280,7 @@ class FileManager(object):
             server.setConnections(int(serverinfo[3]))
             server.setLastConnect(serverinfo[4])
             server.setName(serverinfo[5])
-            self.recentservers[server.getAdress()] = server
+            self.recentservers[server.getaddress()] = server
         fobj.close()
         
         return self.recentservers        

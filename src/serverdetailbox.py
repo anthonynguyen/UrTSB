@@ -89,8 +89,8 @@ class ServerDetailBox(gtk.HBox):
         table = gtk.Table(5,2)
         infobox.pack_start(table)
         
-        adresslabel = gtk.Label('Adress:')
-        adresslabel.set_alignment(xalign=0, yalign=0.5)
+        addresslabel = gtk.Label('Address:')
+        addresslabel.set_alignment(xalign=0, yalign=0.5)
         
         playerslabel = gtk.Label('Players:')
         playerslabel.set_alignment(xalign=0, yalign=0.5)
@@ -107,8 +107,8 @@ class ServerDetailBox(gtk.HBox):
         passlabel = gtk.Label('needs Password:')
         passlabel.set_alignment(xalign=0, yalign=0.5)
         
-        self.adressvaluelabel = gtk.Label()
-        self.adressvaluelabel.set_alignment(xalign=0, yalign=0.5)
+        self.addressvaluelabel = gtk.Label()
+        self.addressvaluelabel.set_alignment(xalign=0, yalign=0.5)
         
         self.playersvaluelabel = gtk.Label()
         self.playersvaluelabel.set_alignment(xalign=0, yalign=0.5)
@@ -125,7 +125,7 @@ class ServerDetailBox(gtk.HBox):
         self.passvaluelabel = gtk.Label()
         self.passvaluelabel.set_alignment(xalign=0, yalign=0.5)
         
-        table.attach(adresslabel, 0,1,0,1 )
+        table.attach(addresslabel, 0,1,0,1 )
         table.attach(playerslabel, 0,1,1,2)
         table.attach(maplabel, 0,1,2,3)
         table.attach(gametypelabel, 0,1,3,4)
@@ -133,7 +133,7 @@ class ServerDetailBox(gtk.HBox):
         table.attach(passlabel, 0,1,5,6)
         
         
-        table.attach(self.adressvaluelabel, 1,2,0,1 )
+        table.attach(self.addressvaluelabel, 1,2,0,1 )
         table.attach(self.playersvaluelabel, 1,3,1,2)
         table.attach(self.mapvaluelabel, 1,2,2,3)
         table.attach(self.gametypevaluelabel, 1,2,3,4)
@@ -152,7 +152,7 @@ class ServerDetailBox(gtk.HBox):
         #detailstable
         self.current_server = server
         self.namelabel.set_markup('<b>' + glib.markup_escape_text(server.getName()) + '</b>')
-        self.adressvaluelabel.set_text(server.getAdress())
+        self.addressvaluelabel.set_text(server.getaddress())
         self.mapvaluelabel.set_text(server.getMap())
         self.gametypevaluelabel.set_text(server.getGameTypeName())
         self.playersvaluelabel.set_text(server.getPlayerString())

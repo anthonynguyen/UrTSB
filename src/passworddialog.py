@@ -51,7 +51,7 @@ class PasswordDialog(gtk.Dialog):
         #content area
         desc_label = gtk.Label('The server you are trying to connect needs a password')
         namelabel = gtk.Label('Servername: ' + server.getName())
-        adresslabel = gtk.Label('Serveradress: ' + server.getAdress())
+        addresslabel = gtk.Label('Serveraddress: ' + server.getaddress())
         self.passentry = gtk.Entry()
         self.passentry.set_visibility(False)
         self.passentry.set_text(server.getPassword())
@@ -59,7 +59,7 @@ class PasswordDialog(gtk.Dialog):
         
         self.vbox.pack_start(desc_label, False, False)
         self.vbox.pack_start(namelabel, False, False)
-        self.vbox.pack_start(adresslabel, False, False)
+        self.vbox.pack_start(addresslabel, False, False)
         self.vbox.pack_start(self.passentry, False, False)
         self.vbox.pack_start(self.remembercheckbutton, False, False)
         

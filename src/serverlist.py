@@ -27,7 +27,7 @@ class ServerList(gtk.ScrolledWindow):
     to display the columns
     - needs pw
     - servername
-    - adress
+    - address
     - ping 
     - cur/max players
     - current map
@@ -63,7 +63,7 @@ class ServerList(gtk.ScrolledWindow):
         
         self.column_number = gtk.TreeViewColumn('PW')
         self.column_name = gtk.TreeViewColumn('Servername')
-        self.column_adress = gtk.TreeViewColumn('Adress')
+        self.column_address = gtk.TreeViewColumn('Address')
         self.column_ping = gtk.TreeViewColumn('Ping')
         self.column_player = gtk.TreeViewColumn('Players')
         self.column_map = gtk.TreeViewColumn('Map')
@@ -78,9 +78,9 @@ class ServerList(gtk.ScrolledWindow):
         self.column_name.set_expand(True)
         self.column_name.set_fixed_width(250)
         
-        self.column_adress.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        self.column_adress.set_expand(True)
-        self.column_adress.set_fixed_width(75)
+        self.column_address.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_address.set_expand(True)
+        self.column_address.set_fixed_width(75)
                 
         self.column_ping.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
         self.column_ping.set_expand(True)
@@ -100,7 +100,7 @@ class ServerList(gtk.ScrolledWindow):
         
         self.serverlistview.append_column(self.column_number)
         self.serverlistview.append_column(self.column_name)
-        self.serverlistview.append_column(self.column_adress)
+        self.serverlistview.append_column(self.column_address)
         self.serverlistview.append_column(self.column_ping)
         self.serverlistview.append_column(self.column_player)
         self.serverlistview.append_column(self.column_map)
@@ -116,7 +116,7 @@ class ServerList(gtk.ScrolledWindow):
         
         self.column_number.pack_start(cell0, expand=False)
         self.column_name.pack_start(cell1, expand=True)
-        self.column_adress.pack_start(cell2, expand=False)
+        self.column_address.pack_start(cell2, expand=False)
         self.column_ping.pack_start(cell3, expand=False)
         self.column_player.pack_start(cell4, expand=False)
         self.column_map.pack_start(cell5, expand=False)
@@ -124,14 +124,14 @@ class ServerList(gtk.ScrolledWindow):
         
         self.column_number.add_attribute(cell0, 'pixbuf', 0)
         self.column_name.add_attribute(cell1, 'text', 1)  
-        self.column_adress.add_attribute(cell2, 'text', 2)
+        self.column_address.add_attribute(cell2, 'text', 2)
         self.column_ping.add_attribute(cell3, 'text', 3)
         self.column_player.add_attribute(cell4, 'text', 4)
         self.column_map.add_attribute(cell5, 'text', 5)
         self.column_gametype.add_attribute(cell6, 'text',6)
         
         self.column_name.set_clickable(True)
-        self.column_adress.set_clickable(True)
+        self.column_address.set_clickable(True)
         self.column_ping.set_clickable(True)
         self.column_player.set_clickable(True)
         self.column_map.set_clickable(True)
@@ -139,7 +139,7 @@ class ServerList(gtk.ScrolledWindow):
         
         
         self.column_name.connect('clicked', self.on_table_column_clicked, 1)  
-        self.column_adress.connect('clicked', self.on_table_column_clicked, 2)
+        self.column_address.connect('clicked', self.on_table_column_clicked, 2)
         self.column_ping.connect('clicked', self.on_table_column_clicked, 3)
         self.column_player.connect('clicked', self.on_table_column_clicked, 4)
         self.column_map.connect('clicked', self.on_table_column_clicked, 5)
@@ -149,7 +149,7 @@ class ServerList(gtk.ScrolledWindow):
         
         self.column_number.set_reorderable(True)
         self.column_name.set_reorderable(True)  
-        self.column_adress.set_reorderable(True)
+        self.column_address.set_reorderable(True)
         self.column_ping.set_reorderable(True)
         self.column_player.set_reorderable(True)
         self.column_map.set_reorderable(True)
@@ -171,7 +171,7 @@ class ServerList(gtk.ScrolledWindow):
         Reset all sort indicators of the table headers
         """
         self.column_name.set_sort_indicator(False)  
-        self.column_adress.set_sort_indicator(False)
+        self.column_address.set_sort_indicator(False)
         self.column_ping.set_sort_indicator(False)
         self.column_player.set_sort_indicator(False)
         self.column_map.set_sort_indicator(False)
@@ -231,7 +231,7 @@ class ServerList(gtk.ScrolledWindow):
                 needpw = self.lock_pixbuf
             else:
                 needpw = self.not_locked_pixbuf # just leave the cell blank if no pw required
-        self.liststore.append([needpw, server.getName(), server.getAdress()
+        self.liststore.append([needpw, server.getName(), server.getaddress()
                             , server.getPing(), server.getPlayerString()
                             , server.getMap(), server.getGameTypeName()
                             , server]) 

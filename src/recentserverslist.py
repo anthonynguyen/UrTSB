@@ -108,7 +108,7 @@ class RecentServersList(ServerList):
             else:
                 needpw = '' # just leave the cell blank if no pw required
         
-        self.liststore.append([needpw, server.getName(), server.getAdress()
+        self.liststore.append([needpw, server.getName(), server.getaddress()
                             , server.getPing(), server.getPlayerString()
                             , server.getMap(), server.getGameTypeName()
                             , server, server.getConnections(), server.getLastConnect()]) 

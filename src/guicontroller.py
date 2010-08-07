@@ -248,7 +248,7 @@ class GuiController(object):
         
         #build the connect parameters
         #format of the commandline command:
-        #urbanterror + connect <adress> + password <pw>
+        #urbanterror + connect <address> + password <pw>
         
         #get the executablename, the path and the additional commands
         #from the configuration
@@ -257,7 +257,7 @@ class GuiController(object):
         path = config['path_to_executable']
         additionalcommands = config['additional_commands']
                 
-        cmd = path + executable + ' + connect ' + server.getAdress()
+        cmd = path + executable + ' + connect ' + server.getaddress()
         if server.needsPassword():
             cmd = cmd + ' + password ' + server.getPassword()
             if server.getRememberPassword():

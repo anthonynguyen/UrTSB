@@ -42,17 +42,17 @@ class ServerManager(object):
         a Server instance in the dict return this instance, otherwise create
         a new instance and put it in the dict and then return this instance.
         
-        @param host - the hostadress/ip of the server (str)
+        @param host - the hostaddress/ip of the server (str)
         @param port - the port of the server (int)
         
         @return instance of Server class
         """
-        #concatenate host and port to adressstring that is used as the dict key
-        adress = host+':'+str(port)        
-        if adress in self.servers:
-            return self.servers[adress]
+        #concatenate host and port to addressstring that is used as the dict key
+        address = host+':'+str(port)        
+        if address in self.servers:
+            return self.servers[address]
         server = Server(host, port)
-        self.servers[adress] = server
+        self.servers[address] = server
         return server
         
         
