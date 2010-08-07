@@ -256,7 +256,7 @@ class Q3ServerQuery(object):
         response = None
         
         
-        for retries in range(3):
+        for retries in range(1):
         
             time_start = time.time() # start time measurement (pinging)       
             try:
