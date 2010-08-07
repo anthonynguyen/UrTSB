@@ -199,6 +199,11 @@ class ServerListFilter(gtk.HBox):
         self.checkbox_hide_non_responsive.set_active(True)
         self.checkbox_hide_passworded.set_active(True)
         
+        
+        self.checkbox_showfull.set_active(False)
+        self.checkbox_showempty.set_active(False)
+        
+        
     def on_reset_clicked(self, button):
         """
         Callback for reset the values of the filter to defaults
