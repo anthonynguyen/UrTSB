@@ -18,6 +18,7 @@
 #
 
 import gtk
+from guicontroller import GuiController
 
 class AddBuddyDialog(gtk.Dialog):
     """
@@ -25,13 +26,15 @@ class AddBuddyDialog(gtk.Dialog):
     """
 
 
-    def __init__(self):
+    def __init__(self, parenttab):
         """
         Construct the dialog
+        
+        @param parenttab - the tab which started this dialog
         """
         gtk.Dialog.__init__(self, 'Server needs a password to connect!', None,\
                               gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
-        
+        self.parenttab = parenttab
     
         #buttons
         okbutton = gtk.Button('OK')
@@ -68,6 +71,8 @@ class AddBuddyDialog(gtk.Dialog):
             #get the entered name
             enteredname = self.nameentry.get_text()
             
+            gc = GuiController()
+            gc.add_name_to_buddylist(enteredname, self.parenttab)
             
             #afterwards close the dialog
             self.destroy()

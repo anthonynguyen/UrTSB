@@ -23,6 +23,7 @@ import gobject
 import os
 import thread
 from querymanager import QueryManager
+from threading import Thread
 
 
 
@@ -57,6 +58,15 @@ class GuiController(object):
         """
         fm = FileManager()
         fm.removeFavorite(server)
+     
+    def remove_buddy(self, name):
+        """
+        Removes a name from the buddylist
+        
+        @param name - the name to be removed from the buddylist
+        """ 
+        fm = FileManager()
+        thread.start_new_thread(fm.remove_buddy ,(name,)) 
         
     def removeRecent(self, server):
         """
@@ -90,6 +100,16 @@ class GuiController(object):
         thread.start_new_thread(self.loadMasterServerList
                                 ,(serverlistfilter
                                 ,tab)) 
+        
+    def execute_buddies_loading(self, tab):
+        """
+        Starts executing the loading of the buddies
+        
+        @tab the tab requesting the buddylist        
+        """
+        tab.clear_buddy_list()
+        thread.start_new_thread(self.load_buddies, (tab,))
+        
         
     def executeFavoritesLoading(self, tab):
         """
@@ -138,6 +158,33 @@ class GuiController(object):
         """
         self.window = window     
 
+    def load_buddies(self, tab):
+        """
+        Loads the buddylist and append the values to the treeview on the 
+        passed tab 
+        
+        @param tab - the tab requesting the buddylist
+        """
+        fm = FileManager()
+        buddylist = fm.get_buddies()
+        for name in buddylist:
+            gobject.idle_add(tab.append_buddy_to_list, name)
+
+    
+    def add_name_to_buddylist(self, name, tab):
+        """
+        Adds a new name to the buddylist
+        
+        @param name = name to add to the buddylist
+        """
+        fm = FileManager()
+        buddylist = fm.get_buddies()
+        buddylist.append(name)
+        t = Thread(target=fm.save_buddies)
+        t.setDaemon(True)
+        t.start()
+        tab.append_buddy_to_list(name)
+        
 
     def loadFavorites(self, tab):
         """

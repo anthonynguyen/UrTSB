@@ -173,13 +173,13 @@ class BuddiesTab(gtk.VBox):
 
         scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         
-        buddylistview = gtk.TreeView(model=self.buddyliststore)
-        buddylistview.show()
-        buddylistview.set_headers_clickable(True)
-        scrolled_window.add(buddylistview)
+        self.buddylistview = gtk.TreeView(model=self.buddyliststore)
+        self.buddylistview.show()
+        self.buddylistview.set_headers_clickable(True)
+        scrolled_window.add(self.buddylistview)
         
         column_buddyname = gtk.TreeViewColumn('Buddy')
-        buddylistview.append_column(column_buddyname)
+        self.buddylistview.append_column(column_buddyname)
         
         column_buddyname.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
         
@@ -190,7 +190,7 @@ class BuddiesTab(gtk.VBox):
         
         player_cell0=gtk.CellRendererText()
         
-        column_buddyname.pack_start(player_cell0, expand=True)
+        column_buddyname.pack_start(player_cell0, expand=False)
         
         column_buddyname.add_attribute(player_cell0, 'text', 0)
         
@@ -202,6 +202,7 @@ class BuddiesTab(gtk.VBox):
         
         
         remove_button = gtk.Button('Remove Selected')
+        remove_button.connect("clicked", self.on_remove_buddy_clicked)
         
         buttonbox.pack_start(add_button, True, True)
         buttonbox.pack_start(remove_button, True, True)
@@ -215,5 +216,32 @@ class BuddiesTab(gtk.VBox):
         Callback for the add buddy button. Opens the dialog
         to add a buddy
         """
-        add_dialog = AddBuddyDialog()
+        add_dialog = AddBuddyDialog(self)
         add_dialog.run()
+        
+    def clear_buddy_list(self):
+        """
+        Clears the buddylist
+        """
+        self.buddyliststore.clear()
+        
+    def append_buddy_to_list(self, buddyname):
+        """
+        Appends an entry to the buddylist treeview/liststore
+        
+        @param buddyname name of the biddy to be added to the liststore
+        """
+        self.buddyliststore.append([buddyname])
+        
+    def on_remove_buddy_clicked(self, widget):
+        """
+        Callback for the remove buddy button
+        """
+        selection = self.buddylistview.get_selection()
+        result = selection.get_selected()
+        if result: 
+            iter = result[1]
+            name_to_remove = self.buddyliststore.get_value(iter, 0)
+            gc = GuiController()
+            gc.remove_buddy(name_to_remove)
+            self.buddyliststore.remove(iter)

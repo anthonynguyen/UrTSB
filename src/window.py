@@ -119,6 +119,10 @@ class Window():
         #these tabs 
         gc = GuiController()
         if 1 == page_num: #favorites
-            gc.loadFavorites(self.favoritestab)
+            #gc.loadFavorites(self.favoritestab)
+            gc.executeFavoritesLoading(self.favoritestab)
         if 2 == page_num: #recent server
-            gc.loadRecentServer(self.recenttab)
+            #gc.loadRecentServer(self.recenttab)
+            gc.executeRecentServersLoading(self.recenttab)
+        if 3 == page_num: #buddies tab
+            gc.execute_buddies_loading(self.buddiestab)

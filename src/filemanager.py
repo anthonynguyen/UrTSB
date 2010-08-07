@@ -37,11 +37,13 @@ class FileManager(object):
     favorites = None
     recentservers = None
     configuration = None
+    buddies = None
     
     #filenames
     conf_file = 'urtsb.cfg'
     fav_file = 'favorites.srv'
     rec_file = 'recent.srv'
+    buddies_file = 'buddies.cfg'
 
     def __init__(self):
         """
@@ -66,7 +68,46 @@ class FileManager(object):
             self.fav_file = self.configfolder+self.fav_file
             self.rec_file = self.configfolder+self.rec_file
             self.conf_file = self.configfolder+self.conf_file
-           
+            self.buddies_file = self.configfolder+self.buddies_file
+    
+    
+    def get_buddies(self):
+        """
+        Get the list of buddies (names or part of names). If already loaded 
+        from file the instance from memory is returned, otherwise it is fresh 
+        loaded from the file.
+        
+        @return list of server names
+        """
+        if self.buddies:
+            return self.buddies
+        
+        self.buddies = []
+        
+        fobj = None
+        try:
+            fobj = open(self.buddies_file, "r") 
+        except IOError:
+            #the file does not exist! just return the empty list created earlier
+            return self.buddies
+        
+        for line in fobj: 
+            line = line.strip('\n')
+            self.buddies.append(line)
+        fobj.close()
+        return self.buddies
+        
+    def save_buddies(self):
+        """
+        Writes the list of buddies to the buddies file.
+        """
+        fobj = open(self.buddies_file, "w") 
+        for name in self.buddies:
+            
+            #format: one name on every line
+            fobj.write(name + '\n')
+        fobj.close()
+        
     
     def getFavorites(self):
         """
@@ -126,6 +167,19 @@ class FileManager(object):
         if server.getAdress() in favs:
             del self.favorites[server.getAdress()]
             self.saveFavorites()
+            
+    def remove_buddy(self, name):
+        """
+        Removes a name from the buddylist and immediately persists this change
+        to the list into the buddylist file.
+        
+        @param name - the name to be removed
+        """
+        for i in range(len(self.buddies)):
+            if name == self.buddies[i]:
+                del self.buddies[i]
+                break # already found the name to delete, so we can stop the loop
+        self.save_buddies()
             
     def removeRecentServer(self, server):
         """
