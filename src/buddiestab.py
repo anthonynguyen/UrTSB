@@ -52,7 +52,7 @@ class BuddiesTab(gtk.VBox):
         serverlistbox = gtk.VBox()
         mainbox.pack_start(serverlistbox)
         
-        self.filter = BuddiesFilter()
+        self.filter = BuddiesFilter(self)
         self.filter.show()
         
         serverlistbox.pack_start(self.filter, False, False)
@@ -68,7 +68,7 @@ class BuddiesTab(gtk.VBox):
         serverlistbox.pack_start(self.statusbar, False, False)
         
         # serverlist window
-        self.serverlist = ServerList()
+        self.serverlist = ServerList(self)
         paned.pack1(self.serverlist, True, False)
         #paned.add1(self.serverlist)
         
@@ -245,3 +245,36 @@ class BuddiesTab(gtk.VBox):
             gc = GuiController()
             gc.remove_buddy(name_to_remove)
             self.buddyliststore.remove(iter)
+            
+    def addServer(self, server):
+        """
+        Add a server to the listview/store.
+        Called by the guicontroller.
+        """
+        self.serverlist.addServer(server)
+    
+    def clearServerList(self):
+        """
+        Clears the listview
+        """
+        self.serverlist.clear()
+   
+    def setServerdetails(self, server):
+        """
+        Updates the Serverdetails if a server was selected in the serverlist.
+        Flow: Buttonclick->callback->guicontroller->this method
+        """
+        self.playerlist.clear()
+        
+        for player in server.getPlayerList():
+            self.playerlist.addPlayer(player)
+            
+        self.detailsbox.setServerDetails(server) 
+        
+    def serverlist_loading_finished(self):
+        """
+        Callback method executed when the search has finished
+        """
+        #reactivate the search button
+        self.filter.search_button.set_sensitive(True)
+        self.filter.playersearchbutton.set_sensitive(True) 

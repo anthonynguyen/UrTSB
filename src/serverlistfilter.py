@@ -216,3 +216,13 @@ class ServerListFilter(gtk.HBox):
         
         guicontroller = GuiController()
         guicontroller.executeMasterServerQuery(self, self.parent)    
+    
+    def get_filter_name(self):
+        """
+        Returns a string to identify this filter
+        
+        @return identificationstring of this filter
+        """
+        return 'serverlistfilter' 
+    
+    

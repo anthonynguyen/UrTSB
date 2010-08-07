@@ -20,6 +20,7 @@
 from guicontroller import GuiController
 
 import gtk
+from filemanager import FileManager
 
 
 
@@ -30,11 +31,13 @@ class BuddiesFilter(gtk.HBox):
     """
 
 
-    def __init__(self):
+    def __init__(self, parenttab):
         """
         Constructor
         """
-        gtk.HBox.__init__(self)  
+        gtk.HBox.__init__(self) 
+        
+        self.parenttab = parenttab 
         
         # not for displayreason, but for not to differ filtertypes when 
         # passing the filter to the querymethod
@@ -48,19 +51,19 @@ class BuddiesFilter(gtk.HBox):
         addbox = gtk.HBox()
         self.pack_start(addbox, False, False)
         
-        add_fav_label = gtk.Label('Enter a playername and press search: ')
-        self.addentry = gtk.Entry()
-        self.addentry.set_width_chars(40)
-        addbutton = gtk.Button('Search for Player')
-        addbox.pack_start(add_fav_label, False, False)
-        addbox.pack_start(self.addentry, False, False)
-        addbox.pack_start(addbutton, False, False)
-        #addbutton.connect("clicked", self.on_add_clicked)
+        add_desc_label = gtk.Label('Enter a playername and press search: ')
+        self.playersearch_entry = gtk.Entry()
+        self.playersearch_entry.set_width_chars(40)
+        self.playersearchbutton = gtk.Button('Search for Player')
+        addbox.pack_start(add_desc_label, False, False)
+        addbox.pack_start(self.playersearch_entry, False, False)
+        addbox.pack_start(self.playersearchbutton, False, False)
+        self.playersearchbutton.connect("clicked", self.on_search_player_clicked)
         
         
         self.search_button = gtk.Button('Search for Buddies')
         self.pack_end(self.search_button, False, False)
-        #self.refresh_button.connect("clicked", self.on_search_clicked)
+        self.search_button.connect("clicked", self.on_search_buddies_clicked)
     
         self.show_all()
         
@@ -68,14 +71,35 @@ class BuddiesFilter(gtk.HBox):
         """
         Callback of the player search button
         """
+        self.search_button.set_sensitive(False)
+        self.playersearchbutton.set_sensitive(False)
+        
+        name2search = self.playersearch_entry.get_text()
+        self.searchname_list = []
+        self.searchname_list.append(name2search)
+        
+        gc = GuiController()
+        gc.executeMasterServerQuery(self, self.parenttab) 
       
     def on_search_buddies_clicked(self, widget):
         """
         Callback of the search buddies button
         """
-        self.refresh_button.set_sensitive(False)  
+        self.search_button.set_sensitive(False)
+        self.playersearchbutton.set_sensitive(False)
         
-        guicontroller = GuiController()
-          
+        fm = FileManager()
+        fm.get_buddies()
+        self.searchname_list = fm.get_buddies() 
         
+        gc = GuiController()
+        gc.executeMasterServerQuery(self, self.parenttab) 
+        
+    def get_filter_name(self):
+        """
+        Returns a string to identify this filter
+        
+        @return identificationstring of this filter
+        """
+        return 'buddiesfilter' 
    

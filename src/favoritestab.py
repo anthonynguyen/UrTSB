@@ -59,7 +59,7 @@ class FavoritesTab(gtk.VBox):
         self.pack_start(self.statusbar, False, False)
         
         # serverlist window
-        self.serverlist = ServerList()
+        self.serverlist = ServerList(self)
         paned.pack1(self.serverlist, True, False)
         #paned.add1(self.serverlist)
         

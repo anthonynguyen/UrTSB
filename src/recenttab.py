@@ -60,7 +60,7 @@ class RecentTab(gtk.VBox):
         self.pack_start(self.statusbar, False, False)
         
         # serverlist window
-        self.serverlist = RecentServersList()
+        self.serverlist = RecentServersList(self)
         paned.pack1(self.serverlist, True, False)
         #paned.add1(self.serverlist)
         

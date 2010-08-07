@@ -34,11 +34,13 @@ class ServerList(gtk.ScrolledWindow):
     """
 
 
-    def __init__(self):
+    def __init__(self, parenttab):
         """
         Constructor
         """
         gtk.ScrolledWindow.__init__(self)
+        
+        self.parenttab = parenttab
         
         self.liststore = gtk.ListStore(str, str, str, int, str, str, str, object)
         
@@ -205,7 +207,7 @@ class ServerList(gtk.ScrolledWindow):
             row =  model[paths[0][0]]
             server = row[7]
             guicontroller = GuiController()
-            guicontroller.setDetailServer(server, self.parent.parent)
+            guicontroller.setDetailServer(server, self.parenttab)
             #thread.start_new_thread(self.updateServerStatus, (server,))
         
     def addServer(self, server):

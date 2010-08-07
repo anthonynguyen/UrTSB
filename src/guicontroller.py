@@ -101,6 +101,7 @@ class GuiController(object):
                                 ,(serverlistfilter
                                 ,tab)) 
         
+        
     def execute_buddies_loading(self, tab):
         """
         Starts executing the loading of the buddies

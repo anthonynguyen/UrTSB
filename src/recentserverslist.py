@@ -28,11 +28,11 @@ class RecentServersList(ServerList):
     """
 
 
-    def __init__(self):
+    def __init__(self, parenttab):
         """
         Constructor
         """
-        ServerList.__init__(self)
+        ServerList.__init__(self, parenttab)
         
         self.liststore = gtk.ListStore(str, str, str, int, str, str, str, object, int, str)
         

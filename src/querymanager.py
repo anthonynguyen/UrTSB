@@ -24,6 +24,7 @@ import gobject
 import threading
 
 
+
 class QueryManager(object):
     """
     Implements handling multiple threads used to speed up serverqueries
@@ -305,7 +306,57 @@ class QueryManager(object):
         
         if not filter: # no filter passed
             return False
+        elif filter.get_filter_name() == 'serverlistfilter':
+            return self.apply_serverlist_filter(server, filter)
+        elif filter.get_filter_name() == 'buddiesfilter':
+            return self.apply_buddies_filter(server, filter)
+        else:
+            return True #unknown filter don't filter the server
         
+    def apply_buddies_filter(self, server, filter):
+        """
+        Checks if the players of the found server matches one of the names in 
+        the searchlist
+        
+        @param server - the server to apply the filter
+        @param filter - the buddy search filter to apply
+        
+        @return false - if this server should not be displayed (means no player
+                        on this server matches the buddylist), otherwise 
+                        returnvalue is true 
+        """
+        
+        namefilters = filter.searchname_list
+        playerlist = server.getPlayerList()
+        
+        #if there are no players on the server return true to hide the server
+        if len(playerlist) == 0:
+            return True
+        
+        for player in playerlist:
+            for name in namefilters:
+                #we want also partial matches e.g. when searching for a clantag
+                count = player.getName().find(name)
+                if not count == -1:
+                    #a match! return False, so that the server will be displayed
+                    #on the serverlist
+                    return False
+        #if the iteration returns no match, return True so that the server
+        #will be hidden
+        return True
+        
+       
+        
+    def apply_serverlist_filter(self, server, filter):
+        """
+        This methods checks if the filters specified by the passed 
+        serverlistfilter object matches the passed server.
+        
+        @param server - server object to be checked against the filter
+        @param filter - filter to be applied
+        
+        @param true if server should be hided, otherwise false
+        """
         # hide non responsove servers 
         if (server.getPing() == 999) \
                            and filter.checkbox_hide_non_responsive.get_active():
@@ -344,3 +395,5 @@ class QueryManager(object):
    
         #no filtermatch so far, return false which results in displaying the server
         return False
+    
+        
