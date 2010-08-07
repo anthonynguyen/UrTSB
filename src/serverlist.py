@@ -17,8 +17,9 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import gtk
 from guicontroller import GuiController
+import gtk
+import sys
 
 class ServerList(gtk.ScrolledWindow):
     """
@@ -39,10 +40,16 @@ class ServerList(gtk.ScrolledWindow):
         Constructor
         """
         gtk.ScrolledWindow.__init__(self)
+        lock_image = gtk.Image()
+        lock_image.set_from_file(sys.path[0] + '/lock.png')
+        self.lock_pixbuf = lock_image.get_pixbuf()
+        
+        not_locked = gtk.Image()
+        self.not_locked_pixbuf = not_locked.get_pixbuf()
         
         self.parenttab = parenttab
         
-        self.liststore = gtk.ListStore(str, str, str, int, str, str, str, object)
+        self.liststore = gtk.ListStore(gtk.gdk.Pixbuf, str, str, int, str, str, str, object)
         
        
         self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -54,7 +61,7 @@ class ServerList(gtk.ScrolledWindow):
         
         
         
-        self.column_number = gtk.TreeViewColumn('needs PW')
+        self.column_number = gtk.TreeViewColumn('PW')
         self.column_name = gtk.TreeViewColumn('Servername')
         self.column_adress = gtk.TreeViewColumn('Adress')
         self.column_ping = gtk.TreeViewColumn('Ping')
@@ -64,8 +71,8 @@ class ServerList(gtk.ScrolledWindow):
         
         #sizing
         self.column_number.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        self.column_number.set_expand(True)
-        self.column_number.set_fixed_width(15)
+        self.column_number.set_expand(False)
+        self.column_number.set_fixed_width(30)
         
         self.column_name.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
         self.column_name.set_expand(True)
@@ -99,7 +106,7 @@ class ServerList(gtk.ScrolledWindow):
         self.serverlistview.append_column(self.column_map)
         self.serverlistview.append_column(self.column_gametype)
         
-        cell0=gtk.CellRendererText()
+        cell0=gtk.CellRendererPixbuf()
         cell1=gtk.CellRendererText()
         cell2=gtk.CellRendererText()
         cell3=gtk.CellRendererText()
@@ -115,7 +122,7 @@ class ServerList(gtk.ScrolledWindow):
         self.column_map.pack_start(cell5, expand=False)
         self.column_gametype.pack_start(cell6, expand=False)
         
-        self.column_number.add_attribute(cell0, 'text', 0)
+        self.column_number.add_attribute(cell0, 'pixbuf', 0)
         self.column_name.add_attribute(cell1, 'text', 1)  
         self.column_adress.add_attribute(cell2, 'text', 2)
         self.column_ping.add_attribute(cell3, 'text', 3)
@@ -218,12 +225,12 @@ class ServerList(gtk.ScrolledWindow):
         """
         
         # map needsPassword boolean to a String
-        needpw = '-' # default for don't know 
+        needpw = self.not_locked_pixbuf  # default for don't know 
         if server.needsPassword() != None:
             if server.needsPassword():
-                needpw = 'yes'
+                needpw = self.lock_pixbuf
             else:
-                needpw = '' # just leave the cell blank if no pw required
+                needpw = self.not_locked_pixbuf # just leave the cell blank if no pw required
         self.liststore.append([needpw, server.getName(), server.getAdress()
                             , server.getPing(), server.getPlayerString()
                             , server.getMap(), server.getGameTypeName()
