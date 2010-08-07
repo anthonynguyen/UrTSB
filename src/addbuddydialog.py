@@ -32,7 +32,7 @@ class AddBuddyDialog(gtk.Dialog):
         
         @param parenttab - the tab which started this dialog
         """
-        gtk.Dialog.__init__(self, 'Server needs a password to connect!', None,\
+        gtk.Dialog.__init__(self, 'Add Buddy', None,\
                               gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
         self.parenttab = parenttab
     
