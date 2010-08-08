@@ -29,6 +29,8 @@ class Player(object):
         self.ping = int(ping)
         
     def getName(self):
+        if 0 == len(self.name):
+            return 'UnamedPlayer'
         return self.name
     
     def getKills(self):
