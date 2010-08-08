@@ -19,6 +19,7 @@
 
 from addbuddydialog import AddBuddyDialog
 from buddiesfilter import BuddiesFilter
+from filemanager import FileManager, cfgkey
 from guicontroller import GuiController
 from passworddialog import PasswordDialog
 from playerlist import PlayerList
@@ -271,7 +272,11 @@ class BuddiesTab(gtk.VBox):
             
         self.detailsbox.setServerDetails(server) 
         # update row in list
-        self.serverlist.update_selected_row(server)
+        # but only if the corresponding option is True
+        fm = FileManager()
+        config = fm.getConfiguration()
+        if 'True' == config[cfgkey.OPT_UPDATE_SL_ROW]: 
+            self.serverlist.update_selected_row(server)
         
     def serverlist_loading_finished(self):
         """

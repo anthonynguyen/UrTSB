@@ -30,6 +30,7 @@ class cfgkey:
         URT_EXE_PARAMS = 'additional_commands'
         OPT_SAVE_PW = 'save_passwords'
         OPT_DEFAULT_TAB = 'default_tab'
+        OPT_UPDATE_SL_ROW = 'update_serverlist_row'
 
 class FileManager(object):
     """
@@ -341,7 +342,8 @@ class FileManager(object):
         configuration[cfgkey.URT_EXE] = 'urbanterror'
         configuration[cfgkey.URT_EXE_PATH] = ''
         configuration[cfgkey.URT_EXE_PARAMS] = ''
-        configuration[cfgkey.OPT_SAVE_PW] = True
+        configuration[cfgkey.OPT_SAVE_PW] = 'True'
         configuration[cfgkey.OPT_DEFAULT_TAB] = 0
+        configuration[cfgkey.OPT_UPDATE_SL_ROW] = 'True'
 
         return configuration

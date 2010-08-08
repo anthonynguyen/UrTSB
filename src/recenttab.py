@@ -17,15 +17,16 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from filemanager import FileManager, cfgkey
 from guicontroller import GuiController
 from passworddialog import PasswordDialog
 from playerlist import PlayerList
 from recentserverfilter import RecentSeversFilter
 from recentserverslist import RecentServersList
 from serverdetailbox import ServerDetailBox
-
 from statusbar import StatusBar
 import gtk
+
 
 
 
@@ -204,7 +205,11 @@ class RecentTab(gtk.VBox):
         # set the other serverdetail            
         self.detailsbox.setServerDetails(server) 
         # update row in list
-        self.serverlist.update_selected_row(server)
+        # but only if the corresponding option is True
+        fm = FileManager()
+        config = fm.getConfiguration()
+        if 'True' == config[cfgkey.OPT_UPDATE_SL_ROW]: 
+            self.serverlist.update_selected_row(server)
         
     def serverlist_loading_finished(self):
         """
