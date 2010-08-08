@@ -162,7 +162,8 @@ class QueryManager(object):
                     #start 10 worker threads retreiving the status of 
                     #the servers in the serverqueue
                     for i in range(10):
-                        t = Thread(target=self.get_server_status_thread)
+                        name = 'Worker_' + str(i+1)
+                        t = Thread(target=self.get_server_status_thread, name=name)
                         t.setDaemon(True)
                         t.start()
                 elif message == 'finished':
@@ -215,7 +216,9 @@ class QueryManager(object):
         self.gui_lock = threading.RLock()
         with self.gui_lock:
             self.threadcount+=1
-            
+            Log.log.debug('Thread:' + threading.current_thread().name + \
+                         ' started')   
+         
         # main thread loop
         while True:
             try:
@@ -240,7 +243,12 @@ class QueryManager(object):
                 self.gui_lock = threading.RLock()
                 with self.gui_lock:
                     self.threadcount -= 1
+                    Log.log.debug('Thread:' + threading.current_thread().name + \
+                         ' finishes working and exiting')
                     if self.threadcount == 0: #last thread reached
+                        Log.log.debug('Thread:' + threading.current_thread().name + \
+                         ' notifying the coordinator thread that the queue ' \
+                         + 'processing is finished')
                         self.messageque.put('finished')
                 break
     

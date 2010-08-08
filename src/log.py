@@ -19,6 +19,7 @@
 
 
 from globals import Globals
+from logging.handlers import RotatingFileHandler
 import logging
 
 class Log(object):
@@ -37,7 +38,9 @@ class Log(object):
         log_file = Globals.configfolder + '/urtsb.log'
         Log.log = logging.getLogger('UrTSB')
         #initialize logging
-        filehandler = logging.FileHandler(log_file)
+        #rotating filehandler using a 2MB logfile and keep 5 backups
+        filehandler = RotatingFileHandler( \
+                                      log_file, maxBytes=2097152, backupCount=5)
         FORMAT='%(asctime)s\t%(levelname)s\t%(message)s'
         formatter = logging.Formatter(FORMAT)
         logging.basicConfig(format=FORMAT) 
