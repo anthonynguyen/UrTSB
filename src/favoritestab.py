@@ -164,7 +164,7 @@ class FavoritesTab(gtk.VBox):
         model, paths = selection.get_selected_rows()
         if paths:
             row =  model[paths[0][0]]
-            server = row[7]
+            server = row[8]
             guicontroller = GuiController()
             guicontroller.setDetailServer(server, self)
             
