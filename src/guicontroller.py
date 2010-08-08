@@ -17,7 +17,7 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from filemanager import FileManager
+from filemanager import FileManager, cfgkey
 from log import Log
 from q3serverquery import Q3ServerQuery
 from querymanager import QueryManager
@@ -50,6 +50,8 @@ class GuiController(object):
         
         The favorites are persisted in a CSV file.
         """
+        Log.log.debug('[GuiController] addFavorite called for server with ' \
+                      + 'adress ' + server.getaddress())
         fm = FileManager()
         fm.addFavorite(server)
         
@@ -57,15 +59,37 @@ class GuiController(object):
         """
         Removes a server from the favorites list.
         """
+        Log.log.debug('[GuiController] remove Favorite called for server with ' \
+                      + 'adress ' + server.getaddress())
         fm = FileManager()
         fm.removeFavorite(server)
-     
+
+    def add_name_to_buddylist(self, name, tab):
+        """
+        Adds a new name to the buddylist
+        
+        @param name = name to add to the buddylist
+        """
+        Log.log.debug('[GuiController] add_name_to_buddylist called for buddy ' \
+                      + 'with name ' + name)
+        
+        fm = FileManager()
+        buddylist = fm.get_buddies()
+        buddylist.append(name)
+        t = Thread(target=fm.save_buddies)
+        t.setDaemon(True)
+        t.start()
+        tab.append_buddy_to_list(name)
+          
     def remove_buddy(self, name):
         """
         Removes a name from the buddylist
         
         @param name - the name to be removed from the buddylist
         """ 
+        Log.log.debug('[GuiController] remove_buddy called for buddy with ' \
+                      + 'name ' + name)
+        
         fm = FileManager()
         thread.start_new_thread(fm.remove_buddy ,(name,)) 
         
@@ -75,6 +99,9 @@ class GuiController(object):
         
         @param server - server to be removed
         """
+        Log.log.debug('[GuiController] removeRecent called for server with ' \
+                      + 'adress ' + server.getaddress())
+        
         fm = FileManager()
         fm.removeRecentServer(server)
       
@@ -84,6 +111,8 @@ class GuiController(object):
         
         @param tab - tab requesting the action
         """
+        Log.log.debug('[GuiController] clearRecentServers called ')
+        
         fm = FileManager()
         fm.clearRecentServerList()
         tab.clearServerList()
@@ -95,7 +124,7 @@ class GuiController(object):
         @param serverlistfilter - query and filteroptions 
         @param tab - the tab on the ui that requests the serverlist
         """        
-        Log.log.debug('[GuiController] executeMasterServerQuery called...')
+        Log.log.info('[GuiController] executeMasterServerQuery called...')
         
         tab.clearServerList()
         thread.start_new_thread(self.loadMasterServerList
@@ -109,6 +138,7 @@ class GuiController(object):
         
         @tab the tab requesting the buddylist        
         """
+        Log.log.info('[GuiController] execute_buddies_loading called...')
         tab.clear_buddy_list()
         thread.start_new_thread(self.load_buddies, (tab,))
         
@@ -119,7 +149,7 @@ class GuiController(object):
         
         @tab - the tab requesting the favorites
         """
-        Log.log.debug('[GuiController] executeFavoritesLoading called...')
+        Log.log.info('[GuiController] executeFavoritesLoading called...')
         
         tab.clearServerList()
         thread.start_new_thread(self.loadFavorites, (tab,))
@@ -130,7 +160,7 @@ class GuiController(object):
         
         @tab - the tab requesting the recent servers list.
         """
-        Log.log.debug('[GuiController] executeRecentServersLoading called...')
+        Log.log.info('[GuiController] executeRecentServersLoading called...')
         tab.clearServerList()
         thread.start_new_thread(self.loadRecentServer, (tab,))
     
@@ -141,7 +171,9 @@ class GuiController(object):
         
         @param server - the server
         @param tab - the tab where the details should be set
-        """                                    
+        """     
+        Log.log.debug('[GuiController] setDetailServer called...')
+                                       
         thread.start_new_thread(self.updateServerDetails, (server, tab))
         
     def updateServerDetails(self, server, tab):
@@ -151,6 +183,7 @@ class GuiController(object):
         @param server - the server that should be updated
         @param tab - the tab requesting the updated server data
         """
+        Log.log.debug('[GuiController] updateServerDetails called...')
         query = Q3ServerQuery()
         server = query.getServerStatus(server)
         gobject.idle_add(tab.setServerdetails, server)
@@ -168,26 +201,14 @@ class GuiController(object):
         
         @param tab - the tab requesting the buddylist
         """
+        Log.log.debug('[GuiController] load_buddies called...')
         fm = FileManager()
         buddylist = fm.get_buddies()
         for name in buddylist:
             gobject.idle_add(tab.append_buddy_to_list, name)
 
     
-    def add_name_to_buddylist(self, name, tab):
-        """
-        Adds a new name to the buddylist
-        
-        @param name = name to add to the buddylist
-        """
-        fm = FileManager()
-        buddylist = fm.get_buddies()
-        buddylist.append(name)
-        t = Thread(target=fm.save_buddies)
-        t.setDaemon(True)
-        t.start()
-        tab.append_buddy_to_list(name)
-        
+
 
     def loadFavorites(self, tab):
         """
@@ -198,7 +219,7 @@ class GuiController(object):
         
         @param tab - the tab requesting the favorite servers list
         """
-
+        Log.log.debug('[GuiController] loadFavorites called...')
         tab.clearServerList()
         qm = QueryManager()
         qm.startFavoritesLoadingThread(tab)
@@ -212,7 +233,7 @@ class GuiController(object):
         
         @param tab - the tab requesting the recent server list
         """
-
+        Log.log.debug('[GuiController] loadRecentServer called...')
         tab.clearServerList()
         qm = QueryManager()
         qm.startRecentServersLoadingThread(tab)
@@ -227,7 +248,7 @@ class GuiController(object):
                                   query and filter paramters
         @tab - the tab requesting the serverlist
         """
-        
+        Log.log.debug('[GuiController] loadMasterServerList called...')
         #clear the current serverlist
         tab.clearServerList()
         
@@ -244,6 +265,7 @@ class GuiController(object):
         
         @param server - the server to connect to 
         """
+        Log.log.debug('[GuiController] connectToServer called...')
         fm = FileManager()
         
         
@@ -254,9 +276,9 @@ class GuiController(object):
         #get the executablename, the path and the additional commands
         #from the configuration
         config = fm.getConfiguration()
-        executable = config['urt_executable']
-        path = config['path_to_executable']
-        additionalcommands = config['additional_commands']
+        executable = config[cfgkey.URT_EXE]
+        path = config[cfgkey.URT_EXE_PATH]
+        additionalcommands = config[cfgkey.URT_EXE_PARAMS]
                 
         cmd = path + executable + ' + connect ' + server.getaddress()
         if server.needsPassword():

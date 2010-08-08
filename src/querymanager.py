@@ -144,6 +144,8 @@ class QueryManager(object):
                 
                 message = self.messageque.get()    
                 if message == 'start_master_server_query':
+                    Log.log.info('Thread:Coordinator - start_master_server_' \
+                                 +'query signal received')
                     # spawn the pulse progressbar thread
                     pt = Thread(target=self.pulse_progressbar_thread)
                     pt.setDaemon(True)
@@ -153,7 +155,7 @@ class QueryManager(object):
                     pt.setDaemon(True)
                     pt.start()
                 elif message == 'serverlist_loaded':
-                    Log.log.debug('Thread:Coordinator - received serverlist' \
+                    Log.log.info('Thread:Coordinator - received serverlist' \
                                   +'_loaded signal. Queuesize is ' \
                                   + str(self.serverqueue.qsize()))
                     
@@ -168,7 +170,7 @@ class QueryManager(object):
                         t.start()
                 elif message == 'finished':
                     #finish tasks :)
-                    Log.log.debug('Thread:Coordinator - received the ' \
+                    Log.log.info('Thread:Coordinator - received the ' \
                                   + 'finished signal')
                     self.gui_lock = threading.RLock()
                     with self.gui_lock:
@@ -246,7 +248,7 @@ class QueryManager(object):
                     Log.log.debug('Thread:' + threading.current_thread().name + \
                          ' finishes working and exiting')
                     if self.threadcount == 0: #last thread reached
-                        Log.log.debug('Thread:' + threading.current_thread().name + \
+                        Log.log.info('Thread:' + threading.current_thread().name + \
                          ' notifying the coordinator thread that the queue ' \
                          + 'processing is finished')
                         self.messageque.put('finished')

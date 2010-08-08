@@ -116,6 +116,10 @@ class FavoritesTab(gtk.VBox):
         
         # self.pack_start(button,False)
     def connect_button_clicked(self, widget):
+        """
+        Callback of the the connect button
+        """
+        
         gui = GuiController()
         server = self.detailsbox.current_server
         if server:
@@ -137,18 +141,18 @@ class FavoritesTab(gtk.VBox):
         
         #the current selected server displayed in the details
         server = self.detailsbox.current_server
-         
-        #remove it from the favoriteslist
-        gui = GuiController()
-        gui.removeFavorite(server)
-        
-        #remove row from liststore
-        selection = self.serverlist.serverlistview.get_selection()
-        result = selection.get_selected()
-        if result: 
-            model, iter = result
-            model.remove(iter)
-        
+        if server: 
+            #remove it from the favoriteslist
+            gui = GuiController()
+            gui.removeFavorite(server)
+            
+            #remove row from liststore
+            selection = self.serverlist.serverlistview.get_selection()
+            result = selection.get_selected()
+            if result: 
+                model, iter = result
+                model.remove(iter)
+            
        
     def onRefreshButtonClicked(self, widget):
         """

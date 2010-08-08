@@ -129,8 +129,9 @@ class BuddiesTab(gtk.VBox):
         Callback to handle adding a favorite
         """
         server = self.detailsbox.current_server
-        gui = GuiController()
-        gui.addFavorite(server)    
+        if server:
+            gui = GuiController()
+            gui.addFavorite(server)    
         
     def connect_button_clicked(self, widget):
         """
@@ -279,3 +280,4 @@ class BuddiesTab(gtk.VBox):
         #reactivate the search button
         self.filter.search_button.set_sensitive(True)
         self.filter.playersearchbutton.set_sensitive(True) 
+        

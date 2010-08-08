@@ -18,17 +18,17 @@
 #
 
 
+from buddiestab import BuddiesTab
 from favoritestab import FavoritesTab
-
+from filemanager import FileManager, cfgkey
+from guicontroller import GuiController
 from recenttab import RecentTab
 from servertab import ServerTab
 from settingstab import SettingsTab
-
-
 import gtk
-from guicontroller import GuiController
-from filemanager import FileManager
-from buddiestab import BuddiesTab
+
+
+
 
 
 
@@ -93,7 +93,7 @@ class Window():
         #set default tab
         fm = FileManager()
         config = fm.getConfiguration()
-        defaulttab = int(config['default_tab'])
+        defaulttab = int(config[cfgkey.OPT_DEFAULT_TAB])
         notebook.set_current_page(defaulttab)
         
         # add a statusbar with a progressbar inside

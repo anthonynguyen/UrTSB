@@ -17,9 +17,9 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import gtk
-from filemanager import FileManager
 from aboutdialog import AboutDialog
+from filemanager import FileManager, cfgkey
+import gtk
 
 class SettingsTab(gtk.VBox):
     """
@@ -83,11 +83,11 @@ class SettingsTab(gtk.VBox):
         fm = FileManager()
         config = fm.getConfiguration()
         
-        self.exe_entry.set_text(config['urt_executable'])
-        self.path_entry.set_text(config['path_to_executable'])
-        self.addcmd_entry.set_text(config['additional_commands'])
+        self.exe_entry.set_text(config[cfgkey.URT_EXE])
+        self.path_entry.set_text(config[cfgkey.URT_EXE_PATH])
+        self.addcmd_entry.set_text(config[cfgkey.URT_EXE_PARAMS])
         
-        defaulttab = int(config['default_tab'])
+        defaulttab = int(config[cfgkey.OPT_DEFAULT_TAB])
         if 0 == defaulttab:
             self.srvlist_radio.set_active(True)
         elif 1 == defaulttab:
@@ -175,9 +175,9 @@ class SettingsTab(gtk.VBox):
         """
         fm = FileManager()
         config = fm.getConfiguration()
-        config['urt_executable'] = self.exe_entry.get_text()
-        config['path_to_executable'] = self.path_entry.get_text()
-        config['additional_commands'] = self.addcmd_entry.get_text()
+        config[cfgkey.URT_EXE] = self.exe_entry.get_text()
+        config[cfgkey.URT_EXE_PATH] = self.path_entry.get_text()
+        config[cfgkey.URT_EXE_PARAMS] = self.addcmd_entry.get_text()
         
         defaulttab = 0
         if self.srvlist_radio.get_active():
@@ -189,7 +189,7 @@ class SettingsTab(gtk.VBox):
         elif self.buddies_radio.get_active():
             defaulttab = 3
         
-        config['default_tab'] = defaulttab
+        config[cfgkey.OPT_DEFAULT_TAB] = defaulttab
         
         
         fm.saveConfiguration()

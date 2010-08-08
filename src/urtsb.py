@@ -51,9 +51,13 @@ if __name__ == '__main__':
     
     #init global definitions:
     globals = Globals()
+    
     #init logging
-    #logging = Log(logging.INFO)
-    logging = Log(logging.DEBUG)
+    #change this line to 
+    #logging = Log(logging.DEBUG)
+    #to enable debug output
+    logging = Log(logging.INFO)
+    
     
     window = Window() # create the urtsb window
     guicontroller = GuiController() # initialize the gui controller

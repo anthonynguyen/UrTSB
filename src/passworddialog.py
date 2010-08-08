@@ -17,9 +17,10 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from filemanager import FileManager, cfgkey
 from guicontroller import GuiController
 import gtk
-from filemanager import FileManager
+
 
 class PasswordDialog(gtk.Dialog):
     """
@@ -65,7 +66,7 @@ class PasswordDialog(gtk.Dialog):
         
         fm = FileManager()
         config = fm.getConfiguration()
-        save_password = config['save_passwords']
+        save_password = config[cfgkey.OPT_SAVE_PW]
         if 'True' == save_password:
             self.remembercheckbutton.set_active(True)
         else:

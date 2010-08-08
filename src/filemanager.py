@@ -21,7 +21,15 @@ from globals import Globals
 from servermanager import ServerManager
 import time
 
-
+class cfgkey:
+        """
+        Nested class as enum like value definition of configuration keys
+        """
+        URT_EXE = 'urt_executable'
+        URT_EXE_PATH = 'path_to_executable'
+        URT_EXE_PARAMS = 'additional_commands'
+        OPT_SAVE_PW = 'save_passwords'
+        OPT_DEFAULT_TAB = 'default_tab'
 
 class FileManager(object):
     """
@@ -49,6 +57,7 @@ class FileManager(object):
     log_file = 'urtsb.log'
     
     
+                  
 
     def __init__(self):
         """
@@ -329,10 +338,10 @@ class FileManager(object):
         """
         configuration = {}
         
-        configuration['urt_executable'] = 'urbanterror'
-        configuration['path_to_executable'] = ''
-        configuration['additional_commands'] = ''
-        configuration['save_passwords'] = True
-        configuration['default_tab'] = 0
+        configuration[cfgkey.URT_EXE] = 'urbanterror'
+        configuration[cfgkey.URT_EXE_PATH] = ''
+        configuration[cfgkey.URT_EXE_PARAMS] = ''
+        configuration[cfgkey.OPT_SAVE_PW] = True
+        configuration[cfgkey.OPT_DEFAULT_TAB] = 0
 
         return configuration
