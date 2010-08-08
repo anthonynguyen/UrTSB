@@ -18,12 +18,13 @@
 #
 
 from globals import Globals
+from log import Log
 from servermanager import ServerManager
 import time
 
 class cfgkey:
         """
-        Nested class as enum like value definition of configuration keys
+        Class as enum like value definition of configuration dict keys
         """
         URT_EXE = 'urt_executable'
         URT_EXE_PATH = 'path_to_executable'
@@ -31,6 +32,25 @@ class cfgkey:
         OPT_SAVE_PW = 'save_passwords'
         OPT_DEFAULT_TAB = 'default_tab'
         OPT_UPDATE_SL_ROW = 'update_serverlist_row'
+        
+class filterkey:
+    """
+    Class as enum like value definition of filter dict keys
+    """
+    QRY_SHOW_FULL = 'query_show_full'
+    QRY_SHOW_EMPTY = 'query_show_empty'
+    FLT_HIDE_NON_RESP = 'filter_hide_non_responsive'
+    FLT_HIDE_PASSWORDED = 'filter_hide_passworded'
+    FLT_MIN_PLAYERS = 'filter_min_players'
+    FLT_MAX_PLAYERS = 'filter_max_players'
+    GT_ALL = 'gametype_all'
+    GT_BOMB = 'gametype_bomb'
+    GT_TS = 'gametype_ts'
+    GT_CTF = 'gametype_ctf'
+    GT_TDM = 'gametype_tdm'
+    GT_FTL = 'gametype_ftl'
+    GT_CAH = 'gametype_cah'
+    GT_FFA = 'gametype_ffa'
 
 class FileManager(object):
     """
@@ -49,6 +69,7 @@ class FileManager(object):
     recentservers = None
     configuration = None
     buddies = None
+    filter = None
     
     #filenames
     conf_file = 'urtsb.cfg'
@@ -56,6 +77,7 @@ class FileManager(object):
     rec_file = 'recent.srv'
     buddies_file = 'buddies.cfg'
     log_file = 'urtsb.log'
+    filter_file = 'filter.cfg'
     
     
                   
@@ -77,6 +99,7 @@ class FileManager(object):
             self.rec_file = Globals.configfolder+FileManager.rec_file
             self.conf_file = Globals.configfolder+FileManager.conf_file
             self.buddies_file = Globals.configfolder+FileManager.buddies_file
+            self.filter_file = Globals.configfolder+FileManager.filter_file
             
             #initialise ServerManager
             self.srvman = ServerManager()
@@ -150,6 +173,43 @@ class FileManager(object):
         fobj.close()
         
         return self.favorites
+    
+    def get_remembered_filter_parameters(self):
+        """
+        Load the 'remembered' filter paramters from file
+        
+        @return dict of filter settings, or none if file not found
+        """
+        
+        if self.filter: #already loaded!
+            return self.filter
+        
+        fobj = None
+        try:
+            fobj = open(self.filter_file, "r") 
+        except IOError:
+            #file not found - just return None
+            return None
+        self.filter = {}
+        for line in fobj: 
+            #format of the filter file is a key value pair on each 
+            #line separated by a '='
+            
+            key, value = line.split('=', 1)
+            self.filter[key] = value.strip('\n') #strip linebreak
+        return self.filter
+    
+    def save_filter_to_remember(self):
+        """
+        Saves the current filter parameters to the filter file
+        """
+        fobj = open(self.filter_file, "w")
+         
+        for key in self.filter:
+            value = self.filter[key]
+            #format of each line:  key=value
+            fobj.write(key+'='+str(value)+'\n')
+        fobj.close()
     
     def addFavorite(self, server):
         """
@@ -347,3 +407,33 @@ class FileManager(object):
         configuration[cfgkey.OPT_UPDATE_SL_ROW] = 'True'
 
         return configuration
+    
+    def value_as_boolean(self, value):
+        """
+        Converts a passed config value (always strings) to a boolean
+        and returns the resulting boolean value
+        
+        @param value - a str with "True" or "False" as value
+        @return the boolean representation of the string : True or False
+        """
+        if 'True' == value:
+            return True
+        elif 'False' == value:
+            return False
+        else:
+            Log.log.warn('[value_as_boolean] - value is neither "True" nor '
+                         + '"False"! value = ' + value)
+            return False #fallback
+        
+    def value_from_boolean(self, value):
+        """
+        Converts a passed boolean value to the string representation that will
+        be stored in a file
+        
+        @param value - the boolean value
+        @return "True" or "False"
+        """
+        if value:
+            return "True"
+        else:
+            return "False"
