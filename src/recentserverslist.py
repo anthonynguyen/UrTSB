@@ -17,6 +17,7 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from flagmanager import FlagManager
 from serverlist import ServerList
 import gtk
 
@@ -34,7 +35,8 @@ class RecentServersList(ServerList):
         """
         ServerList.__init__(self, parenttab)
         
-        self.liststore = gtk.ListStore(str, str, str, int, str, str, str, object, int, str)
+        self.liststore = gtk.ListStore(gtk.gdk.Pixbuf, gtk.gdk.Pixbuf, str,\
+                                      str, int, str, str, str, object, int, str)
         
         self.serverlistview.set_model(self.liststore)
         
@@ -58,8 +60,8 @@ class RecentServersList(ServerList):
         self.column_connections.pack_start(cell8, expand=False)
         self.column_lastconnection.pack_start(cell9, expand=False)
         
-        self.column_connections.add_attribute(cell8, 'text', 8)
-        self.column_lastconnection.add_attribute(cell9, 'text',9)
+        self.column_connections.add_attribute(cell8, 'text', 9)
+        self.column_lastconnection.add_attribute(cell9, 'text',10)
         
         self.column_connections.set_reorderable(True)
         self.column_lastconnection.set_reorderable(True)  
@@ -67,12 +69,12 @@ class RecentServersList(ServerList):
         self.column_connections.set_clickable(True)
         self.column_lastconnection.set_clickable(True)  
         
-        self.column_connections.connect('clicked', self.on_table_column_clicked, 8)
-        self.column_lastconnection.connect('clicked', self.on_table_column_clicked,9)
+        self.column_connections.connect('clicked', self.on_table_column_clicked, 9)
+        self.column_lastconnection.connect('clicked', self.on_table_column_clicked,10)
         
         # set intial values for sorting order and column
         self.sortorder = gtk.SORT_DESCENDING
-        self.sortcolumn = 9
+        self.sortcolumn = 10
         # and apply sorting
         self.liststore.set_sort_column_id(self.sortcolumn, self.sortorder)
         self.column_lastconnection.set_sort_order(self.sortorder)
@@ -108,13 +110,17 @@ class RecentServersList(ServerList):
             else:
                 needpw = self.not_locked_pixbuf # just leave the cell blank if no pw required
         
-        self.liststore.append([needpw, server.getName(), server.getaddress()
+        
+        flagmanager = FlagManager() 
+        flag = flagmanager.get_flag(server.get_location())
+        
+        self.liststore.append([needpw, flag, server.getName(), server.getaddress()
                             , server.getPing(), server.getPlayerString()
                             , server.getMap(), server.getGameTypeName()
                             , server, server.getConnections(), server.getLastConnect()]) 
         
         # default hardcoded sorting by last connection descending
-        self.liststore.set_sort_column_id(9, gtk.SORT_DESCENDING)
+        self.liststore.set_sort_column_id(10, gtk.SORT_DESCENDING)
         
                 
         

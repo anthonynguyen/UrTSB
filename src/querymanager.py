@@ -18,6 +18,7 @@
 #
 from Queue import Queue, Empty
 from filemanager import FileManager
+from geoip import country
 from log import Log
 from q3serverquery import Q3ServerQuery
 from threading import Thread
@@ -229,6 +230,11 @@ class QueryManager(object):
                 #perform the statusrequest
                 query = Q3ServerQuery()   
                 server = query.getServerStatus(server)
+                
+                
+                location = country(server.getHost())
+                #Log.log.info('Serverlocation: ' + location)
+                server.set_location(location)
                 
                 #add the server to the gui 
                 self.gui_lock = threading.RLock()
