@@ -18,6 +18,7 @@
 #
 from Queue import Queue, Empty
 from filemanager import FileManager
+from log import Log
 from q3serverquery import Q3ServerQuery
 from threading import Thread
 import gobject
@@ -137,6 +138,7 @@ class QueryManager(object):
         
         """
         # main thread loop
+        Log.log.debug('Thread:Coordinator started...')
         while True:
             try:
                 
@@ -151,7 +153,10 @@ class QueryManager(object):
                     pt.setDaemon(True)
                     pt.start()
                 elif message == 'serverlist_loaded':
-                    print 'queuesize = ' + str(self.serverqueue.qsize())
+                    Log.log.debug('Thread:Coordinator - received serverlist' \
+                                  +'_loaded signal. Queuesize is ' \
+                                  + str(self.serverqueue.qsize()))
+                    
                     #stop the pulsing of the progressbar
                     self.pulsemessageque.put('stop_pulse')    
                     #start 10 worker threads retreiving the status of 
@@ -162,7 +167,8 @@ class QueryManager(object):
                         t.start()
                 elif message == 'finished':
                     #finish tasks :)
-                    print 'finished'
+                    Log.log.debug('Thread:Coordinator - received the ' \
+                                  + 'finished signal')
                     self.gui_lock = threading.RLock()
                     with self.gui_lock:
                         gobject.idle_add(self.tab.serverlist_loading_finished)

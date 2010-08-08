@@ -17,11 +17,13 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from log import Log
 from player import Player
+from servermanager import ServerManager
+import logging
 import re
 import socket
 import time
-from servermanager import ServerManager
 
 
 class Q3ServerQuery(object):
@@ -42,7 +44,7 @@ class Q3ServerQuery(object):
     # all packets begins with 0xFFFFFFFF indicating a q3 OOB command
     packet_prefix = '\xff' * 4
     
-
+    
    
    
     def parseInfoResponse(self, response, server):
@@ -250,7 +252,7 @@ class Q3ServerQuery(object):
             cmd = self.packet_prefix+command 
             s.send(cmd)
         except:
-            print 'Something went wrong opening socket to ' + server.getaddress()
+            Log.log.error('Something went wrong opening socket to ' + server.getaddress())
             server.reset()
             return server
         response = None
@@ -265,7 +267,8 @@ class Q3ServerQuery(object):
             except:
                 if retries == 2:
                     # handle failure case - usually this is a timeout
-                    print server.getaddress() +  '  - timeout!' 
+                    Log.log.info('[Q3ServerQuery] '+server.getaddress() \
+                                 +' is not responding - timeout')
                     server.reset() # reset server object
         time_end = time.time() # end time measurement (pinging)
         ping = int((time_end-time_start)*1000) # calculate ping
@@ -304,6 +307,8 @@ class Q3ServerQuery(object):
                       
         @return list of server objects
         """
+        Log.log.info('[Q3ServerQuery] - start master server query')
+        
         #server manager
         srvman = ServerManager()
         self.serverlist = []
@@ -343,7 +348,9 @@ class Q3ServerQuery(object):
             else:
                 self.response.append(response)
        
-        print 'response count : ' + str(len(self.response))
+        Log.log.debug('[Q3ServerQuery] received ' \
+                    + str(len(self.response)) + ' response packets ' \
+                    + 'from master server')
        
         # parse the response 
         # packet format: all packets starts with the OOB bytes and a
@@ -369,6 +376,10 @@ class Q3ServerQuery(object):
                 self.serverlist.append(server)
          
         s.close()
+        
+        Log.log.info('[Q3ServerQuery] - finished master server query. ' \
+                     + 'returning list with ' + str(len(self.serverlist)) \
+                     + ' servers')
         return self.serverlist
         
    

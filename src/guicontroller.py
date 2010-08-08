@@ -18,12 +18,13 @@
 #
 
 from filemanager import FileManager
+from log import Log
 from q3serverquery import Q3ServerQuery
+from querymanager import QueryManager
+from threading import Thread
 import gobject
 import os
 import thread
-from querymanager import QueryManager
-from threading import Thread
 
 
 
@@ -94,7 +95,7 @@ class GuiController(object):
         @param serverlistfilter - query and filteroptions 
         @param tab - the tab on the ui that requests the serverlist
         """        
-        print 'search...'
+        Log.log.debug('[GuiController] executeMasterServerQuery called...')
         
         tab.clearServerList()
         thread.start_new_thread(self.loadMasterServerList
@@ -118,7 +119,8 @@ class GuiController(object):
         
         @tab - the tab requesting the favorites
         """
-        print 'load favs...'
+        Log.log.debug('[GuiController] executeFavoritesLoading called...')
+        
         tab.clearServerList()
         thread.start_new_thread(self.loadFavorites, (tab,))
         
@@ -128,7 +130,7 @@ class GuiController(object):
         
         @tab - the tab requesting the recent servers list.
         """
-        print 'load recent servers list...'
+        Log.log.debug('[GuiController] executeRecentServersLoading called...')
         tab.clearServerList()
         thread.start_new_thread(self.loadRecentServer, (tab,))
     
@@ -225,7 +227,6 @@ class GuiController(object):
                                   query and filter paramters
         @tab - the tab requesting the serverlist
         """
-        print 'load_serverlist'
         
         #clear the current serverlist
         tab.clearServerList()
@@ -270,7 +271,8 @@ class GuiController(object):
             
         cmd = cmd + ' ' + additionalcommands
         #finally execute the command
-        print 'launching UrT with cmd = ' + cmd
+        
+        Log.log.info('launching UrT with cmd = ' + cmd)
         os.popen(cmd) 
         
     

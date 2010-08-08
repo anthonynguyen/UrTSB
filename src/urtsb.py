@@ -19,13 +19,19 @@
 #
 
 
-import gobject
-from window import Window
+
+from globals import Globals
 from guicontroller import GuiController
-from filemanager import FileManager
+from log import Log
+from window import Window
+import gobject
+import logging
+import os
 
 
 if __name__ == '__main__':
+   
+   
    
     #gtk import stuff   
     import sys
@@ -38,9 +44,17 @@ if __name__ == '__main__':
         import gtk
         import gtk.glade
     except:
+        print 'Import GTK libraries failed!'
         sys.exit(1)
   
     gobject.threads_init() # enable threads for gtk
+    
+    #init global definitions:
+    globals = Globals()
+    #init logging
+    #logging = Log(logging.INFO)
+    logging = Log(logging.DEBUG)
+    
     window = Window() # create the urtsb window
     guicontroller = GuiController() # initialize the gui controller
     guicontroller.setWindow(window)  

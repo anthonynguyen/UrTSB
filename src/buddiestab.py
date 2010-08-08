@@ -145,13 +145,6 @@ class BuddiesTab(gtk.VBox):
             else:
                 gui.connectToServer(server)
        
-    def onAddFavButtonClicked(self, widget):   
-        """
-        Callback to adding the selected server to the favorites
-        """
-        server = self.detailsbox.current_server
-        gui = GuiController()
-        gui.addFavorite(server)
        
     def onRefreshButtonClicked(self, widget):
         """

@@ -17,9 +17,11 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os
-import time
+from globals import Globals
 from servermanager import ServerManager
+import time
+
+
 
 class FileManager(object):
     """
@@ -44,6 +46,9 @@ class FileManager(object):
     fav_file = 'favorites.srv'
     rec_file = 'recent.srv'
     buddies_file = 'buddies.cfg'
+    log_file = 'urtsb.log'
+    
+    
 
     def __init__(self):
         """
@@ -54,22 +59,17 @@ class FileManager(object):
         if not self.instance:
             self.instance = True
             
-            self.srvman = ServerManager()
             
-            # linux specific! if someday UrTSB should run on another OS
-            # this definitely needs to be extended
-            self.configfolder = os.environ['HOME']+'/.urtsb/' 
-            if not os.path.exists(self.configfolder):
-                try:
-                    os.makedirs(self.configfolder)
-                except OSError:
-                    pass
+            
             # extend filenames with path to the configurationfolder
-            self.fav_file = self.configfolder+self.fav_file
-            self.rec_file = self.configfolder+self.rec_file
-            self.conf_file = self.configfolder+self.conf_file
-            self.buddies_file = self.configfolder+self.buddies_file
-    
+            self.log_file = Globals.configfolder+FileManager.log_file
+            self.fav_file = Globals.configfolder+FileManager.fav_file
+            self.rec_file = Globals.configfolder+FileManager.rec_file
+            self.conf_file = Globals.configfolder+FileManager.conf_file
+            self.buddies_file = Globals.configfolder+FileManager.buddies_file
+            
+            #initialise ServerManager
+            self.srvman = ServerManager()
     
     def get_buddies(self):
         """
