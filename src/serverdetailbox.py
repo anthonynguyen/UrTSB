@@ -19,6 +19,8 @@
 
 import glib
 import gtk
+from flagmanager import FlagManager
+
 
 class ServerDetailBox(gtk.HBox):
     """
@@ -101,6 +103,9 @@ class ServerDetailBox(gtk.HBox):
         gametypelabel = gtk.Label('Gametype:')
         gametypelabel.set_alignment(xalign=0, yalign=0.5)
         
+        locationlabel = gtk.Label('Location')
+        locationlabel.set_alignment(xalign=0, yalign=0.5)
+        
         pinglabel = gtk.Label('Ping:')
         pinglabel.set_alignment(xalign=0, yalign=0.5)
         
@@ -119,6 +124,13 @@ class ServerDetailBox(gtk.HBox):
         self.gametypevaluelabel = gtk.Label()
         self.gametypevaluelabel.set_alignment(xalign=0, yalign=0.5)
         
+        locationbox = gtk.HBox()
+        self.locationvaluelabel = gtk.Label()
+        self.locationvaluelabel.set_alignment(xalign=0, yalign=0.5)
+        self.flag = gtk.Image()
+        locationbox.pack_start(self.flag, False, False)
+        locationbox.pack_start(self.locationvaluelabel)
+        
         self.pingvaluelabel = gtk.Label()
         self.pingvaluelabel.set_alignment(xalign=0, yalign=0.5)
         
@@ -129,16 +141,18 @@ class ServerDetailBox(gtk.HBox):
         table.attach(playerslabel, 0,1,1,2)
         table.attach(maplabel, 0,1,2,3)
         table.attach(gametypelabel, 0,1,3,4)
-        table.attach(pinglabel, 0,1,4,5)
-        table.attach(passlabel, 0,1,5,6)
+        table.attach(locationlabel, 0,1,4,5)
+        table.attach(pinglabel, 0,1,5,6)
+        table.attach(passlabel, 0,1,6,7)
         
         
         table.attach(self.addressvaluelabel, 1,2,0,1 )
         table.attach(self.playersvaluelabel, 1,3,1,2)
         table.attach(self.mapvaluelabel, 1,2,2,3)
         table.attach(self.gametypevaluelabel, 1,2,3,4)
-        table.attach(self.pingvaluelabel, 1,2,4,5)
-        table.attach(self.passvaluelabel, 1,2,5,6)
+        table.attach(locationbox, 1,2,4,5)
+        table.attach(self.pingvaluelabel, 1,2,5,6)
+        table.attach(self.passvaluelabel, 1,2,6,7)
         
         self.show_all()
         
@@ -156,6 +170,12 @@ class ServerDetailBox(gtk.HBox):
         self.mapvaluelabel.set_text(server.getMap())
         self.gametypevaluelabel.set_text(server.getGameTypeName())
         self.playersvaluelabel.set_text(server.getPlayerString())
+        
+        self.locationvaluelabel.set_text(server.get_location())
+        flagmanager = FlagManager()
+        self.flag.set_from_pixbuf(flagmanager.get_flag(server.get_location()))
+        
+        
         self.pingvaluelabel.set_text(str(server.getPing()))
         if(server.needsPassword()):
             self.passvaluelabel.set_text('Yes')
