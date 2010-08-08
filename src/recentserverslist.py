@@ -100,13 +100,13 @@ class RecentServersList(ServerList):
         @param server - the server to add
         """
         
-        # map needsPassword boolean to a String
-        needpw = '-' # default for don't know 
+        # map needsPassword boolean to a image
+        needpw = self.not_locked_pixbuf  # default for don't know 
         if server.needsPassword() != None:
             if server.needsPassword():
-                needpw = 'yes'
+                needpw = self.lock_pixbuf
             else:
-                needpw = '' # just leave the cell blank if no pw required
+                needpw = self.not_locked_pixbuf # just leave the cell blank if no pw required
         
         self.liststore.append([needpw, server.getName(), server.getaddress()
                             , server.getPing(), server.getPlayerString()

@@ -224,7 +224,7 @@ class ServerList(gtk.ScrolledWindow):
         @param server - the server to add
         """
         
-        # map needsPassword boolean to a String
+        # map needsPassword boolean to a image
         needpw = self.not_locked_pixbuf  # default for don't know 
         if server.needsPassword() != None:
             if server.needsPassword():
