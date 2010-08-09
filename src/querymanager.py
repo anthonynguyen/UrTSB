@@ -18,7 +18,6 @@
 #
 from Queue import Queue, Empty
 from filemanager import FileManager
-from geoip import country
 from globals import Globals
 from log import Log
 from pygeoip import GeoIP
@@ -53,6 +52,7 @@ class QueryManager(object):
         self.filterdcount = 0
         
         self.gui_lock = None
+        self.geo_lock = None
         
         coord = Thread(target=self.coordinator)
         coord.daemon = True
@@ -237,19 +237,12 @@ class QueryManager(object):
                 query = Q3ServerQuery()   
                 server = query.getServerStatus(server)
                 
-                
-                #location = country(server.getHost())
-                location = self.pygeoip.country_code_by_addr(server.getHost())
-                locname = self.pygeoip.country_name_by_addr(server.getHost())
-                server.set_location(location)
-                server.set_location_name(locname)
-                
-                #Log.log.info('Serverlocation: (' + location + ') - ' + locname)
-                
-                
                 #add the server to the gui 
                 self.gui_lock = threading.RLock()
                 with self.gui_lock:
+                    
+                    self.set_location(server)
+                    
                     self.processedserver+=1
                     gobject.idle_add(self.set_progressbar_fraction)
                     if not self.does_filter_match_server(server, self.filter):
@@ -429,4 +422,21 @@ class QueryManager(object):
         #no filtermatch so far, return false which results in displaying the server
         return False
     
+    
+    def set_location(self, server):
+        """
+        Determine location of a server based on the ip adress of the server 
+        and set it at the server object
         
+        Extra threading lock used because there was some strange effects 
+        without it.
+        
+        @param - the server object
+        """
+        self.geo_lock = threading.RLock()
+        with self.geo_lock:
+            #location = country(server.getHost())
+            location = self.pygeoip.country_code_by_addr(server.getHost())
+            locname = self.pygeoip.country_name_by_addr(server.getHost())
+            server.set_location(location)
+            server.set_location_name(locname)
