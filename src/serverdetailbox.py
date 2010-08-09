@@ -171,7 +171,8 @@ class ServerDetailBox(gtk.HBox):
         self.gametypevaluelabel.set_text(server.getGameTypeName())
         self.playersvaluelabel.set_text(server.getPlayerString())
         
-        self.locationvaluelabel.set_text('  ' + server.get_location_name())
+        self.locationvaluelabel.set_text('  (' + server.get_location() + ') '+\
+                                         server.get_location_name())
         flagmanager = FlagManager()
         self.flag.set_from_pixbuf(flagmanager.get_flag(server.get_location()))
         
