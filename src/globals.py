@@ -40,7 +40,7 @@ class Globals(object):
         # this definitely needs to be extended
         
         Globals.scriptdir = sys.path[0]
-        Globals.configfolder = os.environ['HOME']+'/.urtsb/' 
+        Globals.configfolder = os.path.expanduser('~/.urtsb/')
         if not os.path.exists(Globals.configfolder):
             try:
                 os.makedirs(self.configfolder)

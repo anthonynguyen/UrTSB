@@ -25,6 +25,12 @@ import re
 import socket
 import time
 
+try:
+    from socket import inet_ntop as inet_ntop
+except ImportError:
+    ## on Windows socket.inet_ntop is not available (at least not
+    ## in python2.6. http://www.dnspython.org provides a alternative
+    from dns.inet import inet_ntop as inet_ntop
 
 class Q3ServerQuery(object):
     """
@@ -366,7 +372,7 @@ class Q3ServerQuery(object):
                 if index+7>=len(packet):
                     break
                 # ip              
-                ip = socket.inet_ntop(socket.AF_INET, packet[index+1:index+5])
+                ip = inet_ntop(socket.AF_INET, packet[index+1:index+5])
                 #port
                 port = 256*ord(packet[index+5]) + ord(packet[index+6])
                 index+=7
