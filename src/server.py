@@ -42,6 +42,7 @@ class Server(object):
         self.favorite = False
         self.rememberpass = False
         self.location = ''
+        self.locationame = ''
        
     def setDefaults(self):
         """
@@ -182,3 +183,9 @@ class Server(object):
     
     def get_location(self):
         return self.location
+    
+    def set_location_name(self, locationname):
+        self.locationame = locationname
+    
+    def get_location_name(self):
+        return self.locationame

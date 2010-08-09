@@ -19,7 +19,9 @@
 from Queue import Queue, Empty
 from filemanager import FileManager
 from geoip import country
+from globals import Globals
 from log import Log
+from pygeoip import GeoIP
 from q3serverquery import Q3ServerQuery
 from threading import Thread
 import gobject
@@ -55,6 +57,9 @@ class QueryManager(object):
         coord = Thread(target=self.coordinator)
         coord.daemon = True
         coord.start()
+        
+        dbname = Globals.scriptdir + '/../geoip/GeoIP.dat'
+        self.pygeoip = GeoIP(dbname)
         
     def startMasterServerQueryThread(self, filter, tab):
         """
@@ -212,6 +217,7 @@ class QueryManager(object):
         the servers in the serverqueue
         """
         
+        
         #increment thread count.
         #the counter will be decreased on exit and compared to 0
         #so the last thread can notify the coordinator that all threads finished
@@ -232,9 +238,14 @@ class QueryManager(object):
                 server = query.getServerStatus(server)
                 
                 
-                location = country(server.getHost())
-                #Log.log.info('Serverlocation: ' + location)
+                #location = country(server.getHost())
+                location = self.pygeoip.country_code_by_addr(server.getHost())
+                locname = self.pygeoip.country_name_by_addr(server.getHost())
                 server.set_location(location)
+                server.set_location_name(locname)
+                
+                #Log.log.info('Serverlocation: (' + location + ') - ' + locname)
+                
                 
                 #add the server to the gui 
                 self.gui_lock = threading.RLock()
