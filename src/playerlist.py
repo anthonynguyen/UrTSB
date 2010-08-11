@@ -45,26 +45,28 @@ class PlayerList(gtk.ScrolledWindow):
        
         
         
-        column_playername = gtk.TreeViewColumn('Player')
-        column_playerkills = gtk.TreeViewColumn('Kills')
-        column_playerping = gtk.TreeViewColumn('Ping')
-        
-        column_playername.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_playername.set_expand(True)
-        column_playername.set_fixed_width(150)
-        
-        column_playerkills.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_playerkills.set_expand(False)
-        column_playerkills.set_fixed_width(50)
-        
-        column_playerping.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_playerping.set_expand(False)
-        column_playerping.set_fixed_width(50)
+        self.column_playername = gtk.TreeViewColumn('Player')
+        self.column_playerkills = gtk.TreeViewColumn('Kills')
+        self.column_playerping = gtk.TreeViewColumn('Ping')
         
         
-        playerlistview.append_column(column_playername)
-        playerlistview.append_column(column_playerkills)
-        playerlistview.append_column(column_playerping)
+        
+        self.column_playername.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_playername.set_expand(True)
+        self.column_playername.set_fixed_width(150)
+        
+        self.column_playerkills.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_playerkills.set_expand(False)
+        self.column_playerkills.set_fixed_width(50)
+        
+        self.column_playerping.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_playerping.set_expand(False)
+        self.column_playerping.set_fixed_width(50)
+        
+        
+        playerlistview.append_column(self.column_playername)
+        playerlistview.append_column(self.column_playerkills)
+        playerlistview.append_column(self.column_playerping)
         
         
         player_cell0=gtk.CellRendererText()
@@ -72,18 +74,67 @@ class PlayerList(gtk.ScrolledWindow):
         player_cell2=gtk.CellRendererText()
         
         
-        column_playername.pack_start(player_cell0, expand=True)
-        column_playerkills.pack_start(player_cell1, expand=False)
-        column_playerping.pack_start(player_cell2, expand=False)
+        self.column_playername.pack_start(player_cell0, expand=True)
+        self.column_playerkills.pack_start(player_cell1, expand=False)
+        self.column_playerping.pack_start(player_cell2, expand=False)
         
         
-        column_playername.add_attribute(player_cell0, 'text', 0)
-        column_playerkills.add_attribute(player_cell1, 'text', 1)  
-        column_playerping.add_attribute(player_cell2, 'text', 2)
+        self.column_playername.add_attribute(player_cell0, 'text', 0)
+        self.column_playerkills.add_attribute(player_cell1, 'text', 1)  
+        self.column_playerping.add_attribute(player_cell2, 'text', 2)
            
-        column_playername.set_reorderable(True)
-        column_playerkills.set_reorderable(True)  
-        column_playerping.set_reorderable(True)
+        self.column_playername.set_reorderable(True)
+        self.column_playerkills.set_reorderable(True)  
+        self.column_playerping.set_reorderable(True)
+        
+        #sortingoptions
+        self.sortorder = gtk.SORT_DESCENDING
+        self.sortcolumn = 0
+        
+        
+        self.column_playername.set_clickable(True)
+        self.column_playerkills.set_clickable(True)
+        self.column_playerping.set_clickable(True)
+        
+        self.column_playername.connect('clicked', self.on_column_header_clicked, 0)  
+        self.column_playerkills.connect('clicked', self.on_column_header_clicked, 1)
+        self.column_playerping.connect('clicked', self.on_column_header_clicked, 2)
+     
+     
+    def reset_sort_indicators(self):
+        """
+        Reset all sort indicators of the table headers
+        """
+        self.column_playername.set_sort_indicator(False)  
+        self.column_playerkills.set_sort_indicator(False)
+        self.column_playerping.set_sort_indicator(False)
+        
+        
+    def on_column_header_clicked(self, treecolumn, colnum):
+        """
+        Callback for the table header buttons.
+        Performs sorting.
+        """
+        
+        #reset all indicators before sorting new
+        self.reset_sort_indicators()
+    
+        #check sort order to apply
+        #if the the clicked treecolumn is the current sorted column
+        #the sort order needs to be changed:
+        if self.sortcolumn == colnum:
+            if treecolumn.get_sort_order() == gtk.SORT_ASCENDING:
+                treecolumn.set_sort_order(gtk.SORT_DESCENDING)
+            else:
+                treecolumn.set_sort_order(gtk.SORT_ASCENDING)
+        else:
+            treecolumn.set_sort_order(gtk.SORT_ASCENDING)
+        
+        treecolumn.set_sort_indicator(True)
+        self.sortorder = treecolumn.get_sort_order()
+        self.sortcolumn = colnum
+        
+        self.playerliststore.set_sort_column_id(self.sortcolumn, self.sortorder)
         
     def clear(self):
         self.playerliststore.clear()

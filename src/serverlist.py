@@ -17,10 +17,11 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from flagmanager import FlagManager
 from guicontroller import GuiController
+from passworddialog import PasswordDialog
 import gtk
 import sys
-from flagmanager import FlagManager
 
 class ServerList(gtk.ScrolledWindow):
     """
@@ -177,6 +178,8 @@ class ServerList(gtk.ScrolledWindow):
         
         selection = self.serverlistview.get_selection()
         selection.connect('changed', self.onSelectionChanged)
+        
+        self.serverlistview.connect('row-activated', self.on_row_double_clickdef)
     
     def reset_sort_indicators(self):
         """
@@ -214,6 +217,21 @@ class ServerList(gtk.ScrolledWindow):
         self.sortcolumn = colnum
         
         self.liststore.set_sort_column_id(self.sortcolumn, self.sortorder)
+        
+    def on_row_double_clickdef(self, treeview, path, view_column):
+        """
+        Callback for the row-activate signal (double-click, enter...)
+        """    
+        row =  self.liststore[path]
+        server = row[8]
+        gui = GuiController()
+        
+        if server:
+            if server.needsPassword():
+                passdialog = PasswordDialog(server)
+                passdialog.run()
+            else:
+                gui.connectToServer(server)
         
     def onSelectionChanged(self, selection):
         """
