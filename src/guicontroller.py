@@ -23,8 +23,10 @@ from q3serverquery import Q3ServerQuery
 from querymanager import QueryManager
 from threading import Thread
 import gobject
-import os
+import shlex
+import subprocess
 import thread
+
 
 
 
@@ -289,12 +291,19 @@ class GuiController(object):
             else:
                 server.setPassword('')
         
-        fm.addRecent(server)
-            
+        #add additional params    
         cmd = cmd + ' ' + additionalcommands
-        #finally execute the command
+        
+        
+        #add server to recent servers list
+        fm.addRecent(server)
+        
         
         Log.log.info('launching UrT with cmd = ' + cmd)
-        os.popen(cmd) 
+        #use shlex.split to turn the command string into a sequence
+        #that works with subprocess.popen
+        args = shlex.split(cmd)       
         
+        #finally execute the command 
+        subprocess.Popen(args)
     
