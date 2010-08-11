@@ -48,32 +48,44 @@ class ServerDetailBox(gtk.HBox):
         self.pack_start(var_scrolled_window)
         
         
-        column_variable = gtk.TreeViewColumn('Variable')
-        column_value = gtk.TreeViewColumn('Value')
+        self.column_variable = gtk.TreeViewColumn('Variable')
+        self.column_value = gtk.TreeViewColumn('Value')
        
-        column_variable.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_variable.set_expand(True)
-        column_variable.set_fixed_width(75)
+        self.column_variable.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_variable.set_expand(True)
+        self.column_variable.set_fixed_width(75)
         
-        column_value.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_value.set_expand(True)
-        column_value.set_fixed_width(75)
+        self.column_value.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_value.set_expand(True)
+        self.column_value.set_fixed_width(75)
         
-        varlistview.append_column(column_variable)
-        varlistview.append_column(column_value)
+        varlistview.append_column(self.column_variable)
+        varlistview.append_column(self.column_value)
         
         var_cell0=gtk.CellRendererText()
         var_cell1=gtk.CellRendererText()
         
         
-        column_variable.pack_start(var_cell0, expand=True)
-        column_value.pack_start(var_cell1, expand=False)
+        self.column_variable.pack_start(var_cell0, expand=True)
+        self.column_value.pack_start(var_cell1, expand=False)
         
-        column_variable.add_attribute(var_cell0, 'text', 0)
-        column_value.add_attribute(var_cell1, 'text', 1)  
+        self.column_variable.add_attribute(var_cell0, 'text', 0)
+        self.column_value.add_attribute(var_cell1, 'text', 1)  
         
-        column_variable.set_reorderable(True)
-        column_value.set_reorderable(True)  
+        self.column_variable.set_reorderable(True)
+        self.column_value.set_reorderable(True)  
+    
+    
+        # set intial values for sorting order and column
+        self.sortorder = gtk.SORT_ASCENDING
+        self.sortcolumn = 0
+        
+        self.column_variable.set_clickable(True)
+        self.column_value.set_clickable(True)
+
+        
+        self.column_variable.connect('clicked', self.on_column_header_clicked, 0)  
+        self.column_value.connect('clicked', self.on_column_header_clicked, 1)
     
         # add some basic infos of the currently selected server
         infobox = gtk.VBox()
@@ -155,6 +167,41 @@ class ServerDetailBox(gtk.HBox):
         table.attach(self.passvaluelabel, 1,2,6,7)
         
         self.show_all()
+
+    def reset_sort_indicators(self):
+        """
+        Reset all sort indicators of the table headers
+        """
+        self.column_variable.set_sort_indicator(False)  
+        self.column_value.set_sort_indicator(False)
+        
+        
+    def on_column_header_clicked(self, treecolumn, colnum):
+        """
+        Callback for the table header buttons.
+        Performs sorting.
+        """
+        
+        #reset all indicators before sorting new
+        self.reset_sort_indicators()
+    
+        #check sort order to apply
+        #if the the clicked treecolumn is the current sorted column
+        #the sort order needs to be changed:
+        if self.sortcolumn == colnum:
+            if treecolumn.get_sort_order() == gtk.SORT_ASCENDING:
+                treecolumn.set_sort_order(gtk.SORT_DESCENDING)
+            else:
+                treecolumn.set_sort_order(gtk.SORT_ASCENDING)
+        else:
+            treecolumn.set_sort_order(gtk.SORT_ASCENDING)
+        
+        treecolumn.set_sort_indicator(True)
+        self.sortorder = treecolumn.get_sort_order()
+        self.sortcolumn = colnum
+        
+        self.varliststore.set_sort_column_id(self.sortcolumn, self.sortorder)
+        
         
     def setServerDetails(self, server):
         """
