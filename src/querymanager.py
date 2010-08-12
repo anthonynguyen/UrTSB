@@ -24,6 +24,7 @@ from pygeoip import GeoIP
 from q3serverquery import Q3ServerQuery
 from threading import Thread
 import gobject
+import pygeoip
 import threading
 
 
@@ -59,7 +60,7 @@ class QueryManager(object):
         coord.start()
         
         dbname = Globals.scriptdir + '/../geoip/GeoIP.dat'
-        self.pygeoip = GeoIP(dbname)
+        self.pygeoip = GeoIP(dbname, pygeoip.const.MMAP_CACHE)
         
     def startMasterServerQueryThread(self, filter, tab):
         """
