@@ -404,7 +404,7 @@ class FileManager(object):
         configuration[cfgkey.URT_EXE_PARAMS] = ''
         configuration[cfgkey.OPT_SAVE_PW] = 'True'
         configuration[cfgkey.OPT_DEFAULT_TAB] = 0
-        configuration[cfgkey.OPT_UPDATE_SL_ROW] = 'True'
+        configuration[cfgkey.OPT_UPDATE_SL_ROW] = 'False'
 
         return configuration
     
