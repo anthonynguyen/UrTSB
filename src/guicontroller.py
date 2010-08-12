@@ -23,9 +23,11 @@ from q3serverquery import Q3ServerQuery
 from querymanager import QueryManager
 from threading import Thread
 import gobject
+import gtk
 import shlex
 import subprocess
 import thread
+
 
 
 
@@ -42,9 +44,14 @@ class GuiController(object):
     appver = '0.3'
     appdesc = 'a Urban Terror Server Browser'
     
+    instance = None
+    
     def __init__(self):
         self.__dict__ = self.__shared_state # borg pattern
-        
+        if not self.instance:
+            self.instance = True
+            
+            self.urt_process = None
         
     def addFavorite(self, server):
         """
@@ -268,6 +275,28 @@ class GuiController(object):
         @param server - the server to connect to 
         """
         Log.log.debug('[GuiController] connectToServer called...')
+        
+        #check if there is already a running process
+        #if so display a dialog and inform the user
+        #but do not launch a second instance
+        if not None == self.urt_process:
+            self.urt_process.poll()
+            returncode = self.urt_process.returncode
+            if None == returncode:
+                
+                dialog = gtk.MessageDialog(
+                parent         = None,
+                flags          = gtk.DIALOG_DESTROY_WITH_PARENT,
+                type           = gtk.MESSAGE_INFO,
+                buttons        = gtk.BUTTONS_OK,
+                message_format = "Urban Terror is already running! Please exit" \
+                                 + " it before launching a new instance")
+                dialog.set_title('Urban Terror is already running')
+                dialog.connect('response', lambda dialog, response: dialog.destroy())
+                dialog.run()
+                return
+
+        
         fm = FileManager()
         
         
@@ -305,5 +334,6 @@ class GuiController(object):
         args = shlex.split(cmd)       
         
         #finally execute the command 
-        subprocess.Popen(args)
+        self.urt_process = subprocess.Popen(args)
+        
     
