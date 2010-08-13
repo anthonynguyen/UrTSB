@@ -59,50 +59,45 @@ class Window():
          
         # the notebook - tabs will be serverlist, favorites,
         # recent servers and settings 
-        notebook= gtk.Notebook()
-        notebook.set_border_width(2)
-        mainbox.pack_start(notebook)
-        notebook.connect('switch-page', self.on_tab_change)
+        self.notebook= gtk.Notebook()
+        self.notebook.set_border_width(2)
+        mainbox.pack_start(self.notebook)
+        self.notebook.connect('switch-page', self.on_tab_change)
         
         
         # add the serverlist tab
         self.serverlisttab = ServerTab()
         srvlabel = gtk.Label('Serverlist')        
-        notebook.append_page(self.serverlisttab, srvlabel)
+        self.notebook.append_page(self.serverlisttab, srvlabel)
         
         # add the favorites tab
         self.favoritestab = FavoritesTab()
         favlabel = gtk.Label('Favorites')        
-        notebook.append_page(self.favoritestab, favlabel)
+        self.notebook.append_page(self.favoritestab, favlabel)
         
         # add the recently played tab
         self.recenttab = RecentTab()
         recentlabel = gtk.Label('Recently Played')        
-        notebook.append_page(self.recenttab, recentlabel)
+        self.notebook.append_page(self.recenttab, recentlabel)
         
         # add the buddies tab
         self.buddiestab = BuddiesTab()
         buddieslabel = gtk.Label('Buddies')
-        notebook.append_page(self.buddiestab, buddieslabel)
+        self.notebook.append_page(self.buddiestab, buddieslabel)
         
         # add the settings tab
         self.settingsstab = SettingsTab()
         settingslabel = gtk.Label('Settings')        
-        notebook.append_page(self.settingsstab, settingslabel)
+        self.notebook.append_page(self.settingsstab, settingslabel)
         
         #set default tab
         fm = FileManager()
         config = fm.getConfiguration()
         defaulttab = int(config[cfgkey.OPT_DEFAULT_TAB])
-        notebook.set_current_page(defaulttab)
+        self.notebook.set_current_page(defaulttab)
         
-        # add a statusbar with a progressbar inside
-#        statusbar = gtk.Statusbar()
-#        statusbar.set_border_width(2)
-#        
-#        self.progressbar = gtk.ProgressBar()
-#        statusbar.add(self.progressbar)
-#        mainbox.pack_start(statusbar, False, False) 
+        #connect key press event to be able to create keyboard shortcuts
+        self.window.connect('key-press-event', self.on_key_pressed_event)
        
         self.window.show_all()
        
@@ -126,3 +121,29 @@ class Window():
             gc.executeRecentServersLoading(self.recenttab)
         if 3 == page_num: #buddies tab
             gc.execute_buddies_loading(self.buddiestab)
+            
+    def refresh(self):
+        """
+        refresh of the serverdetails view of the currently active tab of the
+        currently selected server
+        """        
+        
+        #get the current tab
+        pagenum = self.notebook.get_current_page()
+        tab = self.notebook.get_nth_page(pagenum)
+        
+        selection = tab.serverlist.serverlistview.get_selection()
+        model, paths = selection.get_selected_rows()
+        if paths:
+            row =  model[paths[0][0]]
+            server = row[8]
+            guicontroller = GuiController()
+            guicontroller.setDetailServer(server, tab)
+            
+    def on_key_pressed_event(self, widget, event):
+        """
+        Handling of keyboard events
+        """
+        # handle F5 key to call a refresh
+        if 'F5' == gtk.gdk.keyval_name(event.keyval):
+            self.refresh()
