@@ -56,13 +56,25 @@ class RconPassDialog(gtk.Dialog):
         addresslabel = gtk.Label('Serveraddress: ' + server.getaddress())
         self.passentry = gtk.Entry()
         self.passentry.set_visibility(False)
-        #self.remembercheckbutton = gtk.CheckButton('remember password')
-        
+        self.passentry.set_text('')
+        self.remembercheckbutton = gtk.CheckButton('remember password')
+        self.remembercheckbutton.set_active(False)
+                
         self.vbox.pack_start(desc_label, False, False)
         self.vbox.pack_start(namelabel, False, False)
         self.vbox.pack_start(addresslabel, False, False)
         self.vbox.pack_start(self.passentry, False, False)
-        #self.vbox.pack_start(self.remembercheckbutton, False, False)
+        self.vbox.pack_start(self.remembercheckbutton, False, False)
+        
+        
+        #check if there is a stored rcon pw for the server
+        fm = FileManager()
+        rconpws = fm.get_rcon_passwords()
+        if server.getaddress() in rconpws:
+            pw = rconpws[server.getaddress()]
+            
+            self.passentry.set_text(pw)
+            self.remembercheckbutton.set_active(True)
         
         self.show_all()
         
@@ -73,6 +85,13 @@ class RconPassDialog(gtk.Dialog):
             """
             #get the entered password
             self.server.rconpass = self.passentry.get_text()
+            
+            #store the password if checkbox is active
+            if self.remembercheckbutton.get_active():
+                fm = FileManager()
+                rconpws = fm.get_rcon_passwords()
+                rconpws[self.server.getaddress()] = self.server.rconpass
+                fm.save_rcon_passwords() 
             
             #display the rcon window
             rconwin= RconWindow(self.server)

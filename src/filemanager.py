@@ -70,6 +70,7 @@ class FileManager(object):
     configuration = None
     buddies = None
     filter = None
+    rconpws = None
     
     #filenames
     conf_file = 'urtsb.cfg'
@@ -78,6 +79,7 @@ class FileManager(object):
     buddies_file = 'buddies.cfg'
     log_file = 'urtsb.log'
     filter_file = 'filter.cfg'
+    rcon_file = 'rcon_pws.cfg'
     
     
                   
@@ -100,6 +102,7 @@ class FileManager(object):
             self.conf_file = Globals.configfolder+FileManager.conf_file
             self.buddies_file = Globals.configfolder+FileManager.buddies_file
             self.filter_file = Globals.configfolder+FileManager.filter_file
+            self.rcon_file = Globals.configfolder+FileManager.rcon_file
             
             #initialise ServerManager
             self.srvman = ServerManager()
@@ -141,6 +144,42 @@ class FileManager(object):
             fobj.write(name + '\n')
         fobj.close()
         
+    def save_rcon_passwords(self):
+        """
+        Saves the dict of rcon passwords
+        """    
+        fobj = open(self.rcon_file, "w") 
+        for key in self.rconpws:
+            pw = self.rconpws[key]
+            #format: address,pw
+            fobj.write(key + ',' + pw + '\n')
+        fobj.close()
+        
+    def get_rcon_passwords(self):
+        """
+        Get a dict with server adress as key and rcon pws as values
+        
+        @return the dict of rcon pws
+        """
+        if self.rconpws:
+            return self.rconpws
+        
+        self.rconpws = {}
+        fobj = None
+        try:
+            fobj = open(self.rcon_file, "r") 
+        except IOError:
+            #the file does not exist! just return the empty dict created earlier
+            return self.rconpws
+        
+        for line in fobj: 
+            line = line.strip() 
+            rconline = line.split(',') # file is a csv
+            #format: adress,pw
+            self.rconpws[rconline[0]] = rconline[1]
+        fobj.close()
+        
+        return self.rconpws
     
     def getFavorites(self):
         """
