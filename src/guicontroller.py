@@ -337,4 +337,31 @@ class GuiController(object):
         #finally execute the command 
         self.urt_process = subprocess.Popen(args)
         
-    
+    def send_rcon_command(self, server, command, console):
+        """
+        Initiates the sending of a rcon command to a server
+        Launches a thread that does the rcon command sending
+        
+        @param server - the server the command should be send to
+        @param command - the command to send
+        @param console - the rcon window 
+        """
+        thread.start_new_thread(self.perform_rcon_command_sending, \
+                                                     (server, command, console))
+        
+    def perform_rcon_command_sending(self, server, command, console):
+        """
+        This is the method that runs in a backgroundthread and sends
+        a rcon command to a server
+        """
+        #construct the full command
+        #format : 'rcon "password" command'
+        rcon_cmd = 'rcon "'+server.rconpass+'" ' + command
+        Log.log.debug('rcon command to send: ' + rcon_cmd)
+        
+        query = Q3ServerQuery()
+        response = query.send_rcon_command(rcon_cmd, server)
+        
+        gobject.idle_add(console.add_server_response, response)
+        
+        

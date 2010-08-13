@@ -99,7 +99,10 @@ class Window():
         #connect key press event to be able to create keyboard shortcuts
         self.window.connect('key-press-event', self.on_key_pressed_event)
        
+        
         self.window.show_all()
+
+
        
     def on_tab_change(self, notebook, page, page_num):
         """

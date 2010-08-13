@@ -20,7 +20,6 @@
 from log import Log
 from player import Player
 from servermanager import ServerManager
-import logging
 import re
 import socket
 import time
@@ -236,7 +235,58 @@ class Q3ServerQuery(object):
         # reset the server object. this will look like a timeout at the gui
         server.reset()
         return server
+      
+    def send_rcon_command(self, command, server):
+        """
+        Sends a rcon command to a gameserver
+        
+        @param command - the command to send to the game server
+        @param server - the server
+        """      
+        try:
+            # open an socket to the game server
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.connect((server.getHost(), server.getPort()))
+            # set timeout to 1s 
+            s.settimeout(2)
+            # all packets send to an q3 server must beging with the OOB command bytes
+            cmd = self.packet_prefix+command 
+            s.send(cmd)
+        except:
+            Log.log.error('Something went wrong opening socket to ' + server.getaddress())
+            server.reset()
+            return server
+        response = None
+        
+        
+        for retries in range(3):
+        
+            time_start = time.time() # start time measurement (pinging)       
+            try:
+                response = s.recv(2048) # a bit more buffer than needed
+                break 
+            except:
+                if retries == 2:
+                    # handle failure case - usually this is a timeout
+                    Log.log.info('[Q3ServerQuery] '+server.getaddress() \
+                                 +' is not responding - timeout')
+                    return 'no response ...'
+        time_end = time.time() # end time measurement (pinging)
+        ping = int((time_end-time_start)*1000) # calculate ping
+        s.close() #close the socket
+        if response: # yeah got a response :-)
+            server.setPing(ping) # update the ping of the server
             
+            if response.find('print') != -1:
+                response = response[9:]
+                return response
+            else:
+                Log.log.error('Malformed package received: ' + response)           
+                return 'Malformed response received from server'
+        else:
+            return 'no timeout, but also no response?!...'
+            
+        
    
     def sendCommand(self, command, server):
         """
@@ -278,6 +328,9 @@ class Q3ServerQuery(object):
                     server.reset() # reset server object
         time_end = time.time() # end time measurement (pinging)
         ping = int((time_end-time_start)*1000) # calculate ping
+        
+        s.close() # close the socket
+        
         if response: # yeah got a response :-)
             server.setPing(ping) # update the ping of the server
             return self.parseResponse(response, server) # parse the response and
@@ -285,7 +338,7 @@ class Q3ServerQuery(object):
         else: # reset if no response
             server.reset()
             return server
-        s.close() # close the socket
+        
    
     def getServerStatus(self, server):
         """

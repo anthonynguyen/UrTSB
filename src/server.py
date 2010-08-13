@@ -43,6 +43,7 @@ class Server(object):
         self.rememberpass = False
         self.location = ''
         self.locationame = ''
+        self.rconpass = ''
        
     def setDefaults(self):
         """

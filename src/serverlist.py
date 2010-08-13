@@ -22,6 +22,7 @@ from guicontroller import GuiController
 from passworddialog import PasswordDialog
 import gtk
 import sys
+from rconpassdialog import RconPassDialog
 
 class ServerList(gtk.ScrolledWindow):
     """
@@ -180,6 +181,10 @@ class ServerList(gtk.ScrolledWindow):
         selection.connect('changed', self.onSelectionChanged)
         
         self.serverlistview.connect('row-activated', self.on_row_double_clickdef)
+        self.serverlistview.connect('button-press-event', \
+                                            self.on_treeview_button_press_event)
+        
+        self.initialize_context_menu()
     
     def reset_sort_indicators(self):
         """
@@ -245,7 +250,7 @@ class ServerList(gtk.ScrolledWindow):
             server = row[8]
             guicontroller = GuiController()
             guicontroller.setDetailServer(server, self.parenttab)
-            #thread.start_new_thread(self.updateServerStatus, (server,))
+           
         
     def addServer(self, server):
         """
@@ -279,7 +284,33 @@ class ServerList(gtk.ScrolledWindow):
         """
         self.liststore.clear()
         
+    def initialize_context_menu(self):
+        """
+        Creates a contextmenu
+        """
+        self.context_menu = gtk.Menu()
         
+        add_menu_item = gtk.MenuItem('open RCON console')
+        self.context_menu.add(add_menu_item)
+        self.context_menu.show_all()
+        
+        add_menu_item.connect('activate', self.on_context_rcon_pressed)
+ 
+ 
+    def on_context_rcon_pressed(self, menuitem):
+        """
+        Callback for the context menu item 'open RCON console'
+        """
+        #get the selected row of the serverlist
+        selection = self.serverlistview.get_selection()
+        result = selection.get_selected()
+        if result: 
+            iter = result[1]
+            server = self.liststore.get_value(iter, 8)
+            pwdiag = RconPassDialog(server)
+             
+            
+                    
     def update_selected_row(self, server):
         selection = self.serverlistview.get_selection()
         result = selection.get_selected()
@@ -289,3 +320,21 @@ class ServerList(gtk.ScrolledWindow):
             self.liststore.set_value(iter, 5, server.getPlayerString())
             self.liststore.set_value(iter, 6, server.getMap())
             self.liststore.set_value(iter, 7, server.getGameTypeName())
+            
+    def on_treeview_button_press_event(self, treeview, event):
+        """
+        Callback for mouse-clicks to create a context menu on right mouse 
+        button pressed
+        """
+        if event.button == 3:
+            x = int(event.x)
+            y = int(event.y)
+            time = event.time
+            pthinfo = treeview.get_path_at_pos(x, y)
+            if pthinfo is not None:
+                path, col, cellx, celly = pthinfo
+                treeview.grab_focus()
+                treeview.set_cursor( path, col, 0)
+                self.context_menu.popup( None, None, None, event.button, time)
+                
+            return True
