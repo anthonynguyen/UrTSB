@@ -45,6 +45,7 @@ class RconWindow(gtk.Window):
         scrolled_window = gtk.ScrolledWindow()
         scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.messages = gtk.TextView()
+        self.messages.set_editable(False)
         self.buffer = gtk.TextBuffer()
         self.messages.set_buffer(self.buffer)
         scrolled_window.add(self.messages)
