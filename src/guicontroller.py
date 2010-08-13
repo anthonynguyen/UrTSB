@@ -88,7 +88,8 @@ class GuiController(object):
         t = Thread(target=fm.save_buddies)
         t.setDaemon(True)
         t.start()
-        tab.append_buddy_to_list(name)
+        if tab:
+            tab.append_buddy_to_list(name)
           
     def remove_buddy(self, name):
         """

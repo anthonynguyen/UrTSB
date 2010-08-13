@@ -18,6 +18,7 @@
 #
 
 import gtk
+from guicontroller import GuiController
 
 class PlayerList(gtk.ScrolledWindow):
     """
@@ -37,10 +38,10 @@ class PlayerList(gtk.ScrolledWindow):
 
         self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         self.show_all()
-        playerlistview = gtk.TreeView(model=self.playerliststore)
-        playerlistview.show()
-        playerlistview.set_headers_clickable(True)
-        self.add(playerlistview)
+        self.playerlistview = gtk.TreeView(model=self.playerliststore)
+        self.playerlistview.show()
+        self.playerlistview.set_headers_clickable(True)
+        self.add(self.playerlistview)
         self.show()
        
         
@@ -64,9 +65,9 @@ class PlayerList(gtk.ScrolledWindow):
         self.column_playerping.set_fixed_width(50)
         
         
-        playerlistview.append_column(self.column_playername)
-        playerlistview.append_column(self.column_playerkills)
-        playerlistview.append_column(self.column_playerping)
+        self.playerlistview.append_column(self.column_playername)
+        self.playerlistview.append_column(self.column_playerkills)
+        self.playerlistview.append_column(self.column_playerping)
         
         
         player_cell0=gtk.CellRendererText()
@@ -99,7 +100,36 @@ class PlayerList(gtk.ScrolledWindow):
         self.column_playername.connect('clicked', self.on_column_header_clicked, 0)  
         self.column_playerkills.connect('clicked', self.on_column_header_clicked, 1)
         self.column_playerping.connect('clicked', self.on_column_header_clicked, 2)
+        
+        self.playerlistview.connect('button-press-event', \
+                                           self.on_treeview_button_press_event)
      
+        self.initialize_context_menu()
+     
+    def initialize_context_menu(self):
+        """
+        Creates a contextmenu
+        """
+        self.context_menu = gtk.Menu()
+        
+        add_menu_item = gtk.MenuItem('add to buddylist')
+        self.context_menu.add(add_menu_item)
+        self.context_menu.show_all()
+        
+        add_menu_item.connect('activate', self.on_context_add_buddy_pressed)
+        
+    def on_context_add_buddy_pressed(self, menuitem):
+        """
+        Callback for the context menu item 'add to buddylist'
+        """
+        #get the selected row of the playerlist
+        selection = self.playerlistview.get_selection()
+        result = selection.get_selected()
+        if result: 
+            iter = result[1]
+            name = self.playerliststore.get_value(iter, 0)
+            gc = GuiController()
+            gc.add_name_to_buddylist(name, None)
      
     def reset_sort_indicators(self):
         """
@@ -144,3 +174,21 @@ class PlayerList(gtk.ScrolledWindow):
         playerkills = player.getKills()
         playerping = player.getPing()
         self.playerliststore.append([playername,playerkills,playerping])
+        
+        
+    def on_treeview_button_press_event(self, treeview, event):
+        """
+        Callback for mouse-clicks to create a context menu on right mouse 
+        button pressed
+        """
+        if event.button == 3:
+            x = int(event.x)
+            y = int(event.y)
+            time = event.time
+            pthinfo = treeview.get_path_at_pos(x, y)
+            if pthinfo is not None:
+                path, col, cellx, celly = pthinfo
+                treeview.grab_focus()
+                treeview.set_cursor( path, col, 0)
+                self.context_menu.popup( None, None, None, event.button, time)
+            return True
