@@ -157,7 +157,7 @@ class RecentTab(gtk.VBox):
         if result: 
             model, iter = result
             
-            server = self.serverlist.liststore.get_value(iter, 7)
+            server = self.serverlist.liststore.get_value(iter, 8)
             #remove it from the favoriteslist
             gui = GuiController()
             gui.removeRecent(server)
