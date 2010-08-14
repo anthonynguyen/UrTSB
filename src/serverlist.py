@@ -17,12 +17,13 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+
 from flagmanager import FlagManager
 from guicontroller import GuiController
 from passworddialog import PasswordDialog
+from rconpassdialog import RconPassDialog
 import gtk
 import sys
-from rconpassdialog import RconPassDialog
 
 class ServerList(gtk.ScrolledWindow):
     """
@@ -290,16 +291,45 @@ class ServerList(gtk.ScrolledWindow):
         """
         self.context_menu = gtk.Menu()
         
-        add_menu_item = gtk.MenuItem('open RCON console')
-        self.context_menu.add(add_menu_item)
+        
+        connect_menu_item = gtk.MenuItem('connect')
+        self.context_menu.add(connect_menu_item)
+        connect_menu_item.connect('activate', self.on_connect_menu_item_clicked)
+        
+        #differ between remove and add favorite menuitem.
+        #on the favorites tab the menuitem will be remove
+        #all other tabs the add menuitem should be displayed
+        if self.parenttab.__class__.__name__ == 'FavoritesTab':
+            rem_fav_menu_item = gtk.MenuItem('remove from favorites')
+            self.context_menu.add(rem_fav_menu_item)
+            rem_fav_menu_item.connect('activate', \
+                                           self.on_remove_fav_menu_item_clicked)
+        else:
+            add_fav_menu_item = gtk.MenuItem('add to favorites')
+            self.context_menu.add(add_fav_menu_item)
+            add_fav_menu_item.connect('activate', \
+                                              self.on_add_fav_menu_item_clicked)
+        
+        separator = gtk.SeparatorMenuItem()
+        self.context_menu.add(separator)
+        
+        rcon_menu_item = gtk.MenuItem('open RCON console')
+        self.context_menu.add(rcon_menu_item)
         self.context_menu.show_all()
         
-        add_menu_item.connect('activate', self.on_context_rcon_pressed)
+        rcon_menu_item.connect('activate', self.on_context_rcon_pressed)
  
- 
-    def on_context_rcon_pressed(self, menuitem):
+    def on_connect_menu_item_clicked(self, menuitem):
         """
-        Callback for the context menu item 'open RCON console'
+        Callback of the 'connect' menuitem
+        """
+        server = self.get_selected_server()
+        gc = GuiController()
+        gc.connectToServer(server)
+ 
+    def on_remove_fav_menu_item_clicked(self, menuitem):
+        """
+        Callback of the 'remove from favorites' menu item
         """
         #get the selected row of the serverlist
         selection = self.serverlistview.get_selection()
@@ -307,10 +337,42 @@ class ServerList(gtk.ScrolledWindow):
         if result: 
             iter = result[1]
             server = self.liststore.get_value(iter, 8)
-            pwdiag = RconPassDialog(server)
+            gc = GuiController()
+            gc.removeFavorite(server)
+            self.liststore.remove(iter)
+ 
+    def on_add_fav_menu_item_clicked(self, menuitem):
+        """
+        Callback for the 'add to favorites' context menu item
+        """    
+        server = self.get_selected_server()
+        if server:
+            gc = GuiController()
+            gc.addFavorite(server)
+ 
+    def on_context_rcon_pressed(self, menuitem):
+        """
+        Callback for the context menu item 'open RCON console'
+        """
+        server = self.get_selected_server()
+        if server:
+            RconPassDialog(server)
              
-            
-                    
+    def get_selected_server(self):
+        """
+        Returns the server object for the selcted row of the serverlist
+        
+        @return the serverobject of the selected row
+        """        
+        #get the selected row of the serverlist
+        selection = self.serverlistview.get_selection()
+        result = selection.get_selected()
+        if result: 
+            iter = result[1]
+            server = self.liststore.get_value(iter, 8)
+            return server
+        return None
+                
     def update_selected_row(self, server):
         selection = self.serverlistview.get_selection()
         result = selection.get_selected()

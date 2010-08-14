@@ -35,6 +35,7 @@ class ServerTab(gtk.VBox):
     the master server
     """
     
+    
 
     def __init__(self):
         """
