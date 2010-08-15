@@ -27,11 +27,7 @@ import gtk
 import shlex
 import subprocess
 import thread
-
-
-
-
-
+import os
 
 class GuiController(object):
     """
@@ -312,9 +308,11 @@ class GuiController(object):
         path = config[cfgkey.URT_EXE_PATH]
         additionalcommands = config[cfgkey.URT_EXE_PARAMS]
                 
-        cmd = path + executable + ' + connect ' + server.getaddress()
+        if not os.path.exists(os.path.join(path, executable)):
+            Log.log.warning('path to Urban Terror unreachable : ' + os.path.join(path, executable))
+        params = ' +connect ' + server.getaddress()
         if server.needsPassword():
-            cmd = cmd + ' + password ' + server.getPassword()
+            params = params + ' +password ' + server.getPassword()
             if server.getRememberPassword():
                 if server.isFavorite():
                     fm.saveFavorites()
@@ -322,20 +320,20 @@ class GuiController(object):
                 server.setPassword('')
         
         #add additional params    
-        cmd = cmd + ' ' + additionalcommands
-        
-        
+        params = params + ' ' + additionalcommands
+                
         #add server to recent servers list
         fm.addRecent(server)
-        
-        
-        Log.log.info('launching UrT with cmd = ' + cmd)
+                
+        Log.log.info('launching UrT with cmd = ' + os.path.join(path,\
+                                                     executable) + ' ' + params)
         #use shlex.split to turn the command string into a sequence
         #that works with subprocess.popen
-        args = shlex.split(cmd)       
+        args = shlex.split(executable + ' ' + params)
         
         #finally execute the command 
-        self.urt_process = subprocess.Popen(args)
+        self.urt_process = subprocess.Popen(args, executable=os.path.join(path,\
+                                        executable), cwd=os.path.normpath(path))
         
     def send_rcon_command(self, server, command, console):
         """
