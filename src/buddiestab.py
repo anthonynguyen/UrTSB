@@ -19,7 +19,6 @@
 
 from addbuddydialog import AddBuddyDialog
 from buddiesfilter import BuddiesFilter
-from filemanager import FileManager, cfgkey
 from guicontroller import GuiController
 from passworddialog import PasswordDialog
 from playerlist import PlayerList
@@ -27,8 +26,9 @@ from serverdetailbox import ServerDetailBox
 from serverlist import ServerList
 from statusbar import StatusBar
 import gtk
+from basetab import BaseTab
 
-class BuddiesTab(gtk.VBox):
+class BuddiesTab(BaseTab):
     """
     This is the gui tab for the buddylist feature
     """
@@ -124,42 +124,7 @@ class BuddiesTab(gtk.VBox):
         connect_button.connect("clicked", self.connect_button_clicked)
         
         self.show_all()
-        
-    def onAddFavButtonClicked(self, widget):   
-        """
-        Callback to handle adding a favorite
-        """
-        server = self.detailsbox.current_server
-        if server:
-            gui = GuiController()
-            gui.addFavorite(server)    
-        
-    def connect_button_clicked(self, widget):
-        """
-        Callback of the connect button
-        """
-        gui = GuiController()
-        server = self.detailsbox.current_server
-        if server:
-            if server.needsPassword():
-                passdialog = PasswordDialog(server)
-                passdialog.run()
-            else:
-                gui.connectToServer(server)
-       
-       
-    def onRefreshButtonClicked(self, widget):
-        """
-        Callback for refreshing the current selected server
-        """
-        
-        selection = self.serverlist.serverlistview.get_selection()
-        model, paths = selection.get_selected_rows()
-        if paths:
-            row =  model[paths[0][0]]
-            server = row[8]
-            guicontroller = GuiController()
-            guicontroller.setDetailServer(server, self)
+      
             
     def create_buddy_list_view(self):
         """
@@ -246,37 +211,7 @@ class BuddiesTab(gtk.VBox):
             gc = GuiController()
             gc.remove_buddy(name_to_remove)
             self.buddyliststore.remove(iter)
-            
-    def addServer(self, server):
-        """
-        Add a server to the listview/store.
-        Called by the guicontroller.
-        """
-        self.serverlist.addServer(server)
-    
-    def clearServerList(self):
-        """
-        Clears the listview
-        """
-        self.serverlist.clear()
-   
-    def setServerdetails(self, server):
-        """
-        Updates the Serverdetails if a server was selected in the serverlist.
-        Flow: Buttonclick->callback->guicontroller->this method
-        """
-        self.playerlist.clear()
-        
-        for player in server.getPlayerList():
-            self.playerlist.addPlayer(player)
-            
-        self.detailsbox.setServerDetails(server) 
-        # update row in list
-        # but only if the corresponding option is True
-        fm = FileManager()
-        config = fm.getConfiguration()
-        if 'True' == config[cfgkey.OPT_UPDATE_SL_ROW]: 
-            self.serverlist.update_selected_row(server)
+  
         
     def serverlist_loading_finished(self):
         """
