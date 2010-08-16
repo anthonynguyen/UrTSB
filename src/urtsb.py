@@ -42,7 +42,6 @@ if __name__ == '__main__':
         pass
     try:
         import gtk
-        import gtk.glade
     except:
         print 'Import GTK libraries failed!'
         sys.exit(1)
