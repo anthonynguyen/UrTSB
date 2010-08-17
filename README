@@ -36,7 +36,7 @@ Windows:
     ->  http://www.pygtk.org/downloads.html 
    
     Below is a list of the minimal dependencies and links to the installers
-    of versions that should work with UrTSB
+    of versions (Win32) that should work with UrTSB 
     
     Python 2.6 
         ( http://www.python.org/ftp/python/2.6.5/python-2.6.5.msi )
@@ -49,6 +49,9 @@ Windows:
         
     PyGObject 
         ( http://ftp.gnome.org/pub/GNOME/binaries/win32/pygobject/2.20/pygobject-2.20.0.win32-py2.6.exe )
+        
+    PyCairo
+        ( http://ftp.gnome.org/pub/GNOME/binaries/win32/pycairo/1.8/pycairo-1.8.6.win32-py2.6.exe )
 
     dnspython 
         ( http://www.dnspython.org/kits/1.8.0/dnspython-1.8.0.win32.exe )
