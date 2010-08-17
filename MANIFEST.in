@@ -1,0 +1,4 @@
+include urtsb README
+recursive-include resource/flags *
+recursive-include resource/icons *
+include resource/geoip/GeoIP.dat

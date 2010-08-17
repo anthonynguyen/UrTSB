@@ -1,0 +1,132 @@
+
+UrTSB is a Game Server Browser for the FPS Urban Terror 
+( http://www.urbanterror.info ) targeted to run on Linux but should also work
+on Windows.
+
+###############################################################################
+
+UrTSB is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+UrTSB is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
+
+###############################################################################
+
+Dependencies:
+
+Linux:
+----------------
+    Python 2.6 
+    PyGTK
+    
+    Just install these with the package manager of your linux distribution.
+    
+
+Windows: 
+----------------
+    Details on how to get PyGTK running on Windows is described here:
+    ->  http://www.pygtk.org/downloads.html 
+   
+    Below is a list of the minimal dependencies and links to the installers
+    of versions that should work with UrTSB
+    
+    Python 2.6 
+        ( http://www.python.org/ftp/python/2.6.5/python-2.6.5.msi )
+
+    GTK runtime 
+        ( http://ftp.gnome.org/pub/gnome/binaries/win32/gtk+/2.16/gtk+-bundle_2.16.6-20100207_win32.zip )
+
+    PyGTK 
+        ( http://ftp.gnome.org/pub/GNOME/binaries/win32/pygtk/2.16/pygtk-2.16.0.win32-py2.6.exe )
+        
+    PyGObject 
+        ( http://ftp.gnome.org/pub/GNOME/binaries/win32/pygobject/2.20/pygobject-2.20.0.win32-py2.6.exe )
+
+    dnspython 
+        ( http://www.dnspython.org/kits/1.8.0/dnspython-1.8.0.win32.exe )
+        
+MacOS:
+----------------
+    to be done   (how to get Python 2.6 and PyGTK work on MacOS?)
+    
+###############################################################################
+
+How to run/install:
+----------------
+
+run: 
+    unpack and launch the python runner script 'urtsb' found in the project root
+
+install:
+    details to be done (python distutils)
+
+
+
+###############################################################################
+
+Changelog:
+----------------
+
+= v.0.1 =
+
+initial release
+
+
+= v.0.2 =
+
+  * major speed improvements of server status requests (makes server search up 
+    to two times faster than in v.0.1. Refresh of favorites and recent servers 
+    are faster, too)
+  * new feature: buddylist. Search servers based on the names of players playing
+    on them. (note: search is case sensitiv!) Manage (add/remove) your Buddies 
+    and look where they are playing.
+  * serverlists are now sortable by clicking on the table headers
+  * added option to set a default tab in the settings
+  * fixed bug that prevented a server to be removed from the recent serverslist
+  * progressbar issues fixed
+  * password of servers can now be remembered. There now is also a checkbox in 
+    the password dialog that can enable/disable this function.
+  * fixed a bug that causes servers to appear multiple times in the serverlist 
+    after multiple searches
+  * a lock-icon is now displayed for passworded servers instead of the 
+    string 'yes'
+  * the selected row in a serverlist is now updated too, if the refresh-button 
+    in the details area is clicked.
+  * plus some minor bugfixes
+
+
+= v.0.2.1 =
+
+  * spelling of some labels
+  * added 'Add to Favorites' button to the serverdetails area on the 
+    'Buddies' tab
+
+
+= v.0.3 = 
+
+  * added option to disable the update of the selected server row when refresh 
+    button is clicked
+  * remember filter/query parameters
+  * some "under the hood" code improvements
+  * fixed a bug that prevented the lock-icon to be displayed on the 
+    "Recently Played" tab
+  * added feature to display location of the server as a small flag icon
+  * handle players with blank names as UnnamedPlayer
+  * applied patch to make UrTSB work on windows (contributed by Courgette from 
+    the urbanterror.info forums)
+  * server connect on double-click / enter pressed and F5 key refreshes 
+    serverdetails
+  * playerlist and server var list are now sortable
+  * now launching UrT in a subprocess ( to avoid that UrTSB is blocked while 
+    UrT is running)
+  * new feature: RCON window for remote server administration
+  * added contextmenus to the serverlist and the playerlist 
+ 
