@@ -28,6 +28,7 @@ import shlex
 import subprocess
 import thread
 import os
+from UrTSB.globals import Globals
 
 class GuiController(object):
     """
@@ -36,9 +37,9 @@ class GuiController(object):
     
     __shared_state = {} # borg pattern
     
-    appname = 'UrTSB'
-    appver = '0.3'
-    appdesc = 'a Urban Terror Server Browser'
+    appname = Globals.app_name
+    appver = Globals.app_ver
+    appdesc = Globals.app_desc
     
     instance = None
     

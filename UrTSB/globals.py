@@ -27,6 +27,11 @@ class Globals(object):
     This are the path to the configfolder and the location the py scripts are
     located.
     """
+    
+    app_name = 'UrTSB'
+    app_ver = '0.4'
+    app_desc = 'a Urban Terror Server Browser'
+    
     app_root = None
     package_dir= None
     resource_dir = None

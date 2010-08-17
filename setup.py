@@ -1,3 +1,4 @@
+from UrTSB.globals import Globals
 from distutils.core import setup
 import sys
 try:
@@ -7,9 +8,9 @@ except:
     pass
 
 cfg = {
-    'name':'urtsb',
-    'version':'0.4',
-    'description':'a Game Server Browser for the FPS Urban Terror',
+    'name':Globals.app_name,
+    'version':Globals.app_ver,
+    'description':Globals.app_desc,
     'author':'Sorcerer',
     'author_email':'sorcerersr@googlemail.com',
     'url':'http://code.google.com/p/urtsb/',
