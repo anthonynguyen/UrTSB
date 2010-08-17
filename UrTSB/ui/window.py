@@ -18,14 +18,15 @@
 #
 
 
-from buddiestab import BuddiesTab
-from favoritestab import FavoritesTab
-from filemanager import FileManager, cfgkey
-from guicontroller import GuiController
-from recenttab import RecentTab
-from servertab import ServerTab
-from settingstab import SettingsTab
+from UrTSB.filemanager import FileManager, cfgkey
+from UrTSB.guicontroller import GuiController
+from UrTSB.ui.buddiestab import BuddiesTab
+from UrTSB.ui.favoritestab import FavoritesTab
+from UrTSB.ui.recenttab import RecentTab
+from UrTSB.ui.servertab import ServerTab
+from UrTSB.ui.settingstab import SettingsTab
 import gtk
+
 
 
 

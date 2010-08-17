@@ -17,12 +17,10 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from guicontroller import GuiController
 
+from UrTSB.filemanager import FileManager
+from UrTSB.guicontroller import GuiController
 import gtk
-from filemanager import FileManager
-
-
 
 
 class BuddiesFilter(gtk.HBox):

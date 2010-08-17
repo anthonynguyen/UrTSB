@@ -17,16 +17,19 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from addbuddydialog import AddBuddyDialog
-from buddiesfilter import BuddiesFilter
-from guicontroller import GuiController
-from passworddialog import PasswordDialog
-from playerlist import PlayerList
-from serverdetailbox import ServerDetailBox
-from serverlist import ServerList
-from statusbar import StatusBar
+
+from UrTSB.guicontroller import GuiController
+from UrTSB.serverlist import ServerList
+from UrTSB.ui.addbuddydialog import AddBuddyDialog
+from UrTSB.ui.basetab import BaseTab
+from UrTSB.ui.buddiesfilter import BuddiesFilter
+from UrTSB.ui.playerlist import PlayerList
+from UrTSB.ui.serverdetailbox import ServerDetailBox
+from UrTSB.ui.statusbar import StatusBar
 import gtk
-from basetab import BaseTab
+
+
+
 
 class BuddiesTab(BaseTab):
     """

@@ -17,8 +17,9 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from filemanager import FileManager, cfgkey
-from guicontroller import GuiController
+
+from UrTSB.filemanager import FileManager, cfgkey
+from UrTSB.guicontroller import GuiController
 import gtk
 
 

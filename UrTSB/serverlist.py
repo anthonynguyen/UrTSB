@@ -18,12 +18,15 @@
 #
 
 
+from UrTSB.globals import Globals
 from flagmanager import FlagManager
 from guicontroller import GuiController
-from passworddialog import PasswordDialog
-from rconpassdialog import RconPassDialog
+from ui.passworddialog import PasswordDialog
+from ui.rconpassdialog import RconPassDialog
 import gtk
+import os.path
 import sys
+
 
 class ServerList(gtk.ScrolledWindow):
     """
@@ -45,7 +48,7 @@ class ServerList(gtk.ScrolledWindow):
         """
         gtk.ScrolledWindow.__init__(self)
         lock_image = gtk.Image()
-        lock_image.set_from_file(sys.path[0] + '/lock.png')
+        lock_image.set_from_file(Globals.icon_dir+'/lock.png')
         self.lock_pixbuf = lock_image.get_pixbuf()
         
         not_locked = gtk.Image()

@@ -59,7 +59,7 @@ class QueryManager(object):
         coord.daemon = True
         coord.start()
         
-        dbname = Globals.scriptdir + '/../geoip/GeoIP.dat'
+        dbname = Globals.geoip_dir+ '/GeoIP.dat'
         self.pygeoip = GeoIP(dbname, pygeoip.const.MMAP_CACHE)
         
     def startMasterServerQueryThread(self, filter, tab):

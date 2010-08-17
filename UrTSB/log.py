@@ -35,7 +35,7 @@ class Log(object):
         
         @parameter the loggin level to use
         """
-        log_file = Globals.configfolder + '/urtsb.log'
+        log_file = Globals.config_dir + '/urtsb.log'
         Log.log = logging.getLogger('UrTSB')
         #initialize logging
         #rotating filehandler using a 2MB logfile and keep 5 backups

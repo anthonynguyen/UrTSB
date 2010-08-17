@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-from guicontroller import GuiController
-from server import Server
+from UrTSB.guicontroller import GuiController
+from UrTSB.servermanager import ServerManager
 import gtk
-from servermanager import ServerManager
+
+
 
 
 

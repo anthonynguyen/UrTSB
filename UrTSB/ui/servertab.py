@@ -17,28 +17,24 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from guicontroller import GuiController
-from passworddialog import PasswordDialog
+
+from UrTSB.serverlist import ServerList
+from basetab import BaseTab
 from playerlist import PlayerList
-from recentserverfilter import RecentSeversFilter
-from recentserverslist import RecentServersList
 from serverdetailbox import ServerDetailBox
+from serverlistfilter import ServerListFilter
 from statusbar import StatusBar
 import gtk
-from basetab import BaseTab
 
 
 
-
-
-
-class RecentTab(BaseTab):
+class ServerTab(BaseTab):
     """
-    Content of the Recent Servers tab.
-    - serverlist treeview,
-    - detailarea with playerlist, servervars, serverinfo and buttons
+    Contents of the Servers tab. Displays the servers retreived from 
+    the master server
     """
-
+    
+    
 
     def __init__(self):
         """
@@ -46,10 +42,12 @@ class RecentTab(BaseTab):
         """
         gtk.VBox.__init__(self)
         
-        
-        self.filter = RecentSeversFilter()
+        self.filter = ServerListFilter(self)
         self.filter.show()
+        
         self.pack_start(self.filter, False, False)
+        
+       
         
         # top pane area 
         paned = gtk.VPaned() 
@@ -60,8 +58,9 @@ class RecentTab(BaseTab):
         self.statusbar = StatusBar()
         self.pack_start(self.statusbar, False, False)
         
+        
         # serverlist window
-        self.serverlist = RecentServersList(self)
+        self.serverlist = ServerList(self)
         paned.pack1(self.serverlist, True, False)
         #paned.add1(self.serverlist)
         
@@ -80,9 +79,14 @@ class RecentTab(BaseTab):
         #right box
         self.detailsbox = ServerDetailBox()
         vbox = gtk.VBox()
+        
+        
         bottompane.pack2(vbox, True, False)
         
+      
         buttonbox = gtk.HBox()
+        
+        #self.detailsbox.pack_start(buttonbox, False, False)
         vbox.pack_start(buttonbox, False, False)
         vbox.pack_start(self.detailsbox)
         
@@ -102,52 +106,22 @@ class RecentTab(BaseTab):
         favimage.set_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_BUTTON)
         addfav_button.set_image(favimage)
         
-        removerecent_button = gtk.Button('Remove Server from List')
-        removeimage = gtk.Image()
-        removeimage.set_from_stock(gtk.STOCK_DELETE, gtk.ICON_SIZE_BUTTON)
-        removerecent_button.set_image(removeimage)
-        
         
         buttonbox.pack_start(refresh_button, True, True)
         buttonbox.pack_start(connect_button, True, True)
         buttonbox.pack_start(addfav_button, True, True)
-        buttonbox.pack_start(removerecent_button, True, True)
-        
         refresh_button.connect("clicked", self.onRefreshButtonClicked)
-        connect_button.connect("clicked", self.connect_button_clicked)
-        removerecent_button.connect("clicked", self.onRemoveRecentClicked)
         addfav_button.connect("clicked", self.onAddFavButtonClicked)
+        connect_button.connect("clicked", self.connect_button_clicked)
         
         self.show_all()
+        
+        # self.pack_start(button,False)
 
-    def onRemoveRecentClicked(self, widget):
-        """
-        Callback method for the remove button. Triggers the removal of 
-        the recent server entry by calling the gui controller which then 
-        removes the recent server (from list in memory and also from file)
-        Also removes the recent server directly from the liststore.
         
-        @param widget - the widget that emitted the clicked signal - the button 
-        """
-        
-         
-                
-        #remove row from liststore and also the server from the recent list
-        selection = self.serverlist.serverlistview.get_selection()
-        result = selection.get_selected()
-        if result: 
-            model, iter = result
-            
-            server = self.serverlist.liststore.get_value(iter, 8)
-            #remove it from the favoriteslist
-            gui = GuiController()
-            gui.removeRecent(server)
-            
-            model.remove(iter)
-       
     def serverlist_loading_finished(self):
         """
         Callback method executed when the search has finished
         """
         #reactivate the search button
-        self.filter.refresh_button.set_sensitive(True)             
+        self.filter.searchbutton.set_sensitive(True)     

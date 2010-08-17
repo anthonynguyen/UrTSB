@@ -16,8 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
+from UrTSB.guicontroller import GuiController
 import gtk
-from guicontroller import GuiController
+
 
 class RconWindow(gtk.Window):
     """

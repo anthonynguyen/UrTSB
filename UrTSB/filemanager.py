@@ -96,13 +96,13 @@ class FileManager(object):
             
             
             # extend filenames with path to the configurationfolder
-            self.log_file = Globals.configfolder+FileManager.log_file
-            self.fav_file = Globals.configfolder+FileManager.fav_file
-            self.rec_file = Globals.configfolder+FileManager.rec_file
-            self.conf_file = Globals.configfolder+FileManager.conf_file
-            self.buddies_file = Globals.configfolder+FileManager.buddies_file
-            self.filter_file = Globals.configfolder+FileManager.filter_file
-            self.rcon_file = Globals.configfolder+FileManager.rcon_file
+            self.log_file = Globals.config_dir+FileManager.log_file
+            self.fav_file = Globals.config_dir+FileManager.fav_file
+            self.rec_file = Globals.config_dir+FileManager.rec_file
+            self.conf_file = Globals.config_dir+FileManager.conf_file
+            self.buddies_file = Globals.config_dir+FileManager.buddies_file
+            self.filter_file = Globals.config_dir+FileManager.filter_file
+            self.rcon_file = Globals.config_dir+FileManager.rcon_file
             
             #initialise ServerManager
             self.srvman = ServerManager()

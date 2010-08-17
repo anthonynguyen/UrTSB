@@ -17,10 +17,10 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from filemanager import FileManager, cfgkey
-from guicontroller import GuiController
-import gtk
+
+from UrTSB.filemanager import FileManager
 from rconwindow import RconWindow
+import gtk
 
 
 class RconPassDialog(gtk.Dialog):

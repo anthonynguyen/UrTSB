@@ -17,9 +17,10 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from UrTSB.flagmanager import FlagManager
 import glib
 import gtk
-from flagmanager import FlagManager
+
 
 
 class ServerDetailBox(gtk.HBox):

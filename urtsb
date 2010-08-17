@@ -1,8 +1,7 @@
-#!/usr/bin/env sh
-# full path to script (incluse filename of the script)
-SCRIPT=`readlink -f $0`
-# just the directory path
-SCRIPTPATH=`dirname $SCRIPT`
+#!/usr/bin/env python
 
-# launch urtsb
-$SCRIPTPATH/src/urtsb.py
+
+
+from UrTSB import urtsb
+
+urtsb.start()

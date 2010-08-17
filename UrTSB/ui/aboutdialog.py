@@ -18,8 +18,9 @@
 #
 
 
+from UrTSB.guicontroller import GuiController
 import gtk
-from guicontroller import GuiController
+
 
 class AboutDialog(gtk.AboutDialog):
     """

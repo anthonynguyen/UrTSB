@@ -5,7 +5,7 @@ Created on 08.08.2010
 '''
 from globals import Globals
 import gtk
-import sys
+
 
 class FlagManager(object):
     """
@@ -45,7 +45,7 @@ class FlagManager(object):
             try:
                 flag_img = gtk.Image()
                 imagename = country.lower() + '.png'
-                flag_img.set_from_file(Globals.scriptdir + '/../flags/' + imagename)
+                flag_img.set_from_file(Globals.flag_dir + '/' + imagename)
                 flag_pixbuf = flag_img.get_pixbuf()
                 self.flags[country] = flag_pixbuf 
                 return flag_pixbuf

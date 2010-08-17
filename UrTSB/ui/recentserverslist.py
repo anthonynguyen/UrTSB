@@ -17,8 +17,9 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from flagmanager import FlagManager
-from serverlist import ServerList
+
+from UrTSB.flagmanager import FlagManager
+from UrTSB.serverlist import ServerList
 import gtk
 
 class RecentServersList(ServerList):

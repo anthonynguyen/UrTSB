@@ -17,8 +17,9 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from filemanager import FileManager, filterkey
-from guicontroller import GuiController
+
+from UrTSB.filemanager import FileManager, filterkey
+from UrTSB.guicontroller import GuiController
 from threading import Thread
 import gtk
 

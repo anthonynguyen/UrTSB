@@ -17,8 +17,10 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from aboutdialog import AboutDialog
-from filemanager import FileManager, cfgkey
+
+
+from UrTSB.filemanager import FileManager, cfgkey
+from UrTSB.ui.aboutdialog import AboutDialog
 import gtk
 
 class SettingsTab(gtk.VBox):
