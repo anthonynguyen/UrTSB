@@ -45,7 +45,7 @@ class Globals(object):
         Globals.package_dir = packagepath
         Globals.app_root = os.path.normpath(os.path.join(Globals.package_dir,\
                                                                          '../'))
-        Globals.resource_dir = os.path.join(Globals.app_root, 'resource')
+        Globals.resource_dir = os.path.join(Globals.package_dir, 'resource')
         Globals.config_dir = Globals.__determine_config_dir()
         
         # resource dirs 
