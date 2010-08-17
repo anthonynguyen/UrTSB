@@ -66,7 +66,15 @@ run:
     unpack and launch the python runner script 'urtsb' found in the project root
 
 install:
-    details to be done (python distutils)
+    Linux: 
+    You can install UrTSB using python distutils. UrTSB will be installed in 
+    your Python site-packages directory.
+    run as root:
+	python setup.py install
+    or when using sudo:
+        sudo python setup.py install
+
+    
 
 
 
