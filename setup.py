@@ -1,5 +1,6 @@
-from UrTSB.globals import Globals
+
 from distutils.core import setup
+from urtsb_src.globals import Globals
 import sys
 try:
     import py2exe
