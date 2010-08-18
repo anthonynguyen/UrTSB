@@ -59,9 +59,9 @@ def determine_path ():
 def start ():
         
     try_gtk_imports()
-    
-    gobject.threads_init() # enable threads for gtk
-    
+   
+    gtk.gdk.threads_init() # enable threads for gtk
+       
     #init global definitions:
     Globals.initialize(determine_path())
     
