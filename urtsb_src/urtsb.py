@@ -60,8 +60,9 @@ def start ():
         
     try_gtk_imports()
    
-    gtk.gdk.threads_init() # enable threads for gtk
-       
+   
+    gobject.threads_init() # enable threads for gtk
+    
     #init global definitions:
     Globals.initialize(determine_path())
     
