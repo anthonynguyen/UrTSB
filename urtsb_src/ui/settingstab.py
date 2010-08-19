@@ -20,7 +20,7 @@
 
 
 
-from urtsb_src.filemanager import FileManager, cfgkey
+from urtsb_src.filemanager import FileManager, cfgkey, cfgvalues
 from urtsb_src.ui.aboutdialog import AboutDialog
 import gtk
 
@@ -104,6 +104,18 @@ class SettingsTab(gtk.VBox):
             self.checkbox_update_sl_row.set_active(True)
         else:
             self.checkbox_update_sl_row.set_active(False)
+            
+            
+        if cfgvalues.BASIC_FILTER == config[cfgkey.OPT_FILTER]:
+            self.filter_basic_radio.set_active(True)
+            self.filter_advanced_radio.set_active(False)
+        elif cfgvalues.ADVANCED_FILTER == config[cfgkey.OPT_FILTER]:
+            self.filter_basic_radio.set_active(False)
+            self.filter_advanced_radio.set_active(True)
+        else: #fallback to basic
+            self.filter_basic_radio.set_active(True)
+            self.filter_advanced_radio.set_active(False)
+            
             
     def create_launch_settings_frame(self):
         """
@@ -190,7 +202,23 @@ class SettingsTab(gtk.VBox):
                                +'row\n in the serverlist remains untouched.')
         vbox.pack_start(desc3_label)
         
+        # filter option (choose basic or advanced filter)
+        
+        desc3_label = gtk.Label('Filter Options')
+        vbox.pack_start(desc3_label)
+        
+        
+        self.filter_basic_radio = gtk.RadioButton(None, 'use the basic filter' \
+                                                                     + ' panel')
+        self.filter_basic_radio.set_active(False)
+        vbox.pack_start(self.filter_basic_radio, True, True, 0)
+        self.filter_basic_radio.set_border_width(5)   
        
+        self.filter_advanced_radio = gtk.RadioButton(self.filter_basic_radio, \
+                                                      'use the advanced filter')
+        vbox.pack_start(self.filter_advanced_radio, True, True, 0)
+        self.filter_advanced_radio.set_border_width(5)
+        
         
         return launchframe
     
@@ -220,6 +248,13 @@ class SettingsTab(gtk.VBox):
             config[cfgkey.OPT_UPDATE_SL_ROW] = 'True'
         else:
             config[cfgkey.OPT_UPDATE_SL_ROW] = 'False'
+        
+        if self.filter_basic_radio.get_active():
+            config[cfgkey.OPT_FILTER] = cfgvalues.BASIC_FILTER
+        elif self.filter_advanced_radio.get_active():
+            config[cfgkey.OPT_FILTER] = cfgvalues.ADVANCED_FILTER
+        else: #fallback
+            config[cfgkey.OPT_FILTER] = cfgvalues.BASIC_FILTER
         
         fm.saveConfiguration()
     
