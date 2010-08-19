@@ -33,6 +33,16 @@ class cfgkey:
         OPT_SAVE_PW = 'save_passwords'
         OPT_DEFAULT_TAB = 'default_tab'
         OPT_UPDATE_SL_ROW = 'update_serverlist_row'
+        OPT_FILTER = 'filter'
+        
+class cfgvalues:
+    """
+    Class as enum like value definition of configuration values
+    """
+    TRUE = 'True'
+    FALSE = 'False'
+    BASIC_FILTER = 'basic_filter'
+    ADVANCED_FILTER = 'adv_filter'
         
 class filterkey:
     """
@@ -445,6 +455,7 @@ class FileManager(object):
         configuration[cfgkey.OPT_SAVE_PW] = 'True'
         configuration[cfgkey.OPT_DEFAULT_TAB] = 0
         configuration[cfgkey.OPT_UPDATE_SL_ROW] = 'False'
+        configuration[cfgkey.OPT_FILTER] = cfgvalues.BASIC_FILTER
 
         return configuration
     

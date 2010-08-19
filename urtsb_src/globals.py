@@ -35,7 +35,7 @@ class Globals(object):
     app_root = None
     package_dir= None
     resource_dir = None
-    configfolder = None
+    config_dir = None
     
     icon_dir = None
     geoip_dir = None
