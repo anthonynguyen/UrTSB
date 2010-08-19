@@ -24,8 +24,9 @@ from playerlist import PlayerList
 from serverdetailbox import ServerDetailBox
 from serverlistfilter import ServerListFilter
 from statusbar import StatusBar
-from urtsb_src.serverlist import ServerList
+from urtsb_src.ui.serverlist import ServerList
 import gtk
+
 
 
 

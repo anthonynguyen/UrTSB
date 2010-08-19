@@ -19,11 +19,12 @@
 
 
 
-from flagmanager import FlagManager
-from guicontroller import GuiController
-from ui.passworddialog import PasswordDialog
-from ui.rconpassdialog import RconPassDialog
+
+from urtsb_src.flagmanager import FlagManager
 from urtsb_src.globals import Globals
+from urtsb_src.guicontroller import GuiController
+from urtsb_src.ui.passworddialog import PasswordDialog
+from urtsb_src.ui.rconpassdialog import RconPassDialog
 import gtk
 import os.path
 import sys

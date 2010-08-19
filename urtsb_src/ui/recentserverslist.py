@@ -20,8 +20,9 @@
 
 
 from urtsb_src.flagmanager import FlagManager
-from urtsb_src.serverlist import ServerList
+from urtsb_src.ui.serverlist import ServerList
 import gtk
+
 
 class RecentServersList(ServerList):
     """

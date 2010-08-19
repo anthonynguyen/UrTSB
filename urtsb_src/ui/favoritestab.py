@@ -22,11 +22,12 @@ from favoritesfilter import FavoritesFilter
 from statusbar import StatusBar
 from urtsb_src.filemanager import FileManager, cfgkey
 from urtsb_src.guicontroller import GuiController
-from urtsb_src.serverlist import ServerList
 from urtsb_src.ui.passworddialog import PasswordDialog
 from urtsb_src.ui.playerlist import PlayerList
 from urtsb_src.ui.serverdetailbox import ServerDetailBox
+from urtsb_src.ui.serverlist import ServerList
 import gtk
+
 
 
 

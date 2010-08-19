@@ -20,14 +20,15 @@
 
 
 from urtsb_src.guicontroller import GuiController
-from urtsb_src.serverlist import ServerList
 from urtsb_src.ui.addbuddydialog import AddBuddyDialog
 from urtsb_src.ui.basetab import BaseTab
 from urtsb_src.ui.buddiesfilter import BuddiesFilter
 from urtsb_src.ui.playerlist import PlayerList
 from urtsb_src.ui.serverdetailbox import ServerDetailBox
+from urtsb_src.ui.serverlist import ServerList
 from urtsb_src.ui.statusbar import StatusBar
 import gtk
+
 
 
 
