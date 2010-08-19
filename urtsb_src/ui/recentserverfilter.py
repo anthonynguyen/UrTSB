@@ -39,10 +39,12 @@ class RecentSeversFilter(gtk.HBox):
         clear_button = gtk.Button('Clear List')
         self.pack_start(clear_button, False, False)
         clear_button.connect("clicked", self.on_clear_button_clicked)
+        clear_button.set_border_width(5)
         
         self.refresh_button = gtk.Button('Refresh List')
         self.pack_end(self.refresh_button, False, False)
         self.refresh_button.connect("clicked", self.on_refresh_clicked)
+        self.refresh_button.set_border_width(5)
     
     def on_clear_button_clicked(self, widget):
         """

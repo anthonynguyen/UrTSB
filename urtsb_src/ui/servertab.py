@@ -26,6 +26,8 @@ from serverlistfilter import ServerListFilter
 from statusbar import StatusBar
 from urtsb_src.ui.serverlist import ServerList
 import gtk
+from urtsb_src.filemanager import FileManager, cfgvalues, cfgkey
+from urtsb_src.ui.adv_filter import AdvancedFilter
 
 
 
@@ -44,7 +46,13 @@ class ServerTab(BaseTab):
         """
         gtk.VBox.__init__(self)
         
-        self.filter = ServerListFilter(self)
+        fm = FileManager()
+        config = fm.getConfiguration()
+        
+        if cfgvalues.BASIC_FILTER == config[cfgkey.OPT_FILTER]:        
+            self.filter = ServerListFilter(self)
+        else:
+            self.filter = AdvancedFilter(self)
         self.filter.show()
         
         self.pack_start(self.filter, False, False)

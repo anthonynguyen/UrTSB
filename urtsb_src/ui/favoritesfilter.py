@@ -48,12 +48,12 @@ class FavoritesFilter(gtk.HBox):
         addbox.pack_start(self.addentry, False, False)
         addbox.pack_start(addbutton, False, False)
         addbutton.connect("clicked", self.on_add_clicked)
-        
+        addbutton.set_border_width(5)
         
         self.refresh_button = gtk.Button('Refresh List')
         self.pack_end(self.refresh_button, False, False)
         self.refresh_button.connect("clicked", self.on_refresh_clicked)
-    
+        self.refresh_button.set_border_width(5)
         self.show_all()
         
     def on_add_clicked(self, widget):   
