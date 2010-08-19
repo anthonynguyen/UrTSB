@@ -219,6 +219,10 @@ class SettingsTab(gtk.VBox):
         vbox.pack_start(self.filter_advanced_radio, True, True, 0)
         self.filter_advanced_radio.set_border_width(5)
         
+        restart_note_label = gtk.Label('NOTE: This option needs a restart of '\
+                                                      + 'UrTSB to take effect.')
+        vbox.pack_start(restart_note_label)
+        
         
         return launchframe
     
