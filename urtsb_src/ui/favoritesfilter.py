@@ -63,6 +63,7 @@ class FavoritesFilter(gtk.HBox):
         try:
             host, port = enteredserver.split(':', 1)
             port = int(port)
+            host = guicontroller.get_host_by_name(host)
             server = srvman.getServer(host, port)
         except:
             self.parent.statusbar.progressbar.set_text('Failed to add server!')

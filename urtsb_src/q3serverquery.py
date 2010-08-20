@@ -50,7 +50,14 @@ class Q3ServerQuery(object):
     packet_prefix = '\xff' * 4
     
     
-   
+    def get_host_by_name(self, name):
+        """
+        Converts the passed hostname to a ipv4 ip adress.
+        If the name already is a ipv4 ip it is returned unchanged
+        
+        @param name - the name for which an ip is requested
+        """
+        return socket.gethostbyname(name)
    
     def parseInfoResponse(self, response, server):
         """
