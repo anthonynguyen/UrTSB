@@ -20,6 +20,7 @@ from urtsb_src.guicontroller import GuiController
 from urtsb_src.log import Log
 from urtsb_src.servermanager import ServerManager
 import gtk
+from urtsb_src.ui.adv_filter_window import AdvancedFilterWindow
 
 class AdvancedFilter(gtk.HBox):
     """
@@ -85,6 +86,7 @@ class AdvancedFilter(gtk.HBox):
             server = srvman.getServer(host, port)
         except:
             self.parent.statusbar.progressbar.set_text('Failed to lookup server!')
+            self.unlock()
             return
         #TODO: perform the lookup
         guicontroller.lookup_server(server, self.parenttab)
@@ -99,7 +101,9 @@ class AdvancedFilter(gtk.HBox):
         """
         Callback of the configure filter button
         """
-        Log.log.info('not yet implemented!')
+        #Log.log.info('not yet implemented!')
+        filter_popup = AdvancedFilterWindow(None)
+        filter_popup.run()
         
     def lock(self):
         """

@@ -409,19 +409,26 @@ class QueryManager(object):
         
         
         gametype = server.getGameType()
-        if gametype == '8' and not filter.checkbox_show_gametype_bomb.get_active():
+        if gametype == '8' and not filter.gametypes.\
+                                       checkbox_show_gametype_bomb.get_active():
             return True
-        elif gametype == '6' and not filter.checkbox_show_gametype_cah.get_active():
+        elif gametype == '6' and not filter.gametypes.\
+                                        checkbox_show_gametype_cah.get_active():
             return True
-        elif gametype == '7' and not filter.checkbox_show_gametype_ctf.get_active(): 
+        elif gametype == '7' and not filter.gametypes.\
+                                        checkbox_show_gametype_ctf.get_active(): 
             return True
-        elif gametype == '0' and not filter.checkbox_show_gametype_ffa.get_active():
+        elif gametype == '0' and not filter.gametypes.\
+                                        checkbox_show_gametype_ffa.get_active():
             return True
-        elif gametype == '3' and not filter.checkbox_show_gametype_tdm.get_active():
+        elif gametype == '3' and not filter.gametypes.\
+                                        checkbox_show_gametype_tdm.get_active():
             return True
-        elif gametype == '4' and not filter.checkbox_show_gametype_survivor.get_active():
+        elif gametype == '4' and not filter.gametypes.\
+                                   checkbox_show_gametype_survivor.get_active():
             return True
-        elif gametype == '5' and not filter.checkbox_show_gametype_ftl.get_active():
+        elif gametype == '5' and not filter.gametypes.\
+                                        checkbox_show_gametype_ftl.get_active():
             return True
         
         filter_min_player = filter.minplayerentry.get_value_as_int()
