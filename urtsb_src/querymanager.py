@@ -118,6 +118,20 @@ class QueryManager(object):
         
         #notify the coordinator thread, that the serverlist is loaded
         self.messageque.put('serverlist_loaded')
+     
+    def lookup_server(self, server, tab):
+        """
+        Starts the lookup of a certain server. 
+        
+        @param server - the server to be looked up
+        @param tab - the requesting tab
+        """
+        self.tab = tab
+        self.filter = None
+        
+        self.serverqueue.put(server)
+        self.servercount = 1
+        self.messageque.put('serverlist_loaded')
         
     def coordinator(self):
         """

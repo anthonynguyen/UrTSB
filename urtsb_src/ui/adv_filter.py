@@ -16,7 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
+from urtsb_src.guicontroller import GuiController
 from urtsb_src.log import Log
+from urtsb_src.servermanager import ServerManager
 import gtk
 
 class AdvancedFilter(gtk.HBox):
@@ -44,12 +46,12 @@ class AdvancedFilter(gtk.HBox):
         desc_lookup_label = gtk.Label('direct server lookup:')
         self.lookupentry = gtk.Entry()
         self.lookupentry.set_width_chars(40)
-        lookupbutton = gtk.Button('Lookup')
+        self.lookupbutton = gtk.Button('Lookup')
         lookupbox.pack_start(desc_lookup_label, False, False)
         lookupbox.pack_start(self.lookupentry, False, False)
-        lookupbox.pack_start(lookupbutton, False, False)
-        lookupbutton.connect("clicked", self.on_lookup_clicked)
-        lookupbutton.set_border_width(5)
+        lookupbox.pack_start(self.lookupbutton, False, False)
+        self.lookupbutton.connect("clicked", self.on_lookup_clicked)
+        self.lookupbutton.set_border_width(5)
         
         
         
@@ -71,7 +73,21 @@ class AdvancedFilter(gtk.HBox):
         """
         Callback of the lookup button
         """
-        Log.log.info('not yet implemented!')
+        self.lock()
+        
+        srvman = ServerManager() 
+        enteredserver = self.lookupentry.get_text()
+        guicontroller = GuiController()
+        try:
+            host, port = enteredserver.split(':', 1)
+            port = int(port)
+            host = guicontroller.get_host_by_name(host)
+            server = srvman.getServer(host, port)
+        except:
+            self.parent.statusbar.progressbar.set_text('Failed to lookup server!')
+            return
+        #TODO: perform the lookup
+        guicontroller.lookup_server(server, self.parenttab)
         
     def on_search_clicked(self, button):
         """
@@ -84,3 +100,19 @@ class AdvancedFilter(gtk.HBox):
         Callback of the configure filter button
         """
         Log.log.info('not yet implemented!')
+        
+    def lock(self):
+        """
+        Locks the UI-Elements for Lookup and Search so no two concurrent 
+        requests can be executed!
+        """
+        self.search_button.set_sensitive(False)
+        self.lookupbutton.set_sensitive(False)
+        
+    def unlock(self):
+        """
+        Unlocks the UI Elements for lookup and search after the request
+        has finished.
+        """
+        self.search_button.set_sensitive(True)
+        self.lookupbutton.set_sensitive(True)

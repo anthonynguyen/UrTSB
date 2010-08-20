@@ -134,4 +134,4 @@ class ServerTab(BaseTab):
         Callback method executed when the search has finished
         """
         #reactivate the search button
-        self.filter.searchbutton.set_sensitive(True)     
+        self.filter.unlock()    

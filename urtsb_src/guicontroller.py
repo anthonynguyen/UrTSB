@@ -61,6 +61,23 @@ class GuiController(object):
         query = Q3ServerQuery()
         return query.get_host_by_name(name)
 
+    def lookup_server(self, server, tab):
+        """
+        This method performs a lookup of a certain server. Its like a search
+        with the adress as paremeter so it clears the serverlist on the 
+        requesting tab and only adds the server object with the looked up 
+        data to the list afterwards.
+        
+        @param server - the server to be looked up
+        @param tab - the requesting tab
+        """
+        #clear the serverlist on the tab
+        tab.serverlist.clear()
+        
+        #start the lookup in an extra thread using the querymanager
+        qm = QueryManager()
+        qm.lookup_server(server, tab)
+        
         
     def addFavorite(self, server):
         """

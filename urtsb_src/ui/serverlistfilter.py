@@ -279,7 +279,7 @@ class ServerListFilter(gtk.HBox):
         """
         #disable the button, so that no multiple queries are launched while
         #still one is active
-        widget.set_sensitive(False)
+        self.lock()
         #update the filter dict of the filemanager
         self.save_filter()
         guicontroller = GuiController()
@@ -354,4 +354,16 @@ class ServerListFilter(gtk.HBox):
         """
         return 'serverlistfilter' 
     
-    
+    def lock(self):
+        """
+        Locks the UI-Elements for search so no two concurrent 
+        requests can be executed!
+        """
+        self.searchbutton.set_sensitive(False)
+        
+    def unlock(self):
+        """
+        Unlocks the UI Elements for search after the request
+        has finished.
+        """
+        self.searchbutton.set_sensitive(True)
