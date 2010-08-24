@@ -20,6 +20,7 @@
 
 
 from urtsb_src.filemanager import FileManager, cfgkey
+from urtsb_src.globals import Globals
 from urtsb_src.guicontroller import GuiController
 from urtsb_src.ui.buddiestab import BuddiesTab
 from urtsb_src.ui.favoritestab import FavoritesTab
@@ -50,6 +51,7 @@ class Window():
         self.window = gtk.Window()
         gc = GuiController()
         self.window.set_title(gc.appname + ' v.' + gc.appver + ' - ' + gc.appdesc)
+        self.window.set_icon_from_file(Globals.icon_dir +'/logo.png')
         self.window.set_default_size(1024, 768)
         self.window.set_position(gtk.WIN_POS_CENTER)
         self.window.connect('destroy', gtk.main_quit)

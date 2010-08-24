@@ -19,6 +19,7 @@
 
 
 
+from urtsb_src.globals import Globals
 from urtsb_src.guicontroller import GuiController
 import gtk
 
@@ -57,3 +58,8 @@ class AboutDialog(gtk.AboutDialog):
         self.set_authors(authors)
         self.set_copyright('(c) 2010')
         self.set_license(self.gplstring)
+        
+        logo_image = gtk.Image()
+        logo_image.set_from_file(Globals.icon_dir+'/logo.png')
+        self.set_logo(logo_image.get_pixbuf())
+        
