@@ -102,7 +102,7 @@ class ServerDetailBox(gtk.HBox):
         infobox.pack_start(self.namelabel, True, False)
         
         #rows, cols
-        table = gtk.Table(5,2)
+        table = gtk.Table(6,2)
         infobox.pack_start(table)
         
         addresslabel = gtk.Label('Address:')
@@ -122,6 +122,9 @@ class ServerDetailBox(gtk.HBox):
         
         pinglabel = gtk.Label('Ping:')
         pinglabel.set_alignment(xalign=0, yalign=0.5)
+        
+        gearlabel = gtk.Label('Gear:')
+        gearlabel.set_alignment(xalign=0, yalign=0.5)
         
         passlabel = gtk.Label('needs Password:')
         passlabel.set_alignment(xalign=0, yalign=0.5)
@@ -151,6 +154,9 @@ class ServerDetailBox(gtk.HBox):
         self.passvaluelabel = gtk.Label()
         self.passvaluelabel.set_alignment(xalign=0, yalign=0.5)
         
+        self.geavaluelabel = gtk.Label()
+        self.geavaluelabel.set_alignment(xalign=0, yalign=0.5)
+        
         table.attach(addresslabel, 0,1,0,1 )
         table.attach(playerslabel, 0,1,1,2)
         table.attach(maplabel, 0,1,2,3)
@@ -158,6 +164,8 @@ class ServerDetailBox(gtk.HBox):
         table.attach(locationlabel, 0,1,4,5)
         table.attach(pinglabel, 0,1,5,6)
         table.attach(passlabel, 0,1,6,7)
+        table.attach(gearlabel, 0,1,7,8)
+        
         
         
         table.attach(self.addressvaluelabel, 1,2,0,1 )
@@ -167,6 +175,8 @@ class ServerDetailBox(gtk.HBox):
         table.attach(locationbox, 1,2,4,5)
         table.attach(self.pingvaluelabel, 1,2,5,6)
         table.attach(self.passvaluelabel, 1,2,6,7)
+        table.attach(self.geavaluelabel, 1,2,7,8)
+        
         
         self.show_all()
 
@@ -231,6 +241,10 @@ class ServerDetailBox(gtk.HBox):
             self.passvaluelabel.set_text('Yes')
         else: 
             self.passvaluelabel.set_text('No')
+        
+        vars = server.getServerVars()
+        if 'g_gear' in vars:
+            self.geavaluelabel.set_text(vars['g_gear'])
         
         #server vars treeview           
         self.varliststore.clear()
