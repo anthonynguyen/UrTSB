@@ -492,8 +492,10 @@ class AdvancedFilterWindow(gtk.Dialog):
         filter[filterkey.FLT_HIDE_PASSWORDED] = value
         
         #mapname and servername filter
-        filter[filterkey.FLT_MAP_NAME] = self.mapnameentry.get_text()
-        filter[filterkey.FLT_SERVER_NAME] = self.servernameentry.get_text()        
+        if filterkey.FLT_MAP_NAME in filter:
+            filter[filterkey.FLT_MAP_NAME] = self.mapnameentry.get_text()
+        if filterkey.FLT_SERVER_NAME in filter:
+            filter[filterkey.FLT_SERVER_NAME] = self.servernameentry.get_text()        
         
         #query params
         value = fm.value_from_boolean(self.checkbox_showfull.get_active())
