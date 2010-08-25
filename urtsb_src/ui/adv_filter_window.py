@@ -18,9 +18,9 @@
 #
 from threading import Thread
 from urtsb_src.filemanager import FileManager, filterkey
+from urtsb_src.globals import Globals
 from urtsb_src.ui.gametypes_filter import GametypesFilter
 import gtk
-import math
 
 class AdvancedFilterWindow(gtk.Dialog):
     """
@@ -34,6 +34,7 @@ class AdvancedFilterWindow(gtk.Dialog):
         """
         gtk.Dialog.__init__(self, 'Advanced Filter Settings', None,\
                               gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
+        self.set_icon_from_file(Globals.icon_dir +'/logo.png')
         self.set_default_size(700, 500)
         self.filter = filter
         #buttons
