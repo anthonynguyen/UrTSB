@@ -22,6 +22,7 @@
 
 from urtsb_src.filemanager import FileManager, cfgkey, cfgvalues
 from urtsb_src.ui.aboutdialog import AboutDialog
+from urtsb_src.ui.servertab import ServerTab
 import gtk
 
 class SettingsTab(gtk.VBox):
@@ -219,9 +220,7 @@ class SettingsTab(gtk.VBox):
         vbox.pack_start(self.filter_advanced_radio, True, True, 0)
         self.filter_advanced_radio.set_border_width(5)
         
-        restart_note_label = gtk.Label('NOTE: This option needs a restart of '\
-                                                      + 'UrTSB to take effect.')
-        vbox.pack_start(restart_note_label)
+      
         
         
         return launchframe
@@ -230,6 +229,7 @@ class SettingsTab(gtk.VBox):
         """
         Callback of the save button
         """
+                
         fm = FileManager()
         config = fm.getConfiguration()
         config[cfgkey.URT_EXE] = self.exe_entry.get_text()
@@ -259,6 +259,15 @@ class SettingsTab(gtk.VBox):
             config[cfgkey.OPT_FILTER] = cfgvalues.ADVANCED_FILTER
         else: #fallback
             config[cfgkey.OPT_FILTER] = cfgvalues.BASIC_FILTER
+        
+        #refresh the serverlist tab to make changes to the filter available 
+        #without restart
+        window = self.parent.parent.parent
+        notebook = window.notebook
+        notebook.remove_page(0)
+        window.serverlisttab = ServerTab()
+        srvlabel = gtk.Label('Serverlist')
+        notebook.insert_page(window.serverlisttab, srvlabel, 0)        
         
         fm.saveConfiguration()
     

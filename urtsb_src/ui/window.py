@@ -35,31 +35,34 @@ import gtk
 
 
 
-class Window():
+class Window(gtk.Window):
     """
     This class is the entry point of the UI part of UrTSB.
     It creates the GTK Window.
     """    
     
+    instance= None
     
     def __init__(self):
         """
         Constructor. Creating and inititializing the main window of UrTSB.
         """
+        gtk.Window.__init__(self)
+        Window.instance = self
         
         #window creation and basic window settings
-        self.window = gtk.Window()
+        
         gc = GuiController()
-        self.window.set_title(gc.appname + ' v.' + gc.appver + ' - ' + gc.appdesc)
-        self.window.set_icon_from_file(Globals.icon_dir +'/logo.png')
-        self.window.set_default_size(1024, 768)
-        self.window.set_position(gtk.WIN_POS_CENTER)
-        self.window.connect('destroy', gtk.main_quit)
+        self.set_title(gc.appname + ' v.' + gc.appver + ' - ' + gc.appdesc)
+        self.set_icon_from_file(Globals.icon_dir +'/logo.png')
+        self.set_default_size(1024, 768)
+        self.set_position(gtk.WIN_POS_CENTER)
+        self.connect('destroy', gtk.main_quit)
           
           
         # add a VBox that will contain the main notebookpane and a statusbar  
         mainbox = gtk.VBox()  
-        self.window.add(mainbox)  
+        self.add(mainbox)  
          
         # the notebook - tabs will be serverlist, favorites,
         # recent servers and settings 
@@ -101,10 +104,10 @@ class Window():
         self.notebook.set_current_page(defaulttab)
         
         #connect key press event to be able to create keyboard shortcuts
-        self.window.connect('key-press-event', self.on_key_pressed_event)
+        self.connect('key-press-event', self.on_key_pressed_event)
        
         
-        self.window.show_all()
+        self.show_all()
 
 
        
