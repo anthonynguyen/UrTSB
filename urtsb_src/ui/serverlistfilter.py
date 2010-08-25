@@ -21,9 +21,10 @@
 
 from threading import Thread
 from urtsb_src.filemanager import FileManager, filterkey
+from urtsb_src.filter import Filter, FilterType
 from urtsb_src.guicontroller import GuiController
-import gtk
 from urtsb_src.ui.gametypes_filter import GametypesFilter
+import gtk
 
 
 
@@ -212,8 +213,13 @@ class ServerListFilter(gtk.HBox):
         self.lock()
         #update the filter dict of the filemanager
         self.save_filter()
+        
+        filter = Filter(FilterType.BASIC_FILTER)
+        filter.initialize_from_stored_filter_settings()    
+        
         guicontroller = GuiController()
-        guicontroller.executeMasterServerQuery(self, self.parent)    
+        guicontroller.executeMasterServerQuery(filter, self.parent)    
+     
     
     def save_filter(self):
         """

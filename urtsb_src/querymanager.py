@@ -209,8 +209,8 @@ class QueryManager(object):
         query = Q3ServerQuery()
         
         
-        empty = self.filter.checkbox_showempty.get_active()    
-        full = self.filter.checkbox_showfull.get_active()
+        empty = self.filter.show_empty   
+        full = self.filter.show_full
         
         #query the urban terror master server
         serverlist = query.getServerList('master.urbanterror.info'
@@ -260,7 +260,8 @@ class QueryManager(object):
                     
                     self.processedserver+=1
                     gobject.idle_add(self.set_progressbar_fraction)
-                    if not self.does_filter_match_server(server, self.filter):
+                    if None == self.filter or \
+                                   self.filter.does_filter_match_server(server):
                         gobject.idle_add(self.tab.addServer, server)
                     else:
                         self.filterdcount+=1  # server is not added but filterd
@@ -324,127 +325,7 @@ class QueryManager(object):
         self.tab.statusbar.progressbar.set_text('fetching serverlist from master server')
         self.tab.statusbar.progressbar.pulse() 
         
-    
-    
-    def does_filter_match_server(self, server, filter):
-        """
-        Checks if the passed filter matches the passed server.
-        If filter matches the server return True, which means the server
-        is filtered and should not be displayed. 
-        Otherwise return False
         
-        @param server - the server to check
-        @param filter - the filter to be applied
-        """
-        
-        #basic filtering on UrT Servers.
-        #also UrTSB uses the UrT Masterserver sometimes a Q3 server appears 
-        #in the list
-        vars = server.getServerVars()
-        if 'gamename' in vars:
-            if not vars['gamename'] == 'q3ut4':
-                return True
-        
-        if not filter: # no filter passed
-            return False
-        elif filter.get_filter_name() == 'serverlistfilter':
-            return self.apply_serverlist_filter(server, filter)
-        elif filter.get_filter_name() == 'buddiesfilter':
-            return self.apply_buddies_filter(server, filter)
-        else:
-            return True #unknown filter don't filter the server
-        
-    def apply_buddies_filter(self, server, filter):
-        """
-        Checks if the players of the found server matches one of the names in 
-        the searchlist
-        
-        @param server - the server to apply the filter
-        @param filter - the buddy search filter to apply
-        
-        @return false - if this server should not be displayed (means no player
-                        on this server matches the buddylist), otherwise 
-                        returnvalue is true 
-        """
-        
-        namefilters = filter.searchname_list
-        playerlist = server.getPlayerList()
-        
-        #if there are no players on the server return true to hide the server
-        if len(playerlist) == 0:
-            return True
-        
-        for player in playerlist:
-            for name in namefilters:
-                #we want also partial matches e.g. when searching for a clantag
-                count = player.getName().find(name)
-                if not count == -1:
-                    #a match! return False, so that the server will be displayed
-                    #on the serverlist
-                    return False
-        #if the iteration returns no match, return True so that the server
-        #will be hidden
-        return True
-        
-       
-        
-    def apply_serverlist_filter(self, server, filter):
-        """
-        This methods checks if the filters specified by the passed 
-        serverlistfilter object matches the passed server.
-        
-        @param server - server object to be checked against the filter
-        @param filter - filter to be applied
-        
-        @param true if server should be hided, otherwise false
-        """
-        # hide non responsove servers 
-        if (server.getPing() == 999) \
-                           and filter.checkbox_hide_non_responsive.get_active():
-            return True
-        # hide passworded servers
-        if server.needsPassword() \
-                               and filter.checkbox_hide_passworded.get_active():
-            return True
-        
-        
-        gametype = server.getGameType()
-        if gametype == '8' and not filter.gametypes.\
-                                       checkbox_show_gametype_bomb.get_active():
-            return True
-        elif gametype == '6' and not filter.gametypes.\
-                                        checkbox_show_gametype_cah.get_active():
-            return True
-        elif gametype == '7' and not filter.gametypes.\
-                                        checkbox_show_gametype_ctf.get_active(): 
-            return True
-        elif gametype == '0' and not filter.gametypes.\
-                                        checkbox_show_gametype_ffa.get_active():
-            return True
-        elif gametype == '3' and not filter.gametypes.\
-                                        checkbox_show_gametype_tdm.get_active():
-            return True
-        elif gametype == '4' and not filter.gametypes.\
-                                   checkbox_show_gametype_survivor.get_active():
-            return True
-        elif gametype == '5' and not filter.gametypes.\
-                                        checkbox_show_gametype_ftl.get_active():
-            return True
-        
-        filter_min_player = filter.minplayerentry.get_value_as_int()
-        filter_max_player = filter.maxplayerentry.get_value_as_int()
-        
-        
-        if filter_min_player > server.getClientCount():
-            return True
-        
-        if filter_max_player < server.getClientCount():
-            return True
-   
-        #no filtermatch so far, return false which results in displaying the server
-        return False
-    
-    
     def set_location(self, server):
         """
         Determine location of a server based on the ip adress of the server 

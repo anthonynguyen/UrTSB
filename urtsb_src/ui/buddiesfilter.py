@@ -20,6 +20,7 @@
 
 
 from urtsb_src.filemanager import FileManager
+from urtsb_src.filter import Filter, FilterType
 from urtsb_src.guicontroller import GuiController
 import gtk
 
@@ -75,11 +76,15 @@ class BuddiesFilter(gtk.HBox):
         self.playersearchbutton.set_sensitive(False)
         
         name2search = self.playersearch_entry.get_text()
-        self.searchname_list = []
-        self.searchname_list.append(name2search)
+        searchname_list = []
+        searchname_list.append(name2search)
+        
+        #create the filter object
+        filter = Filter(FilterType.BUDDY_FILTER)
+        filter.playerlist = searchname_list
         
         gc = GuiController()
-        gc.executeMasterServerQuery(self, self.parenttab) 
+        gc.executeMasterServerQuery(filter, self.parenttab) 
       
     def on_search_buddies_clicked(self, widget):
         """
@@ -90,10 +95,13 @@ class BuddiesFilter(gtk.HBox):
         
         fm = FileManager()
         fm.get_buddies()
-        self.searchname_list = fm.get_buddies() 
+        
+        #create a filter object
+        filter = Filter(FilterType.BUDDY_FILTER)
+        filter.playerlist = fm.get_buddies()
         
         gc = GuiController()
-        gc.executeMasterServerQuery(self, self.parenttab) 
+        gc.executeMasterServerQuery(filter, self.parenttab) 
         
     def get_filter_name(self):
         """

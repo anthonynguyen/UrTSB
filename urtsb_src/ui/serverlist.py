@@ -26,8 +26,7 @@ from urtsb_src.guicontroller import GuiController
 from urtsb_src.ui.passworddialog import PasswordDialog
 from urtsb_src.ui.rconpassdialog import RconPassDialog
 import gtk
-import os.path
-import sys
+
 
 
 class ServerList(gtk.ScrolledWindow):
