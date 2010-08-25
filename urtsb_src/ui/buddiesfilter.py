@@ -103,3 +103,16 @@ class BuddiesFilter(gtk.HBox):
         """
         return 'buddiesfilter' 
    
+    def lock(self):
+        """
+        Locks the UI-Elements for search so no two concurrent 
+        requests can be executed!
+        """
+        self.search_button.set_sensitive(False)
+        
+    def unlock(self):
+        """
+        Unlocks the UI Elements for search after the request
+        has finished.
+        """
+        self.search_button.set_sensitive(True)

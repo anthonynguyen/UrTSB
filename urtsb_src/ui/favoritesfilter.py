@@ -86,3 +86,16 @@ class FavoritesFilter(gtk.HBox):
         guicontroller.executeFavoritesLoading(self.parent)    
         
    
+    def lock(self):
+        """
+        Locks the UI-Elements for search so no two concurrent 
+        requests can be executed!
+        """
+        self.refresh_button.set_sensitive(False)
+        
+    def unlock(self):
+        """
+        Unlocks the UI Elements for search after the request
+        has finished.
+        """
+        self.refresh_button.set_sensitive(True)
