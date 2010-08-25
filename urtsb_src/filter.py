@@ -109,6 +109,12 @@ class Filter(object):
         self.gametype_ftl = fm.value_as_boolean(sf[filterkey.GT_FTL])
         self.gametype_ffa = fm.value_as_boolean(sf[filterkey.GT_FFA])
         
+        if filterkey.FLT_MAP_NAME in sf:
+            self.map_name = sf[filterkey.FLT_MAP_NAME]
+        
+        if filterkey.FLT_SERVER_NAME in sf:
+            self.server_name = sf[filterkey.FLT_SERVER_NAME]
+        
     def is_urt_server(self, server):
         """
         this method contains all filter checks to make sure its a UrT server.
@@ -177,6 +183,18 @@ class Filter(object):
             # the server is not matching the basic filters so the advanced 
             # doesn't need to be processed and False can be returned
             return False   
+        
+        if not None == self.map_name or not len(self.map_name) == 0:
+            if server.getMap().find(self.map_name) == -1: 
+                #mapname does not match the filter for mapname
+                #so return False
+                return False
+        
+        if not None == self.server_name or not len(self.server_name) == 0:
+            if server.getName().find(self.server_name) == -1: 
+                #servername does not match the filter for servername
+                #so return False
+                return False        
         
         return True
         

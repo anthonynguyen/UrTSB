@@ -38,13 +38,19 @@ class AdvancedFilterWindow(gtk.Dialog):
         #buttons
         applybutton = gtk.Button('Apply')
         cancelbutton = gtk.Button('Cancel')
+        defaultbutton = gtk.Button('Defaults')
+        resetbutton = gtk.Button('Reset')
         
         applybutton.connect("clicked", self.on_apply_clicked)
         cancelbutton.connect("clicked", self.on_cancel_clicked)
+        defaultbutton.connect("clicked", self.on_default_clicked)
+        resetbutton.connect("clicked", self.on_reset_clicked)
         
-        
+        self.action_area.pack_start(defaultbutton, False, False)
+        self.action_area.pack_start(resetbutton, False, False)
         self.action_area.pack_start(cancelbutton, False, False)
         self.action_area.pack_start(applybutton, False, False)
+        
         
         self.setup_filter_elements()
         
@@ -326,6 +332,9 @@ class AdvancedFilterWindow(gtk.Dialog):
             
             self.checkbox_showfull.set_active(False)
             self.checkbox_showempty.set_active(False)
+            
+            self.mapnameentry.set_text('')
+            self.servernameentry.set_text('')
         else: #reset to stored values
             
             #gametypes
@@ -360,6 +369,10 @@ class AdvancedFilterWindow(gtk.Dialog):
             
             value = int(stored_filter[filterkey.FLT_MAX_PLAYERS])
             self.maxplayerentry.set_value(value)
+            
+            self.mapnameentry.set_text(stored_filter[filterkey.FLT_MAP_NAME])
+            self.servernameentry.set_text(stored_filter[filterkey.\
+                                                               FLT_SERVER_NAME])
             
             value = fm.value_as_boolean(stored_filter[filterkey.\
                                                              FLT_HIDE_NON_RESP])
@@ -462,7 +475,7 @@ class AdvancedFilterWindow(gtk.Dialog):
             self.destroy()
             
             
-    def on_cancel_clicked(self, widger):
+    def on_cancel_clicked(self, widget):
             """
             Callback of the Cancel button
             """
@@ -470,5 +483,17 @@ class AdvancedFilterWindow(gtk.Dialog):
             
             self.destroy()
         
-            
-        
+    def on_reset_clicked(self, widget):
+        """
+        Callback of the reset button
+        Reset the filter to the last applied values
+        """
+        self.set_default_values(False)
+    
+    def on_default_clicked(self, widget):
+        """
+        Callback of the defaults button
+        Reset the filter to the default values (not the stored/last applied 
+        values)
+        """
+        self.set_default_values(True)
