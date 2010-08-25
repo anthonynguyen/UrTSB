@@ -20,6 +20,7 @@ from threading import Thread
 from urtsb_src.filemanager import FileManager, filterkey
 from urtsb_src.ui.gametypes_filter import GametypesFilter
 import gtk
+import math
 
 class AdvancedFilterWindow(gtk.Dialog):
     """
@@ -178,9 +179,19 @@ class AdvancedFilterWindow(gtk.Dialog):
         self.checkbox_automatics = gtk.CheckButton('Automatic Guns')
         self.checkbox_negev = gtk.CheckButton('Negev')
         
+        #connect to the toggled signal
+        self.checkbox_grenades.connect('toggled', self.on_gear_checkbox_changed)
+        self.checkbox_snipers.connect('toggled', self.on_gear_checkbox_changed)
+        self.checkbox_spas.connect('toggled', self.on_gear_checkbox_changed)
+        self.checkbox_pistols.connect('toggled', self.on_gear_checkbox_changed)
+        self.checkbox_automatics.connect('toggled', \
+                                                  self.on_gear_checkbox_changed)
+        self.checkbox_negev.connect('toggled', self.on_gear_checkbox_changed)
+        
         #the value textfield
         self.gearvalue = gtk.Entry()
         self.gearvalue.set_width_chars(4)
+        self.gearvalue.set_editable(False)
         
         #the add button
         add_button = gtk.Button('Add')
@@ -304,6 +315,28 @@ class AdvancedFilterWindow(gtk.Dialog):
         
         self.vbox.pack_start(cvar_frame, False, False)
       
+    def calculate_gear_value(self):
+        """
+        Calculates the g_gear value
+        """
+        
+        retval = 63
+        if self.checkbox_grenades.get_active():
+            retval -= 1
+        if self.checkbox_snipers.get_active():
+            retval -= 2
+        if self.checkbox_spas.get_active():
+            retval -= 4
+        if self.checkbox_pistols.get_active():
+            retval -= 8
+        if self.checkbox_automatics.get_active():
+            retval -= 16
+        if self.checkbox_negev.get_active():
+            retval -= 32
+        
+        return retval
+      
+      
     def set_default_values(self, reset):
         """
         Set default values to all input elements of the filter.
@@ -317,6 +350,16 @@ class AdvancedFilterWindow(gtk.Dialog):
         
         fm = FileManager()
         stored_filter = fm.get_remembered_filter_parameters()
+        
+        #gearcheckbox is not stored, only the listview
+        #initialize with all checked
+        self.checkbox_grenades.set_active(True)
+        self.checkbox_snipers.set_active(True)
+        self.checkbox_spas.set_active(True)
+        self.checkbox_pistols.set_active(True)
+        self.checkbox_automatics.set_active(True)
+        self.checkbox_negev.set_active(True)
+        
         
         if reset or None == stored_filter: #reset to application defaults            
             self.gametypesfilter.checkbox_show_gametype_all.set_active(True)
@@ -497,3 +540,12 @@ class AdvancedFilterWindow(gtk.Dialog):
         values)
         """
         self.set_default_values(True)
+        
+    def on_gear_checkbox_changed(self, checkbox):
+        """
+        Callback for the toggled signal of the gear (weapons) checkboxes
+        triggers the calculation of the g_gear value and sets it to the
+        text entry
+        """
+        g_gear_value = self.calculate_gear_value()
+        self.gearvalue.set_text(str(g_gear_value))
