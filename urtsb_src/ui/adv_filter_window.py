@@ -76,7 +76,7 @@ class AdvancedFilterWindow(gtk.Dialog):
                 
         #filterframe content
         
-        filtertable = gtk.Table(2,3)
+        filtertable = gtk.Table(2,5)
         filtertable.set_border_width(5)
         
         filterframe.add(filtertable)
@@ -91,6 +91,12 @@ class AdvancedFilterWindow(gtk.Dialog):
         
         self.minplayerentry.set_range(0,99)
         self.maxplayerentry.set_range(0,99)
+        
+        map_label = gtk.Label('Mapname contains:')
+        server_label = gtk.Label('Servername contains:')
+        
+        self.mapnameentry = gtk.Entry()
+        self.servernameentry = gtk.Entry()
              
         filtertable.attach(self.checkbox_hide_non_responsive, 0,1,0,1 )
         filtertable.attach(self.checkbox_hide_passworded, 0,1,1,2 )
@@ -98,6 +104,10 @@ class AdvancedFilterWindow(gtk.Dialog):
         filtertable.attach(maxplayerlabel, 1,2,1,2 )
         filtertable.attach(self.minplayerentry, 2,3,0,1 )
         filtertable.attach(self.maxplayerentry, 2,3,1,2 )
+        filtertable.attach(map_label, 3,4,0,1)
+        filtertable.attach(self.mapnameentry, 4,5,0,1)
+        filtertable.attach(server_label, 3,4,1,2)
+        filtertable.attach(self.servernameentry, 4,5,1,2)
         
         
         querybox.pack_start(self.checkbox_showfull)
