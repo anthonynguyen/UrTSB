@@ -23,6 +23,7 @@ from servermanager import ServerManager
 from urtsb_src.globals import Globals
 import time
 
+
 class cfgkey:
         """
         Class as enum like value definition of configuration dict keys
@@ -43,6 +44,10 @@ class cfgvalues:
     FALSE = 'False'
     BASIC_FILTER = 'basic_filter'
     ADVANCED_FILTER = 'adv_filter'
+    ENABLED = 'enabled'
+    DISABLED = 'disabled'
+    INCLUDE = 'include'
+    EXCLUDE = 'exclude'
         
 class filterkey:
     """
@@ -54,6 +59,10 @@ class filterkey:
     FLT_HIDE_PASSWORDED = 'filter_hide_passworded'
     FLT_MIN_PLAYERS = 'filter_min_players'
     FLT_MAX_PLAYERS = 'filter_max_players'
+    FLT_MAP_NAME = 'filter_map_name'
+    FLT_SERVER_NAME = 'filter_server_name'
+    FLT_GEAR = 'filter_gear'
+    FLT_GEAR_LIST = 'filter_gear_list'
     GT_ALL = 'gametype_all'
     GT_BOMB = 'gametype_bomb'
     GT_TS = 'gametype_ts'
@@ -247,6 +256,12 @@ class FileManager(object):
             
             key, value = line.split('=', 1)
             self.filter[key] = value.strip('\n') #strip linebreak
+            
+            #there are two special values that needs to be handled:
+            #the g_gear list and the cvar value list
+            if filterkey.FLT_GEAR_LIST in self.filter:
+                gear = self.filter[filterkey.FLT_GEAR]
+                gear = gear.split(',')           
         return self.filter
     
     def save_filter_to_remember(self):
@@ -258,7 +273,16 @@ class FileManager(object):
         for key in self.filter:
             value = self.filter[key]
             #format of each line:  key=value
-            fobj.write(key+'='+str(value)+'\n')
+            if filterkey.FLT_GEAR_LIST == key:
+                #gear filter is a list of gear value numbers as strings 
+                #(the g_gear_values)
+                #write this list as a comma seperated list to the file
+                outstr = filterkey.FLT_GEAR_LIST + '='
+                for value in self.filter[filterkey.FLT_GEAR_LIST]:
+                    outstr += str(value) + ','
+                outstr = outstr.rstrip(',') #remove trailing ,
+            else:
+                fobj.write(key+'='+str(value)+'\n')
         fobj.close()
     
     def addFavorite(self, server):

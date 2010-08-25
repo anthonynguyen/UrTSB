@@ -168,8 +168,17 @@ class Filter(object):
         
     def _does_adv_filter_match_server(self, server):
         """
-        """
-        Log.log.info('Not yet implemented')    
+        The checks used for the advanced filter panel
+        
+        @returns true if the server matches the filter and should not be hidden
+        """    
+        basic_result = self._does_basic_filter_match_server(server)
+        if not basic_result:
+            # the server is not matching the basic filters so the advanced 
+            # doesn't need to be processed and False can be returned
+            return False   
+        
+        return True
         
     def _does_buddy_filter_match_server(self, server):
         """

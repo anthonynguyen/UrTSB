@@ -16,11 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
+from urtsb_src.filter import Filter, FilterType
 from urtsb_src.guicontroller import GuiController
 from urtsb_src.log import Log
 from urtsb_src.servermanager import ServerManager
-import gtk
 from urtsb_src.ui.adv_filter_window import AdvancedFilterWindow
+import gtk
 
 class AdvancedFilter(gtk.HBox):
     """
@@ -95,7 +96,15 @@ class AdvancedFilter(gtk.HBox):
         """
         Callback of the search button
         """
-        Log.log.info('not yet implemented!')
+        #disable the button, so that no multiple queries are launched while
+        #still one is active
+        self.lock()
+        
+        filter = Filter(FilterType.ADVANCED_FILTER)
+        filter.initialize_from_stored_filter_settings()
+        
+        guicontroller = GuiController()
+        guicontroller.executeMasterServerQuery(filter, self.parent)    
         
     def on_configure_filter_clicked(self, button):
         """

@@ -16,8 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
-import gtk
+from threading import Thread
+from urtsb_src.filemanager import FileManager, filterkey
 from urtsb_src.ui.gametypes_filter import GametypesFilter
+import gtk
 
 class AdvancedFilterWindow(gtk.Dialog):
     """
@@ -45,6 +47,8 @@ class AdvancedFilterWindow(gtk.Dialog):
         self.action_area.pack_start(applybutton, False, False)
         
         self.setup_filter_elements()
+        
+        self.set_default_values(False)
         
         self.show_all()
         
@@ -293,12 +297,168 @@ class AdvancedFilterWindow(gtk.Dialog):
         cvar_values_vbox.pack_start(remove_button, False, False)
         
         self.vbox.pack_start(cvar_frame, False, False)
+      
+    def set_default_values(self, reset):
+        """
+        Set default values to all input elements of the filter.
+        Differs between application defaults and the values that are stored
+        in a file to remember user choices.
+        
+        @param reset - boolean: if True use application defaults, otherwise load
+                       values from file. 
+       
+        """
+        
+        fm = FileManager()
+        stored_filter = fm.get_remembered_filter_parameters()
+        
+        if reset or None == stored_filter: #reset to application defaults            
+            self.gametypesfilter.checkbox_show_gametype_all.set_active(True)
+            # emits the 'toggled' signal
+            self.gametypesfilter.checkbox_show_gametype_all.toggled() 
+            
+            self.checkbox_hide_non_responsive.set_active(True)
+            self.checkbox_hide_passworded.set_active(True)
+            
+            #defaults for min and maxplayer spinbuttons
+            self.minplayerentry.set_value(0)
+            self.maxplayerentry.set_value(99)
+            
+            self.checkbox_showfull.set_active(False)
+            self.checkbox_showempty.set_active(False)
+        else: #reset to stored values
+            
+            #gametypes
+            value = fm.value_as_boolean(stored_filter[filterkey.GT_ALL])
+            self.gametypesfilter.checkbox_show_gametype_all.set_active(True)
+            
+            value = fm.value_as_boolean(stored_filter[filterkey.GT_BOMB])
+            self.gametypesfilter.checkbox_show_gametype_bomb.set_active(value)
+            
+            value = fm.value_as_boolean(stored_filter[filterkey.GT_TS])
+            self.gametypesfilter.checkbox_show_gametype_survivor.set_active(value)
+            
+            value = fm.value_as_boolean(stored_filter[filterkey.GT_CTF])
+            self.gametypesfilter.checkbox_show_gametype_ctf.set_active(value)
+            
+            value = fm.value_as_boolean(stored_filter[filterkey.GT_TDM])
+            self.gametypesfilter.checkbox_show_gametype_tdm.set_active(value)
+            
+            value = fm.value_as_boolean(stored_filter[filterkey.GT_CAH])
+            self.gametypesfilter.checkbox_show_gametype_cah.set_active(value)
+            
+            value = fm.value_as_boolean(stored_filter[filterkey.GT_FTL])
+            self.gametypesfilter.checkbox_show_gametype_ftl.set_active(value)
+            
+            value = fm.value_as_boolean(stored_filter[filterkey.GT_FFA])
+            self.gametypesfilter.checkbox_show_gametype_ffa.set_active(value)
+            
+            #other filters:
+            #defaults for min and maxplayer spinbuttons
+            value = int(stored_filter[filterkey.FLT_MIN_PLAYERS])
+            self.minplayerentry.set_value(value)
+            
+            value = int(stored_filter[filterkey.FLT_MAX_PLAYERS])
+            self.maxplayerentry.set_value(value)
+            
+            value = fm.value_as_boolean(stored_filter[filterkey.\
+                                                             FLT_HIDE_NON_RESP])
+            self.checkbox_hide_non_responsive.set_active(value)
+            
+            value = fm.value_as_boolean(stored_filter[filterkey.\
+                                                           FLT_HIDE_PASSWORDED])
+            self.checkbox_hide_passworded.set_active(value)
+            
+            #query params
+            value = fm.value_as_boolean(stored_filter[filterkey.QRY_SHOW_FULL])
+            self.checkbox_showfull.set_active(value)
+            
+            value = fm.value_as_boolean(stored_filter[filterkey.QRY_SHOW_EMPTY])
+            self.checkbox_showempty.set_active(value)
+        
+    def save_filter(self):
+        """
+        writes the current filter/query params to the filter dict
+        """
+        fm = FileManager()
+        filter = fm.get_remembered_filter_parameters()
+        if not filter: 
+            # TODO: clean up this dirty hack ;)
+            fm.filter = {}
+            filter = fm.filter
+        
+        #process gametypes
+        value = fm.value_from_boolean(self.gametypesfilter.\
+                                        checkbox_show_gametype_all.get_active())
+        filter[filterkey.GT_ALL] = value
+        
+        value = fm.value_from_boolean(self.gametypesfilter.\
+                                       checkbox_show_gametype_bomb.get_active())
+        filter[filterkey.GT_BOMB] = value
+        
+        value = fm.value_from_boolean(self.gametypesfilter.\
+                                   checkbox_show_gametype_survivor.get_active())
+        filter[filterkey.GT_TS] = value
+        
+        value = fm.value_from_boolean(self.gametypesfilter.\
+                                        checkbox_show_gametype_ctf.get_active())
+        filter[filterkey.GT_CTF] = value
+        
+        value = fm.value_from_boolean(self.gametypesfilter.\
+                                        checkbox_show_gametype_tdm.get_active())
+        filter[filterkey.GT_TDM] = value
+        
+        value = fm.value_from_boolean(self.gametypesfilter.\
+                                        checkbox_show_gametype_cah.get_active())
+        filter[filterkey.GT_CAH] = value
+        
+        value = fm.value_from_boolean(self.gametypesfilter.\
+                                        checkbox_show_gametype_ftl.get_active())
+        filter[filterkey.GT_FTL] = value
+        
+        value = fm.value_from_boolean(self.gametypesfilter.\
+                                        checkbox_show_gametype_ffa.get_active())
+        filter[filterkey.GT_FFA] = value
+        
+        #other filters
+        filter[filterkey.FLT_MIN_PLAYERS] = self.\
+                                               minplayerentry.get_value_as_int()
+        filter[filterkey.FLT_MAX_PLAYERS] = self.\
+                                               maxplayerentry.get_value_as_int()
+        
+        value = fm.value_from_boolean(self.\
+                                      checkbox_hide_non_responsive.get_active())
+        filter[filterkey.FLT_HIDE_NON_RESP] = value
+        
+        value = fm.value_from_boolean(self.\
+                                          checkbox_hide_passworded.get_active())
+        filter[filterkey.FLT_HIDE_PASSWORDED] = value
+        
+        #mapname and servername filter
+        filter[filterkey.FLT_MAP_NAME] = self.mapnameentry.get_text()
+        filter[filterkey.FLT_SERVER_NAME] = self.servernameentry.get_text()        
+        
+        #query params
+        value = fm.value_from_boolean(self.checkbox_showfull.get_active())
+        filter[filterkey.QRY_SHOW_FULL] = value
+        
+        value = fm.value_from_boolean(self.checkbox_showempty.get_active())
+        filter[filterkey.QRY_SHOW_EMPTY] = value
+        
+        
+        #write to file
+        t = Thread(target=fm.save_filter_to_remember)
+        t.setDaemon(True)
+        t.start()
+        
+
         
     def on_apply_clicked(self, widget):
             """
             Callback of the Apply button
             """
-          
+            self.save_filter()
+            
             self.destroy()
             
             
