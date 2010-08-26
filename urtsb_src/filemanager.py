@@ -64,6 +64,7 @@ class filterkey:
     FLT_SERVER_NAME = 'filter_server_name'
     FLT_GEAR = 'filter_gear'
     FLT_GEAR_LIST = 'filter_gear_list'
+    FLT_VAR_LIST = 'filter_var_list'
     GT_ALL = 'gametype_all'
     GT_BOMB = 'gametype_bomb'
     GT_TS = 'gametype_ts'

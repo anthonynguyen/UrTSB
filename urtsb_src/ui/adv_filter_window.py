@@ -281,10 +281,10 @@ class AdvancedFilterWindow(gtk.Dialog):
         cvar_set_vbox.pack_start(editing_table)
         
        
-        self.radio_cvar_include = gtk.RadioButton(None, 'Include')
+        self.radio_cvar_include = gtk.RadioButton(None, 'Include (equals)')
         self.radio_cvar_include.set_border_width(5)
         self.radio_cvar_exclude = gtk.RadioButton(self.radio_cvar_include, \
-                                                                      'Exclude')
+                                                         'Exclude (not equals)')
         self.radio_cvar_exclude.set_border_width(5)
        
         editing_table.attach(self.radio_cvar_include, 1,2,2,3)
@@ -292,7 +292,7 @@ class AdvancedFilterWindow(gtk.Dialog):
         
         add_button = gtk.Button('Add')
         editing_table.attach(add_button, 1,2,4,5)
-        
+        add_button.connect('clicked', self.on_add_var_filter_clicked)
         
         #the treeview displaying current CVAR filter settings
         cvar_values_vbox = gtk.VBox()
@@ -303,6 +303,7 @@ class AdvancedFilterWindow(gtk.Dialog):
         
         self.cvarliststore = gtk.ListStore(str, str, str, object)
         cvar_set_treeview = gtk.TreeView(model=self.cvarliststore)
+        self.varfilterview = cvar_set_treeview
         cvar_scrolled_window.add(cvar_set_treeview)
                 
         self.column_cvar_variable = gtk.TreeViewColumn('Variable')
@@ -316,9 +317,7 @@ class AdvancedFilterWindow(gtk.Dialog):
         var_cell0=gtk.CellRendererText()
         var_cell1=gtk.CellRendererText()
         var_cell2=gtk.CellRendererText()
-        
-        
-        
+              
         self.column_cvar_variable.pack_start(var_cell0, expand=True)
         self.column_cvar_value.pack_start(var_cell1, expand=False)
         self.column_cvar_type.pack_start(var_cell2, expand=False)
@@ -334,10 +333,12 @@ class AdvancedFilterWindow(gtk.Dialog):
         clear_button = gtk.Button('Clear')
         clear_button.set_border_width(5)
         btn_hbox.pack_start(clear_button, True, True)
+        clear_button.connect('clicked', self.on_clear_var_list_clicked)
         
         remove_button = gtk.Button('Remove Selected')
         remove_button.set_border_width(5)
         btn_hbox.pack_start(remove_button, True, True)
+        remove_button.connect('clicked', self.on_remove_selected_var)
         
         self.vbox.pack_start(cvar_frame, False, False)
       
@@ -373,6 +374,9 @@ class AdvancedFilterWindow(gtk.Dialog):
                        values from file. 
        
         """
+        
+        self.gearliststore.clear()
+        self.cvarliststore.clear()
         
         fm = FileManager()
         stored_filter = fm.get_remembered_filter_parameters()
@@ -480,6 +484,11 @@ class AdvancedFilterWindow(gtk.Dialog):
             if filterkey.FLT_GEAR_LIST in stored_filter:
                 for value in stored_filter[filterkey.FLT_GEAR_LIST]:
                     self.gearliststore.append([value])
+                    
+            if filterkey.FLT_VAR_LIST in stored_filter:
+                for value in stored_filter[filterkey.FLT_VAR_LIST]:
+                    self.cvarliststore.append([value[0], value[1], \
+                                               value[2], value])
             
         
     def save_filter(self):
@@ -567,6 +576,14 @@ class AdvancedFilterWindow(gtk.Dialog):
             iter = self.gearliststore.iter_next(iter)
         filter[filterkey.FLT_GEAR_LIST] = gearvalues
                
+        #iterate over varliststore to create the list of filter vars
+        iter = self.cvarliststore.iter_children(None)
+        varlist = []
+        while iter:
+            varfilter = self.cvarliststore.get_value(iter, 3)
+            varlist.append(varfilter)
+            iter = self.cvarliststore.iter_next(iter)
+        filter[filterkey.FLT_VAR_LIST] = varlist
         
         #write to file
         t = Thread(target=fm.save_filter_to_remember)
@@ -614,6 +631,13 @@ class AdvancedFilterWindow(gtk.Dialog):
         """
         self.gearliststore.clear()
         
+    def on_clear_var_list_clicked(self, button):
+        """
+        Callback of the clear varlist button
+        clears the treeview/liststore
+        """
+        self.cvarliststore.clear()
+        
     def on_default_clicked(self, widget):
         """
         Callback of the defaults button
@@ -640,3 +664,32 @@ class AdvancedFilterWindow(gtk.Dialog):
         if result: 
             iter = result[1]
             self.gearliststore.remove(iter)
+            
+    def on_remove_selected_var(self, button):
+        """
+        Callback of the remoce selected button of the custom filtering area
+        """
+        selection = self.varfilterview.get_selection()
+        result = selection.get_selected()
+        if result: 
+            iter = result[1]
+            self.cvarliststore.remove(iter)
+            
+    def on_add_var_filter_clicked(self, button):
+        """
+        Callback of the add button in the custom variable filtering area
+        """
+        varname = self.variable_entry.get_text()
+        varvalue = self.value_entry.get_text()
+        #both values not None and larger than 0
+        if not None == varname and not len(varname) == 0 and not None\
+                                         == varvalue and not len(varvalue) == 0:
+            var = [None]*3
+            var[0] = varname
+            var[1] = varvalue
+            if self.radio_cvar_include.get_active():
+                var[2] = cfgvalues.INCLUDE
+            elif self.radio_cvar_exclude.get_active():
+                var[2] = cfgvalues.EXCLUDE
+            
+            self.cvarliststore.append([var[0], var[1], var[2], var])
