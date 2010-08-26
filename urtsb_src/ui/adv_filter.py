@@ -68,12 +68,7 @@ class AdvancedFilter(gtk.HBox):
         self.configfilter_button.connect("clicked", self.\
                                                     on_configure_filter_clicked)
         self.configfilter_button.set_border_width(5)
-    
-        #dirty hack to initialize filter
-        #TODO cleanup filter initialization 
-        adv_dialog = AdvancedFilterWindow(None)
-        adv_dialog.save_filter()
-    
+       
         self.show_all()
   
     def on_lookup_clicked(self, button):

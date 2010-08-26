@@ -59,7 +59,7 @@ class AdvancedFilterWindow(gtk.Dialog):
         self.set_default_values(False)
         
         self.show_all()
-        
+    
     def setup_filter_elements(self):
         """
         setup the filter elements

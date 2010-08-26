@@ -251,7 +251,37 @@ class FileManager(object):
             pkl_file = open(self.filter_file, "rb") 
         except IOError:
             #file not found - just return None
-            return None
+            filter = {}
+            
+            filter[filterkey.GT_ALL] = 'True'
+            filter[filterkey.GT_BOMB] = 'True'
+            filter[filterkey.GT_TS] = 'True'
+            filter[filterkey.GT_CTF] = 'True'
+            filter[filterkey.GT_TDM] = 'True'
+            filter[filterkey.GT_CAH] = 'True'
+            filter[filterkey.GT_FTL] = 'True'
+            filter[filterkey.GT_FFA] = 'True'
+            
+            #other filters
+            filter[filterkey.FLT_MIN_PLAYERS] = 0
+            filter[filterkey.FLT_MAX_PLAYERS] = 99
+            
+            filter[filterkey.FLT_HIDE_NON_RESP] = 'True'
+            filter[filterkey.FLT_HIDE_PASSWORDED] = 'True'
+            
+            #mapname and servername filter
+            filter[filterkey.FLT_MAP_NAME] = None
+            filter[filterkey.FLT_SERVER_NAME] = None        
+            
+            #query params
+            filter[filterkey.QRY_SHOW_FULL] = 'False'
+            filter[filterkey.QRY_SHOW_EMPTY] = 'False'
+            
+            filter[filterkey.FLT_GEAR] = cfgvalues.DISABLED
+            
+            filter[filterkey.FLT_VAR_LIST] = []
+            return filter       
+            
         
         self.filter = pickle.load(pkl_file)
         

@@ -194,13 +194,13 @@ class Filter(object):
             # doesn't need to be processed and False can be returned
             return False   
         
-        if not None == self.map_name or not len(self.map_name) == 0:
+        if not None == self.map_name and not len(self.map_name) == 0:
             if server.getMap().find(self.map_name) == -1: 
                 #mapname does not match the filter for mapname
                 #so return False
                 return False
         
-        if not None == self.server_name or not len(self.server_name) == 0:
+        if not None == self.server_name and not len(self.server_name) == 0:
             if server.getName().find(self.server_name) == -1: 
                 #servername does not match the filter for servername
                 #so return False
