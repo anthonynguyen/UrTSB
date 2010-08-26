@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
-from urtsb_src.filemanager import FileManager, filterkey
+from urtsb_src.filemanager import FileManager, filterkey, cfgvalues
 from urtsb_src.log import Log
 
 class FilterType(object):
@@ -114,6 +114,12 @@ class Filter(object):
         
         if filterkey.FLT_SERVER_NAME in sf:
             self.server_name = sf[filterkey.FLT_SERVER_NAME]
+            
+        if filterkey.FLT_GEAR in sf:
+            self.gear_filter_type = sf[filterkey.FLT_GEAR]
+        
+        if filterkey.FLT_GEAR_LIST in sf:
+            self.gear_value_list = sf[filterkey.FLT_GEAR_LIST]
         
     def is_urt_server(self, server):
         """
@@ -179,6 +185,7 @@ class Filter(object):
         @returns true if the server matches the filter and should not be hidden
         """    
         basic_result = self._does_basic_filter_match_server(server)
+        server_vars = server.getServerVars()
         if not basic_result:
             # the server is not matching the basic filters so the advanced 
             # doesn't need to be processed and False can be returned
@@ -194,8 +201,31 @@ class Filter(object):
             if server.getName().find(self.server_name) == -1: 
                 #servername does not match the filter for servername
                 #so return False
-                return False        
-        
+                return False   
+         
+        #gear include filter   
+        if not None == self.gear_filter_type and self.gear_filter_type \
+                                                           == cfgvalues.INCLUDE:
+            server_g_gear = server_vars['g_gear']
+            result = False
+            for value in self.gear_value_list:
+                if server_g_gear == value:
+                    result = True
+                    break
+                
+            if not result: #g_gear not in include list!
+                return False #do not display
+            
+            
+        #gear exclude filter   
+        if not None == self.gear_filter_type and self.gear_filter_type \
+                                                           == cfgvalues.EXCLUDE:
+            server_g_gear = server_vars['g_gear']
+            for value in self.gear_value_list:
+                if server_g_gear == value:
+                    return False # do not display
+                
+                
         return True
         
     def _does_buddy_filter_match_server(self, server):

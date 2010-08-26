@@ -21,6 +21,7 @@
 from log import Log
 from servermanager import ServerManager
 from urtsb_src.globals import Globals
+import pickle
 import time
 
 
@@ -98,7 +99,7 @@ class FileManager(object):
     rec_file = 'recent.srv'
     buddies_file = 'buddies.cfg'
     log_file = 'urtsb.log'
-    filter_file = 'filter.cfg'
+    filter_file = 'filter.pkl'
     rcon_file = 'rcon_pws.cfg'
     
     
@@ -236,54 +237,40 @@ class FileManager(object):
     def get_remembered_filter_parameters(self):
         """
         Load the 'remembered' filter paramters from file
+        using the pickle python object serialization
         
-        @return dict of filter settings, or none if file not found
+        @return the filter dict
         """
         
         if self.filter: #already loaded!
             return self.filter
         
-        fobj = None
+        pkl_file = None
         try:
-            fobj = open(self.filter_file, "r") 
+            pkl_file = open(self.filter_file, "rb") 
         except IOError:
             #file not found - just return None
             return None
-        self.filter = {}
-        for line in fobj: 
-            #format of the filter file is a key value pair on each 
-            #line separated by a '='
-            
-            key, value = line.split('=', 1)
-            self.filter[key] = value.strip('\n') #strip linebreak
-            
-            #there are two special values that needs to be handled:
-            #the g_gear list and the cvar value list
-            if filterkey.FLT_GEAR_LIST in self.filter:
-                gear = self.filter[filterkey.FLT_GEAR]
-                gear = gear.split(',')           
+        
+        self.filter = pickle.load(pkl_file)
+        
+        Log.log.debug('[get_remembered_filter_parameters] loaded filter = '\
+                      + str(self.filter))
+        
+        pkl_file.close()
+          
         return self.filter
     
     def save_filter_to_remember(self):
         """
         Saves the current filter parameters to the filter file
+        using the pickle python object serialization
         """
-        fobj = open(self.filter_file, "w")
+        pkl_file = open(self.filter_file, "wb")
          
-        for key in self.filter:
-            value = self.filter[key]
-            #format of each line:  key=value
-            if filterkey.FLT_GEAR_LIST == key:
-                #gear filter is a list of gear value numbers as strings 
-                #(the g_gear_values)
-                #write this list as a comma seperated list to the file
-                outstr = filterkey.FLT_GEAR_LIST + '='
-                for value in self.filter[filterkey.FLT_GEAR_LIST]:
-                    outstr += str(value) + ','
-                outstr = outstr.rstrip(',') #remove trailing ,
-            else:
-                fobj.write(key+'='+str(value)+'\n')
-        fobj.close()
+        pickle.dump(self.filter, pkl_file, pickle.HIGHEST_PROTOCOL)
+        Log.log.debug('[save_filter_to_remember]: saved filter = ' + str(self.filter))
+        pkl_file.close()
     
     def addFavorite(self, server):
         """

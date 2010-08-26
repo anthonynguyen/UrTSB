@@ -17,7 +17,7 @@
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
 from threading import Thread
-from urtsb_src.filemanager import FileManager, filterkey
+from urtsb_src.filemanager import FileManager, filterkey, cfgvalues
 from urtsb_src.globals import Globals
 from urtsb_src.ui.gametypes_filter import GametypesFilter
 import gtk
@@ -146,9 +146,9 @@ class AdvancedFilterWindow(gtk.Dialog):
         #the include exclude chooser
         self.radio_gear_disable = gtk.RadioButton(None, 'Disabled')
         self.radio_gear_include = gtk.RadioButton(self.radio_gear_disable, \
-                                                                      'Include')
+                                                             'Include (equals)')
         self.radio_gear_exclude = gtk.RadioButton(self.radio_gear_disable, \
-                                                                      'Exclude')
+                                                         'Exclude (not equals)')
         gear_type_box.pack_start(self.radio_gear_disable)
         gear_type_box.pack_start(self.radio_gear_include)
         gear_type_box.pack_start(self.radio_gear_exclude)
@@ -197,6 +197,8 @@ class AdvancedFilterWindow(gtk.Dialog):
         #the add button
         add_button = gtk.Button('Add')
         add_button.set_border_width(5)
+        add_button.connect('clicked', self.on_add_gear_value_clicked)
+        
         
         #now put all into the table
         gear_table.attach(self.checkbox_grenades, 0,1,0,1 )
@@ -231,9 +233,17 @@ class AdvancedFilterWindow(gtk.Dialog):
         self.column_gear_value.set_reorderable(True)
           
         
+        btn_hbox = gtk.HBox()  
+        gear_values_vbox.pack_start(btn_hbox, False, False)
+        
+        clear_button = gtk.Button('Clear')
+        clear_button.set_border_width(5)
+        btn_hbox.pack_start(clear_button, True, True)
+        clear_button.connect('clicked', self.on_clear_gear_list_clicked)
+        
         remove_button = gtk.Button('Remove Selected')
         remove_button.set_border_width(5)
-        gear_values_vbox.pack_start(remove_button, False, False)
+        btn_hbox.pack_start(remove_button, True, True)
         
         self.vbox.pack_start(gear_frame, False, False)
         
@@ -290,7 +300,7 @@ class AdvancedFilterWindow(gtk.Dialog):
         cvar_values_vbox.pack_start(cvar_scrolled_window)
         
         self.cvarliststore = gtk.ListStore(str, str)
-        cvar_set_treeview = gtk.TreeView(model=self.gearliststore)
+        cvar_set_treeview = gtk.TreeView(model=self.cvarliststore)
         cvar_scrolled_window.add(cvar_set_treeview)
                 
         self.column_cvar_variable = gtk.TreeViewColumn('Variable')
@@ -310,9 +320,16 @@ class AdvancedFilterWindow(gtk.Dialog):
         self.column_cvar_value.add_attribute(var_cell1, 'text', 1)  
                   
         
+        btn_hbox = gtk.HBox()
+        cvar_values_vbox.pack_start(btn_hbox, False, False)
+        
+        clear_button = gtk.Button('Clear')
+        clear_button.set_border_width(5)
+        btn_hbox.pack_start(clear_button, True, True)
+        
         remove_button = gtk.Button('Remove Selected')
         remove_button.set_border_width(5)
-        cvar_values_vbox.pack_start(remove_button, False, False)
+        btn_hbox.pack_start(remove_button, True, True)
         
         self.vbox.pack_start(cvar_frame, False, False)
       
@@ -414,8 +431,11 @@ class AdvancedFilterWindow(gtk.Dialog):
             value = int(stored_filter[filterkey.FLT_MAX_PLAYERS])
             self.maxplayerentry.set_value(value)
             
-            self.mapnameentry.set_text(stored_filter[filterkey.FLT_MAP_NAME])
-            self.servernameentry.set_text(stored_filter[filterkey.\
+            if filterkey.FLT_MAP_NAME in stored_filter:
+                self.mapnameentry.set_text(stored_filter[filterkey.\
+                                                                  FLT_MAP_NAME])
+            if filterkey.FLT_SERVER_NAME in stored_filter:
+                self.servernameentry.set_text(stored_filter[filterkey.\
                                                                FLT_SERVER_NAME])
             
             value = fm.value_as_boolean(stored_filter[filterkey.\
@@ -432,6 +452,27 @@ class AdvancedFilterWindow(gtk.Dialog):
             
             value = fm.value_as_boolean(stored_filter[filterkey.QRY_SHOW_EMPTY])
             self.checkbox_showempty.set_active(value)
+            
+            #the gearvalue list
+            if filterkey.FLT_GEAR in stored_filter:
+                value = stored_filter[filterkey.FLT_GEAR]
+                if cfgvalues.DISABLED == value:
+                    self.radio_gear_disable.set_active(True)
+                    self.radio_gear_exclude.set_active(False)
+                    self.radio_gear_include.set_active(False)
+                elif cfgvalues.INCLUDE == value:
+                    self.radio_gear_disable.set_active(False)
+                    self.radio_gear_exclude.set_active(False)
+                    self.radio_gear_include.set_active(True)
+                elif cfgvalues.EXCLUDE == value:
+                    self.radio_gear_disable.set_active(False)
+                    self.radio_gear_exclude.set_active(True)
+                    self.radio_gear_include.set_active(False)
+            
+            if filterkey.FLT_GEAR_LIST in stored_filter:
+                for value in stored_filter[filterkey.FLT_GEAR_LIST]:
+                    self.gearliststore.append([value])
+            
         
     def save_filter(self):
         """
@@ -492,10 +533,8 @@ class AdvancedFilterWindow(gtk.Dialog):
         filter[filterkey.FLT_HIDE_PASSWORDED] = value
         
         #mapname and servername filter
-        if filterkey.FLT_MAP_NAME in filter:
-            filter[filterkey.FLT_MAP_NAME] = self.mapnameentry.get_text()
-        if filterkey.FLT_SERVER_NAME in filter:
-            filter[filterkey.FLT_SERVER_NAME] = self.servernameentry.get_text()        
+        filter[filterkey.FLT_MAP_NAME] = self.mapnameentry.get_text()
+        filter[filterkey.FLT_SERVER_NAME] = self.servernameentry.get_text()        
         
         #query params
         value = fm.value_from_boolean(self.checkbox_showfull.get_active())
@@ -504,6 +543,22 @@ class AdvancedFilterWindow(gtk.Dialog):
         value = fm.value_from_boolean(self.checkbox_showempty.get_active())
         filter[filterkey.QRY_SHOW_EMPTY] = value
         
+        if self.radio_gear_disable.get_active():
+            filter[filterkey.FLT_GEAR] = cfgvalues.DISABLED
+        elif self.radio_gear_include.get_active():
+            filter[filterkey.FLT_GEAR] = cfgvalues.INCLUDE
+        elif self.radio_gear_exclude.get_active():
+            filter[filterkey.FLT_GEAR] = cfgvalues.EXCLUDE
+        
+        #iterate over gearliststore to create a list of geavalues 
+        iter = self.gearliststore.iter_children(None)
+        gearvalues = [] #empty list
+        while iter:
+            value = self.gearliststore.get_value(iter, 0)
+            gearvalues.append(value)
+            iter = self.gearliststore.iter_next(iter)
+        filter[filterkey.FLT_GEAR_LIST] = gearvalues
+               
         
         #write to file
         t = Thread(target=fm.save_filter_to_remember)
@@ -536,6 +591,21 @@ class AdvancedFilterWindow(gtk.Dialog):
         """
         self.set_default_values(False)
     
+    def on_add_gear_value_clicked(self, widget):
+        """
+        Callback of the add button in the gear selection filter area
+        Adds the current gear value to the gear value list
+        """
+        gearvalue = self.gearvalue.get_text()
+        self.gearliststore.append([gearvalue])
+        
+    def on_clear_gear_list_clicked(self, widget):
+        """
+        Callback of the clear gear list button
+        clears the treeview
+        """
+        self.gearliststore.clear()
+        
     def on_default_clicked(self, widget):
         """
         Callback of the defaults button
