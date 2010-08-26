@@ -62,6 +62,8 @@ class QueryManager(object):
         dbname = Globals.geoip_dir+ '/GeoIP.dat'
         self.pygeoip = GeoIP(dbname, pygeoip.const.MMAP_CACHE)
         
+        self.abort = False
+        
     def startMasterServerQueryThread(self, filter, tab):
         """
         Starts the masterserver query.
@@ -197,6 +199,15 @@ class QueryManager(object):
                     with self.gui_lock:
                         gobject.idle_add(self.tab.serverlist_loading_finished)
                     break
+                elif message == 'all_aborted':
+                    #all_aborted tasks :)
+                    Log.log.info('Thread:Coordinator - received the ' \
+                                  + 'all_aborted signal')
+                    self.gui_lock = threading.RLock()
+                    with self.gui_lock:
+                        gobject.idle_add(self.set_progressbar_aborted)
+                        gobject.idle_add(self.tab.serverlist_loading_finished)
+                    break
             except Empty:
                 True
     
@@ -241,12 +252,27 @@ class QueryManager(object):
         with self.gui_lock:
             self.threadcount+=1
             Log.log.debug('Thread:' + threading.current_thread().name + \
-                         ' started')   
+                         ' started') 
+              
          
         # main thread loop
         while True:
             try:
+                self.gui_lock = threading.RLock()
+                with self.gui_lock:
+                    if self.abort:
+                        self.threadcount -= 1
+                        Log.log.info('Thread:' + threading.current_thread().name + \
+                         ' exiting due to abort signal')
+                        if self.threadcount == 0: #last thread reached
+                            Log.log.info('Thread:' + threading.current_thread().name + \
+                            '   notifying the coordinator thread that all threads ' \
+                            + 'was aborted')
+                            self.messageque.put('all_aborted')
+                        break
+                
                 server = self.serverqueue.get(False)    
+                
                 
                 #perform the statusrequest
                 query = Q3ServerQuery()   
@@ -301,22 +327,23 @@ class QueryManager(object):
         Sets the progressbar fraction. Uses the total servercount and the
         processed servercount values to calculate the fraction
         """
-        fraction = float(self.processedserver) / float(self.servercount)
-        
-        
-        bartext = None
-        if 1.0 == fraction:
-            bartext = 'finished getting server status - displaying ' \
-                     + str((self.processedserver-self.filterdcount)) + \
-                     ' servers (' + str(self.filterdcount) + ' filtered)'
-            self.tab.statusbar.progressbar.set_fraction(0.0)
+        if not self.abort:
+            fraction = float(self.processedserver) / float(self.servercount)
             
-        else:
-            bartext = 'fetching server status (' + str(self.processedserver) + \
-                      ' / ' + str(self.servercount) + ') - ' + \
-                      str(self.filterdcount) + ' servers filtered'
-            self.tab.statusbar.progressbar.set_fraction(fraction)     
-        self.tab.statusbar.progressbar.set_text(bartext)
+            
+            bartext = None
+            if 1.0 == fraction:
+                bartext = 'finished getting server status - displaying ' \
+                         + str((self.processedserver-self.filterdcount)) + \
+                         ' servers (' + str(self.filterdcount) + ' filtered)'
+                self.tab.statusbar.progressbar.set_fraction(0.0)
+                
+            else:
+                bartext = 'fetching server status (' + str(self.processedserver) + \
+                          ' / ' + str(self.servercount) + ') - ' + \
+                          str(self.filterdcount) + ' servers filtered'
+                self.tab.statusbar.progressbar.set_fraction(fraction)     
+            self.tab.statusbar.progressbar.set_text(bartext)
                     
     def pulse_progressbar(self):
         """
@@ -324,7 +351,21 @@ class QueryManager(object):
         """
         self.tab.statusbar.progressbar.set_text('fetching serverlist from master server')
         self.tab.statusbar.progressbar.pulse() 
-        
+       
+    def set_progressbar_aborted(self):
+        """
+        Sets the text of the progressbar to the aborted message and resets fraction
+        """    
+        self.tab.statusbar.progressbar.set_text('task aborted')
+        self.tab.statusbar.progressbar.set_fraction(0.0)
+    
+    def abort_current_task(self):
+        """
+        Stops the processing of the queue by setting a abort flag.
+        """    
+        self.gui_lock = threading.RLock()
+        with self.gui_lock:
+            self.abort = True
         
     def set_location(self, server):
         """

@@ -26,14 +26,48 @@ class StatusBar(gtk.Statusbar):
     """
 
 
-    def __init__(self):
+    def __init__(self, parenttab):
         """
         Constructor
         """
         gtk.Statusbar.__init__(self)
         
+        self.parenttab = parenttab
+        
         self.set_border_width(2)
         
         self.progressbar = gtk.ProgressBar()
-        self.add(self.progressbar)
         
+        hbox = gtk.HBox()
+        
+        self.add(hbox)
+        
+        hbox.pack_start(self.progressbar, True, True)
+        
+        self.abort_button = gtk.Button()
+        abortimage = gtk.Image()
+        abortimage.set_from_stock(gtk.STOCK_CANCEL, gtk.ICON_SIZE_BUTTON)
+        self.abort_button.set_image(abortimage)
+        hbox.pack_start(self.abort_button, False, False)
+        self.abort_button.set_border_width(0)
+        self.abort_button.connect('clicked', self.on_abort_button_clicked)
+        
+        self.lock()
+        
+    def lock(self):
+        """
+        Locks the abort button
+        """
+        self.abort_button.set_sensitive(False)
+        
+    def unlock(self):
+        """
+        unlocks the abort button
+        """
+        self.abort_button.set_sensitive(True)
+        
+    def on_abort_button_clicked(self, button):
+        """
+        Callback of the abort button
+        """
+        self.parenttab.abort_current_task()

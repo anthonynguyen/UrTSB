@@ -65,7 +65,7 @@ class ServerTab(BaseTab):
         self.pack_start(paned)   
         
         # bottom add a statusbar
-        self.statusbar = StatusBar()
+        self.statusbar = StatusBar(self)
         self.pack_start(self.statusbar, False, False)
         
         
@@ -134,4 +134,6 @@ class ServerTab(BaseTab):
         Callback method executed when the search has finished
         """
         #reactivate the search button
-        self.filter.unlock()    
+        self.filter.unlock()
+        self.statusbar.lock()
+        self.qm = None  

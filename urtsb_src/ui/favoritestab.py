@@ -22,6 +22,7 @@ from favoritesfilter import FavoritesFilter
 from statusbar import StatusBar
 from urtsb_src.filemanager import FileManager, cfgkey
 from urtsb_src.guicontroller import GuiController
+from urtsb_src.ui.basetab import BaseTab
 from urtsb_src.ui.passworddialog import PasswordDialog
 from urtsb_src.ui.playerlist import PlayerList
 from urtsb_src.ui.serverdetailbox import ServerDetailBox
@@ -33,7 +34,7 @@ import gtk
 
 
 
-class FavoritesTab(gtk.VBox):
+class FavoritesTab(BaseTab):
     """
     UI Element for the content of the favorites tab.
     """
@@ -59,7 +60,7 @@ class FavoritesTab(gtk.VBox):
         
         
         # bottom add a statusbar
-        self.statusbar = StatusBar()
+        self.statusbar = StatusBar(self)
         self.pack_start(self.statusbar, False, False)
         
         # serverlist window
@@ -207,4 +208,6 @@ class FavoritesTab(gtk.VBox):
         Callback method executed when the search has finished
         """
         #reactivate the search button
-        self.filter.refresh_button.set_sensitive(True)             
+        self.filter.refresh_button.set_sensitive(True)    
+        self.statusbar.lock()
+        self.qm = None         

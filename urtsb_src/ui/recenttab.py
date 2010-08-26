@@ -58,7 +58,7 @@ class RecentTab(BaseTab):
         self.pack_start(paned)   
         
         # bottom add a statusbar
-        self.statusbar = StatusBar()
+        self.statusbar = StatusBar(self)
         self.pack_start(self.statusbar, False, False)
         
         # serverlist window
@@ -151,4 +151,6 @@ class RecentTab(BaseTab):
         Callback method executed when the search has finished
         """
         #reactivate the search button
-        self.filter.refresh_button.set_sensitive(True)             
+        self.filter.refresh_button.set_sensitive(True)     
+        self.statusbar.lock()    
+        self.qm = None    

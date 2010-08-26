@@ -104,3 +104,18 @@ class BaseTab(gtk.VBox):
         server = self.detailsbox.current_server
         gui = GuiController()
         gui.addFavorite(server)
+        
+    def abort_current_task(self):
+        """
+        Aborts a current proccessed task (query/search/refresh)
+        """  
+        if self.qm: 
+            self.qm.abort_current_task()
+        
+    def set_querymanager(self, querymanager):
+        """
+        Sets the querymanager that currently executes a requested task for 
+        a tab. Needed to abort this task. Also unlocks the abort button
+        """
+        self.qm = querymanager
+        self.statusbar.unlock()

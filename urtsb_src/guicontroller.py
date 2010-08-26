@@ -258,6 +258,7 @@ class GuiController(object):
         Log.log.debug('[GuiController] loadFavorites called...')
         tab.clearServerList()
         qm = QueryManager()
+        tab.set_querymanager(qm)
         qm.startFavoritesLoadingThread(tab)
         
     def loadRecentServer(self, tab):
@@ -272,6 +273,7 @@ class GuiController(object):
         Log.log.debug('[GuiController] loadRecentServer called...')
         tab.clearServerList()
         qm = QueryManager()
+        tab.set_querymanager(qm)
         qm.startRecentServersLoadingThread(tab)
 
     def loadMasterServerList(self, serverlistfilter, tab):
@@ -290,6 +292,7 @@ class GuiController(object):
         
         #perform the master server query
         qm = QueryManager()
+        tab.set_querymanager(qm)
         qm.startMasterServerQueryThread(serverlistfilter, tab)
 
 

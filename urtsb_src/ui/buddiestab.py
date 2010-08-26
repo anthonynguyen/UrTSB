@@ -70,7 +70,7 @@ class BuddiesTab(BaseTab):
         
         
         # bottom add a statusbar
-        self.statusbar = StatusBar()
+        self.statusbar = StatusBar(self)
         serverlistbox.pack_start(self.statusbar, False, False)
         
         # serverlist window
@@ -225,4 +225,6 @@ class BuddiesTab(BaseTab):
         #reactivate the search button
         self.filter.search_button.set_sensitive(True)
         self.filter.playersearchbutton.set_sensitive(True) 
+        self.statusbar.lock()
+        self.qm = None
         
