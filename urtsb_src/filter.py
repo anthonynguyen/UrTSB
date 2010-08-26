@@ -120,6 +120,9 @@ class Filter(object):
         
         if filterkey.FLT_GEAR_LIST in sf:
             self.gear_value_list = sf[filterkey.FLT_GEAR_LIST]
+            
+        if filterkey.FLT_VAR_LIST in sf:
+            self.server_var_list = sf[filterkey.FLT_VAR_LIST]
         
     def is_urt_server(self, server):
         """
@@ -225,7 +228,23 @@ class Filter(object):
                 if server_g_gear == value:
                     return False # do not display
                 
-                
+           
+        #custom var filter
+        if not None == self.server_var_list:
+            for value in self.server_var_list:
+                varname = value[0]
+                varvalue = value[1]
+                filtertype = value[2]
+                if cfgvalues.INCLUDE == filtertype: #Inlcude path
+                    if not varname in server_vars:
+                        return False #include - var must be set 
+                    else: 
+                        if not varvalue == server_vars[varname]:
+                            return False # value is not the same  
+                elif cfgvalues.EXCLUDE == filtertype: #Exclude path
+                    if varname in server_vars:
+                        if varvalue == server_vars[varname]:
+                            return False # var is the same
         return True
         
     def _does_buddy_filter_match_server(self, server):
