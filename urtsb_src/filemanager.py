@@ -270,8 +270,8 @@ class FileManager(object):
             filter[filterkey.FLT_HIDE_PASSWORDED] = 'True'
             
             #mapname and servername filter
-            filter[filterkey.FLT_MAP_NAME] = None
-            filter[filterkey.FLT_SERVER_NAME] = None        
+            filter[filterkey.FLT_MAP_NAME] = ''
+            filter[filterkey.FLT_SERVER_NAME] = ''       
             
             #query params
             filter[filterkey.QRY_SHOW_FULL] = 'False'
