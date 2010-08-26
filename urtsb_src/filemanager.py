@@ -280,6 +280,7 @@ class FileManager(object):
             filter[filterkey.FLT_GEAR] = cfgvalues.DISABLED
             
             filter[filterkey.FLT_VAR_LIST] = []
+            self.filter = filter
             return filter       
             
         
