@@ -220,6 +220,7 @@ class AdvancedFilterWindow(gtk.Dialog):
         
         self.gearliststore = gtk.ListStore(str)
         gear_set_treeview = gtk.TreeView(model=self.gearliststore)
+        self.gearlistview = gear_set_treeview
         gear_scrolled_window.add(gear_set_treeview)
                 
         self.column_gear_value = gtk.TreeViewColumn("Gear Value")
@@ -244,6 +245,7 @@ class AdvancedFilterWindow(gtk.Dialog):
         remove_button = gtk.Button('Remove Selected')
         remove_button.set_border_width(5)
         btn_hbox.pack_start(remove_button, True, True)
+        remove_button.connect('clicked', self.on_remove_selected_gear_value)
         
         self.vbox.pack_start(gear_frame, False, False)
         
@@ -299,25 +301,31 @@ class AdvancedFilterWindow(gtk.Dialog):
         cvar_scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         cvar_values_vbox.pack_start(cvar_scrolled_window)
         
-        self.cvarliststore = gtk.ListStore(str, str)
+        self.cvarliststore = gtk.ListStore(str, str, str, object)
         cvar_set_treeview = gtk.TreeView(model=self.cvarliststore)
         cvar_scrolled_window.add(cvar_set_treeview)
                 
         self.column_cvar_variable = gtk.TreeViewColumn('Variable')
         self.column_cvar_value = gtk.TreeViewColumn('Value')
+        self.column_cvar_type = gtk.TreeViewColumn('Type')
         
         cvar_set_treeview.append_column(self.column_cvar_variable)
         cvar_set_treeview.append_column(self.column_cvar_value)
+        cvar_set_treeview.append_column(self.column_cvar_type)
         
         var_cell0=gtk.CellRendererText()
         var_cell1=gtk.CellRendererText()
+        var_cell2=gtk.CellRendererText()
+        
         
         
         self.column_cvar_variable.pack_start(var_cell0, expand=True)
         self.column_cvar_value.pack_start(var_cell1, expand=False)
+        self.column_cvar_type.pack_start(var_cell2, expand=False)
         
         self.column_cvar_variable.add_attribute(var_cell0, 'text', 0)
         self.column_cvar_value.add_attribute(var_cell1, 'text', 1)  
+        self.column_cvar_type.add_attribute(var_cell2, 'text', 2)
                   
         
         btn_hbox = gtk.HBox()
@@ -622,3 +630,13 @@ class AdvancedFilterWindow(gtk.Dialog):
         """
         g_gear_value = self.calculate_gear_value()
         self.gearvalue.set_text(str(g_gear_value))
+        
+    def on_remove_selected_gear_value(self, button):
+        """
+        Callback of the remove selected button of the gear value treeview list
+        """
+        selection = self.gearlistview.get_selection()
+        result = selection.get_selected()
+        if result: 
+            iter = result[1]
+            self.gearliststore.remove(iter)
