@@ -71,7 +71,7 @@ class AdvancedFilter(gtk.HBox):
     
         #dirty hack to initialize filter
         #TODO cleanup filter initialization 
-        adv_dialog = AdvancedFilterWindow()
+        adv_dialog = AdvancedFilterWindow(None)
         adv_dialog.save_filter()
     
         self.show_all()
