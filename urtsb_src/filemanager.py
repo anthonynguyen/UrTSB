@@ -36,6 +36,7 @@ class cfgkey:
         OPT_DEFAULT_TAB = 'default_tab'
         OPT_UPDATE_SL_ROW = 'update_serverlist_row'
         OPT_FILTER = 'filter'
+        OPT_BUDDYSEARCH = 'execute_buddy_search'
         
 class cfgvalues:
     """
@@ -499,6 +500,7 @@ class FileManager(object):
         configuration[cfgkey.OPT_DEFAULT_TAB] = 0
         configuration[cfgkey.OPT_UPDATE_SL_ROW] = 'False'
         configuration[cfgkey.OPT_FILTER] = cfgvalues.BASIC_FILTER
+        configuration[cfgkey.OPT_BUDDYSEARCH] = 'False'
 
         return configuration
     

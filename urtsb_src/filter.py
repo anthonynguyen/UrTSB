@@ -52,7 +52,10 @@ class Filter(object):
         
         #query params
         self.show_empty = False
-        self.show_full = False
+        if FilterType.BUDDY_FILTER == type:
+            self.show_full = True
+        else:
+            self.show_full = False
         
         #filters
         self.hide_passworded = True

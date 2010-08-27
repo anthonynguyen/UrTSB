@@ -94,16 +94,25 @@ class SettingsTab(gtk.VBox):
         defaulttab = int(config[cfgkey.OPT_DEFAULT_TAB])
         if 0 == defaulttab:
             self.srvlist_radio.set_active(True)
+            self.checkbox_buddysearch.set_sensitive(False)
+            self.checkbox_buddysearch.set_active(False)
         elif 1 == defaulttab:
             self.favlist_radio.set_active(True)
+            self.checkbox_buddysearch.set_sensitive(False)
+            self.checkbox_buddysearch.set_active(False)
         elif 2 == defaulttab:
             self.reclist_radio.set_active(True)
+            self.checkbox_buddysearch.set_sensitive(False)
+            self.checkbox_buddysearch.set_active(False)
+        elif 3 == defaulttab:
+            self.buddies_radio.set_active(True)
+            self.checkbox_buddysearch.set_sensitive(True)
+            self.checkbox_buddysearch.set_active(fm.value_as_boolean(\
+                                                config[cfgkey.OPT_BUDDYSEARCH]))
         else:
             self.srvlist_radio.set_active(True)
         
-       
-            
-            
+                   
         if cfgvalues.BASIC_FILTER == config[cfgkey.OPT_FILTER]:
             self.filter_basic_radio.set_active(True)
             self.filter_advanced_radio.set_active(False)
@@ -160,7 +169,7 @@ class SettingsTab(gtk.VBox):
         vbox = gtk.VBox()
         launchframe.add(vbox)
         
-        desc_label = gtk.Label('Choose the default tab that is displayed ' \
+        desc_label = gtk.Label('\nChoose the default tab that is displayed ' \
                                                      + 'directly after startup')
         vbox.pack_start(desc_label, True, True, 0)
         
@@ -168,30 +177,44 @@ class SettingsTab(gtk.VBox):
         self.srvlist_radio = gtk.RadioButton(None, 'Start with "Servers" tab')
         vbox.pack_start(self.srvlist_radio, True, True, 0)
         self.srvlist_radio.set_border_width(5)   
+        
        
         self.favlist_radio = gtk.RadioButton(self.srvlist_radio, 'Start with' \
                                                             + '"Favorites" tab')
         self.favlist_radio.set_active(True)
         vbox.pack_start(self.favlist_radio, True, True, 0)
         self.favlist_radio.set_border_width(5)
+        
             
         self.reclist_radio = gtk.RadioButton(self.srvlist_radio, 'Start with' \
                                                       + '"Recently Played" tab')
         vbox.pack_start(self.reclist_radio, True, True, 0)
         self.reclist_radio.set_border_width(5)
         
+        
+        buddieoptionbox = gtk.HBox()
+        
         self.buddies_radio = gtk.RadioButton(self.srvlist_radio, 'Start with' \
                                                       + '"Buddies" tab')
-        vbox.pack_start(self.buddies_radio, True, True, 0)
+        vbox.pack_start(buddieoptionbox, True, True, 0)
+        buddieoptionbox.pack_start(self.buddies_radio)
         self.buddies_radio.set_border_width(5)
         
-        # other window hehaviour settings
         
+        self.checkbox_buddysearch = gtk.CheckButton('Execute search for buddies '
+                                                    + 'on startup')
+        buddieoptionbox.pack_start(self.checkbox_buddysearch)
+        
+        
+        self.srvlist_radio.connect('clicked', self.on_tab_checkbox_activate)
+        self.favlist_radio.connect('clicked', self.on_tab_checkbox_activate)
+        self.reclist_radio.connect('clicked', self.on_tab_checkbox_activate)
+        self.buddies_radio.connect('clicked', self.on_tab_checkbox_activate)
        
         
         # filter option (choose basic or advanced filter)
         
-        desc3_label = gtk.Label('Filter Options')
+        desc3_label = gtk.Label('\n\nFilter Options')
         vbox.pack_start(desc3_label)
         
         
@@ -241,6 +264,11 @@ class SettingsTab(gtk.VBox):
         else: #fallback
             config[cfgkey.OPT_FILTER] = cfgvalues.BASIC_FILTER
         
+        
+        config[cfgkey.OPT_BUDDYSEARCH] =\
+                   fm.value_from_boolean(self.checkbox_buddysearch.get_active())
+        
+            
         #refresh the serverlist tab to make changes to the filter available 
         #without restart
         window = self.parent.parent.parent
@@ -262,4 +290,14 @@ class SettingsTab(gtk.VBox):
         about_dialog.run()
         about_dialog.hide()
         
-        
+    def on_tab_checkbox_activate(self, widget):
+        """
+        Callback executed when the radiobuttons are clicked
+        enables disables the checkbox 
+        """
+        if widget == self.buddies_radio:
+            self.checkbox_buddysearch.set_sensitive(True)
+        else:
+            self.checkbox_buddysearch.set_active(False)
+            self.checkbox_buddysearch.set_sensitive(False)
+            

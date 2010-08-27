@@ -90,11 +90,9 @@ class BuddiesFilter(gtk.HBox):
         """
         Callback of the search buddies button
         """
-        self.search_button.set_sensitive(False)
-        self.playersearchbutton.set_sensitive(False)
+        self.lock()
         
         fm = FileManager()
-        fm.get_buddies()
         
         #create a filter object
         filter = Filter(FilterType.BUDDY_FILTER, self.parenttab)
@@ -117,6 +115,7 @@ class BuddiesFilter(gtk.HBox):
         requests can be executed!
         """
         self.search_button.set_sensitive(False)
+        self.playersearchbutton.set_sensitive(False)
         
     def unlock(self):
         """
@@ -124,3 +123,4 @@ class BuddiesFilter(gtk.HBox):
         has finished.
         """
         self.search_button.set_sensitive(True)
+        self.playersearchbutton.set_sensitive(True)

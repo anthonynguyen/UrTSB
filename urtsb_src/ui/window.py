@@ -20,6 +20,7 @@
 
 
 from urtsb_src.filemanager import FileManager, cfgkey
+from urtsb_src.filter import Filter, FilterType
 from urtsb_src.globals import Globals
 from urtsb_src.guicontroller import GuiController
 from urtsb_src.ui.buddiestab import BuddiesTab
@@ -101,6 +102,10 @@ class Window(gtk.Window):
         fm = FileManager()
         config = fm.getConfiguration()
         defaulttab = int(config[cfgkey.OPT_DEFAULT_TAB])
+        #this variable is used to dertermine if the tabswitch is the first
+        #after application start 
+        self.first_switch = True
+        
         self.notebook.set_current_page(defaulttab)
         
         #connect key press event to be able to create keyboard shortcuts
@@ -132,7 +137,15 @@ class Window(gtk.Window):
             gc.executeRecentServersLoading(self.recenttab)
             self.recenttab.filter.lock()
         if 3 == page_num: #buddies tab
-            gc.execute_buddies_loading(self.buddiestab)
+            fm = FileManager()
+            config = fm.getConfiguration()
+            execute = fm.value_as_boolean(config[cfgkey.OPT_BUDDYSEARCH])
+            if self.first_switch and execute:
+                gc.execute_buddies_loading(self.buddiestab, execute=True)
+            else:
+                gc.execute_buddies_loading(self.buddiestab)
+                 
+        self.first_switch = False
             
     def refresh(self):
         """

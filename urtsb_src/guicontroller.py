@@ -22,6 +22,7 @@ from log import Log
 from q3serverquery import Q3ServerQuery
 from querymanager import QueryManager
 from threading import Thread
+from urtsb_src.filter import Filter, FilterType
 from urtsb_src.globals import Globals
 import gobject
 import gtk
@@ -168,15 +169,17 @@ class GuiController(object):
                                 ,tab)) 
         
         
-    def execute_buddies_loading(self, tab):
+    def execute_buddies_loading(self, tab, execute=False):
         """
         Starts executing the loading of the buddies
         
-        @tab the tab requesting the buddylist        
+        @tab the tab requesting the buddylist   
+        @execute - boolean value. If True immediately start a buddy search after
+                   loading the buddylist   
         """
         Log.log.info('[GuiController] execute_buddies_loading called...')
         tab.clear_buddy_list()
-        thread.start_new_thread(self.load_buddies, (tab,))
+        thread.start_new_thread(self.load_buddies, (tab,execute))
         
         
     def executeFavoritesLoading(self, tab):
@@ -241,12 +244,14 @@ class GuiController(object):
         """
         self.window = window     
 
-    def load_buddies(self, tab):
+    def load_buddies(self, tab, execute):
         """
         Loads the buddylist and append the values to the treeview on the 
         passed tab 
         
         @param tab - the tab requesting the buddylist
+        @execute - boolean value. If True immediately start a buddy search after
+                   loading the buddylist
         """
         Log.log.debug('[GuiController] load_buddies called...')
         fm = FileManager()
@@ -254,6 +259,15 @@ class GuiController(object):
         for name in buddylist:
             gobject.idle_add(tab.append_buddy_to_list, name)
 
+        
+        if execute:
+            tab.filter.lock()
+        
+            #create a filter object
+            filter = Filter(FilterType.BUDDY_FILTER, tab)
+            filter.playerlist = fm.get_buddies()
+            tab.set_all_buddies_to_offline()
+            self.executeMasterServerQuery(filter, tab)
     
     def refresh_server_list(self, liststore, tab):
         """
