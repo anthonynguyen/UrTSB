@@ -19,6 +19,7 @@
 
 
 
+from urtsb_src.globals import Globals
 from urtsb_src.guicontroller import GuiController
 from urtsb_src.ui.addbuddydialog import AddBuddyDialog
 from urtsb_src.ui.basetab import BaseTab
@@ -45,6 +46,16 @@ class BuddiesTab(BaseTab):
         """
         
         gtk.VBox.__init__(self)
+        
+        #prepare images:
+        offline_image = gtk.Image()
+        offline_image.set_from_file(Globals.icon_dir+'/gray-icon.png')
+        self.offline_pixbuf = offline_image.get_pixbuf()
+        
+        online_image = gtk.Image()
+        online_image.set_from_file(Globals.icon_dir+'/green-icon.png')
+        self.online_pixbuf = online_image.get_pixbuf()
+        
         
         mainbox = gtk.HBox()
         
@@ -140,7 +151,7 @@ class BuddiesTab(BaseTab):
                 
         scrolled_window = gtk.ScrolledWindow()
         buddybox.pack_start(scrolled_window)
-        self.buddyliststore = gtk.ListStore(str)
+        self.buddyliststore = gtk.ListStore(gtk.gdk.Pixbuf, str)
         
 
         scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -150,30 +161,39 @@ class BuddiesTab(BaseTab):
         self.buddylistview.set_headers_clickable(True)
         scrolled_window.add(self.buddylistview)
         
+       
+        
+        column_status = gtk.TreeViewColumn('')
+        self.buddylistview.append_column(column_status)
+        
         column_buddyname = gtk.TreeViewColumn('Buddy')
         self.buddylistview.append_column(column_buddyname)
         
         column_buddyname.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
         
         column_buddyname.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
-        column_buddyname.set_expand(False)
+        column_buddyname.set_expand(True)
         column_buddyname.set_fixed_width(100)
         
         
         player_cell0=gtk.CellRendererText()
+        status_cell1=gtk.CellRendererPixbuf()
         
-        column_buddyname.pack_start(player_cell0, expand=False)
+        column_buddyname.pack_start(player_cell0, expand=True)
+        column_status.pack_start(status_cell1, expand=False)
         
-        column_buddyname.add_attribute(player_cell0, 'text', 0)
+        column_buddyname.add_attribute(player_cell0, 'text', 1)
+        column_status.add_attribute(status_cell1, 'pixbuf', 0)
         
         buttonbox = gtk.HBox()
         buddybox.pack_start(buttonbox, False, False)
         add_button = gtk.Button('Add Buddy')
         add_button.connect("clicked", self.on_add_buddy_clicked)
-        
+        add_button.set_border_width(5)
         
         remove_button = gtk.Button('Remove Selected')
         remove_button.connect("clicked", self.on_remove_buddy_clicked)
+        remove_button.set_border_width(5)
         
         buttonbox.pack_start(add_button, True, True)
         buttonbox.pack_start(remove_button, True, True)
@@ -202,7 +222,7 @@ class BuddiesTab(BaseTab):
         
         @param buddyname name of the biddy to be added to the liststore
         """
-        self.buddyliststore.append([buddyname])
+        self.buddyliststore.append([self.offline_pixbuf, buddyname])
         
     def on_remove_buddy_clicked(self, widget):
         """
@@ -212,11 +232,37 @@ class BuddiesTab(BaseTab):
         result = selection.get_selected()
         if result: 
             iter = result[1]
-            name_to_remove = self.buddyliststore.get_value(iter, 0)
+            name_to_remove = self.buddyliststore.get_value(iter, 1)
             gc = GuiController()
             gc.remove_buddy(name_to_remove)
             self.buddyliststore.remove(iter)
   
+    def update_buddy_status(self, name, status):
+        """
+        Updates the status image in the buddylist
+        
+        @param the name to be updated
+        @param status - True = online, False = offline
+        """
+        iter = self.buddyliststore.iter_children(None)
+        while iter:
+            value = self.buddyliststore.get_value(iter, 1)
+            if value == name:
+                if status:
+                    self.buddyliststore.set_value(iter, 0, self.online_pixbuf)
+                else:
+                    self.buddyliststore.set_value(iter, 0, self.offline_pixbuf)
+            iter = self.buddyliststore.iter_next(iter)
+            
+    def set_all_buddies_to_offline(self):
+        """
+        Sets the status image of all entries in the buddylist to offline.
+        Done right before a new search is started.
+        """
+        iter = self.buddyliststore.iter_children(None)
+        while iter:
+            self.buddyliststore.set_value(iter, 0, self.offline_pixbuf)
+            iter = self.buddyliststore.iter_next(iter)
         
     def serverlist_loading_finished(self):
         """
@@ -227,4 +273,4 @@ class BuddiesTab(BaseTab):
         self.filter.playersearchbutton.set_sensitive(True) 
         self.statusbar.lock()
         self.qm = None
-        
+    

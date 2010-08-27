@@ -82,7 +82,7 @@ class BuddiesFilter(gtk.HBox):
         #create the filter object
         filter = Filter(FilterType.BUDDY_FILTER)
         filter.playerlist = searchname_list
-        
+        self.parenttab.set_all_buddies_to_offline()
         gc = GuiController()
         gc.executeMasterServerQuery(filter, self.parenttab) 
       
@@ -97,9 +97,9 @@ class BuddiesFilter(gtk.HBox):
         fm.get_buddies()
         
         #create a filter object
-        filter = Filter(FilterType.BUDDY_FILTER)
+        filter = Filter(FilterType.BUDDY_FILTER, self.parenttab)
         filter.playerlist = fm.get_buddies()
-        
+        self.parenttab.set_all_buddies_to_offline()
         gc = GuiController()
         gc.executeMasterServerQuery(filter, self.parenttab) 
         

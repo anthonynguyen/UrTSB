@@ -39,7 +39,7 @@ class Filter(object):
     INCLUDE = 1
     EXCLUDE = 2
 
-    def __init__(self, type):
+    def __init__(self, type, tab=None):
         """
         Constructor
         
@@ -47,6 +47,7 @@ class Filter(object):
         """
         self.type = type
         
+        self.tab = tab
         #filter values initialization
         
         #query params
@@ -299,25 +300,33 @@ class Filter(object):
         
         @returns True if a buddy is playing on the server
         """
-        
+        print self.tab
         playerlist = server.getPlayerList()
         
         #if there are no players on the server return true to hide the server
         if len(playerlist) == 0:
             return False
         
+        retval = False
         for player in playerlist:
             for name in self.playerlist:
+                status = False
                 #we want also partial matches e.g. when searching for a clantag
                 count = player.getName().find(name)
                 if not count == -1:
-                    #a match! return True, so that the server will be displayed
-                    #on the serverlist
-                    return True
+                    #a match! set status to True, so that the server 
+                    #will be displayed on the serverlist
+                    status = True
+                    retval  = True
+                if not None == self.tab and status == True:
+                    Log.log.debug('[Filter] - Buddy - ' + name + ' is online')
+                    self.tab.update_buddy_status(name, True)
+                status = False
+                        
         #if the iteration returns no match, return False so that the server
         #will be hidden
         
-        return False
+        return retval
         
     def does_filter_match_server(self, server):
         """
