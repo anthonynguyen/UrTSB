@@ -77,12 +77,7 @@ class BaseTab(gtk.VBox):
         
         # set the other serverdetail            
         self.detailsbox.setServerDetails(server) 
-        # update row in list
-        # but only if the corresponding option is True
-        fm = FileManager()
-        config = fm.getConfiguration()
-        if 'True' == config[cfgkey.OPT_UPDATE_SL_ROW]: 
-            self.serverlist.update_selected_row(server)    
+          
 
     def onRefreshButtonClicked(self, widget):
         """

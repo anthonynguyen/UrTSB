@@ -101,10 +101,7 @@ class SettingsTab(gtk.VBox):
         else:
             self.srvlist_radio.set_active(True)
         
-        if 'True' == config[cfgkey.OPT_UPDATE_SL_ROW]:   
-            self.checkbox_update_sl_row.set_active(True)
-        else:
-            self.checkbox_update_sl_row.set_active(False)
+       
             
             
         if cfgvalues.BASIC_FILTER == config[cfgkey.OPT_FILTER]:
@@ -190,18 +187,7 @@ class SettingsTab(gtk.VBox):
         
         # other window hehaviour settings
         
-        desc2_label = gtk.Label('Options controlling the serverlist behaviour')
-        vbox.pack_start(desc2_label)
-        
-        self.checkbox_update_sl_row = gtk.CheckButton('Update selected '\
-                + 'row when the "refresh"-button is clicked')
-        vbox.pack_start(self.checkbox_update_sl_row)
-        desc3_label = gtk.Label('The update may cause the server to jump to  ' \
-                               +'somewhere else in the serverlist (sorting).\n ' \
-                               +'If this option is deactivated, only the ' \
-                               +'server details are refreshed and the selected '\
-                               +'row\n in the serverlist remains untouched.')
-        vbox.pack_start(desc3_label)
+       
         
         # filter option (choose basic or advanced filter)
         
@@ -247,11 +233,6 @@ class SettingsTab(gtk.VBox):
             defaulttab = 3
         
         config[cfgkey.OPT_DEFAULT_TAB] = defaulttab
-        
-        if self.checkbox_update_sl_row.get_active():
-            config[cfgkey.OPT_UPDATE_SL_ROW] = 'True'
-        else:
-            config[cfgkey.OPT_UPDATE_SL_ROW] = 'False'
         
         if self.filter_basic_radio.get_active():
             config[cfgkey.OPT_FILTER] = cfgvalues.BASIC_FILTER
