@@ -53,7 +53,7 @@ class BuddiesFilter(gtk.HBox):
         
         add_desc_label = gtk.Label('Enter a playername and press search: ')
         self.playersearch_entry = gtk.Entry()
-        #self.playersearch_entry.set_width_chars(40)
+        self.playersearch_entry.set_width_chars(15)
         self.playersearchbutton = gtk.Button('Search for Player')
         addbox.pack_start(add_desc_label, False, False)
         addbox.pack_start(self.playersearch_entry, True, True)
