@@ -149,36 +149,60 @@ class Filter(object):
         # hide non responsove servers 
         if (server.getPing() == 999) \
                            and self.hide_non_responsive:
+            Log.log.debug('[Filter] server filtered: ping > 999 - '\
+                                                           + server.to_string())
             return False
         # hide passworded servers
         if server.needsPassword() \
                                and self.hide_passworded:
+            Log.log.debug('[Filter] server filtered: passworded - '\
+                                                           + server.to_string())
             return False
         
         
         gametype = server.getGameType()
         if gametype == '8' and not self.gametype_bomb:
+            Log.log.debug('[Filter] server filtered: gametype is Bomb - '\
+                                                           + server.to_string())
             return False
         elif gametype == '6' and not self.gametype_cah:
+            Log.log.debug('[Filter] server filtered: gametype is CAH - '\
+                                                           + server.to_string())
             return False
         elif gametype == '7' and not self.gametype_ctf: 
+            Log.log.debug('[Filter] server filtered: gametype is CTF - '\
+                                                           + server.to_string())
             return False
         elif gametype == '0' and not self.gametype_ffa:
+            Log.log.debug('[Filter] server filtered: gametype is FFA - '\
+                                                           + server.to_string())
             return False
         elif gametype == '3' and not self.gametype_tdm:
+            Log.log.debug('[Filter] server filtered: gametype is TDM - '\
+                                                           + server.to_string())
             return False
         elif gametype == '4' and not self.gametype_ts:
+            Log.log.debug('[Filter] server filtered: gametype is TS - '\
+                                                           + server.to_string())
             return False
         elif gametype == '5' and not self.gametype_ftl:
+            Log.log.debug('[Filter] server filtered: gametype is FLT - '\
+                                                           + server.to_string())
             return False
         
         if self.min_players > server.getClientCount():
+            Log.log.debug('[Filter] server filtered: less than minimum players'\
+                                                    +' - ' + server.to_string())
             return False
         
         if self.max_players < server.getClientCount():
+            Log.log.debug('[Filter] server filtered: more than maximum players'\
+                                                   + ' - ' + server.to_string())
             return False
    
         #no filtermatch so far, return True which results in displaying the server
+        Log.log.debug('[Filter] server passed basic filter - '\
+                                                           + server.to_string())
         return True
         
     def _does_adv_filter_match_server(self, server):
@@ -198,12 +222,16 @@ class Filter(object):
             if server.getMap().find(self.map_name) == -1: 
                 #mapname does not match the filter for mapname
                 #so return False
+                Log.log.debug('[Filter] server filtered: mapname does not '\
+                                             + 'match  - ' + server.to_string())
                 return False
         
         if not None == self.server_name and not len(self.server_name) == 0:
             if server.getName().find(self.server_name) == -1: 
                 #servername does not match the filter for servername
                 #so return False
+                Log.log.debug('[Filter] server filtered: servername does not '\
+                                             + 'match  - ' + server.to_string())
                 return False   
          
         #gear include filter   
@@ -217,6 +245,8 @@ class Filter(object):
                     break
                 
             if not result: #g_gear not in include list!
+                Log.log.debug('[Filter] server filtered: g_gear value does not'\
+                                             + ' match  - ' + server.to_string())
                 return False #do not display
             
             
@@ -226,6 +256,8 @@ class Filter(object):
             server_g_gear = server_vars['g_gear']
             for value in self.gear_value_list:
                 if server_g_gear == value:
+                    Log.log.debug('[Filter] server filtered: g_gear on exclude'\
+                                             + ' list  - ' + server.to_string())
                     return False # do not display
                 
            
@@ -237,14 +269,25 @@ class Filter(object):
                 filtertype = value[2]
                 if cfgvalues.INCLUDE == filtertype: #Inlcude path
                     if not varname in server_vars:
+                        Log.log.debug('[Filter] server filtered: var '\
+                                + varname + ' not set  - ' + server.to_string())
                         return False #include - var must be set 
                     else: 
                         if not varvalue == server_vars[varname]:
+                            Log.log.debug('[Filter] server filtered: var '\
+                                              + varname + ' does not match  - '\
+                                                           + server.to_string())
                             return False # value is not the same  
                 elif cfgvalues.EXCLUDE == filtertype: #Exclude path
                     if varname in server_vars:
                         if varvalue == server_vars[varname]:
+                            Log.log.debug('[Filter] server filtered: var '\
+                                              + varname + ' on excludelist  - '\
+                                                           + server.to_string())
                             return False # var is the same
+        
+        Log.log.debug('[Filter] server passed advanced filter - '\
+                                                           + server.to_string())
         return True
         
     def _does_buddy_filter_match_server(self, server):
@@ -273,6 +316,7 @@ class Filter(object):
                     return True
         #if the iteration returns no match, return False so that the server
         #will be hidden
+        
         return False
         
     def does_filter_match_server(self, server):
@@ -286,6 +330,8 @@ class Filter(object):
         """
         #check if the server is a UrT server, other servers are not interessting
         if not self.is_urt_server(server):
+            Log.log.debug('[Filter] server filtered: not a q3ut4 server - '\
+                                                           + server.to_string())
             return False
         
         if FilterType.BASIC_FILTER == self.type:

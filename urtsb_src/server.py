@@ -190,3 +190,6 @@ class Server(object):
     
     def get_location_name(self):
         return self.locationame
+    
+    def to_string(self):
+        return self.getaddress() + ' - ' + self.name
