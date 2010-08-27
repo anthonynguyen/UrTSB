@@ -300,6 +300,9 @@ class ServerList(gtk.ScrolledWindow):
         self.context_menu.add(connect_menu_item)
         connect_menu_item.connect('activate', self.on_connect_menu_item_clicked)
         
+        separator = gtk.SeparatorMenuItem()
+        self.context_menu.add(separator)
+        
         #differ between remove and add favorite menuitem.
         #on the favorites tab the menuitem will be remove
         #all other tabs the add menuitem should be displayed
@@ -319,9 +322,25 @@ class ServerList(gtk.ScrolledWindow):
         
         rcon_menu_item = gtk.MenuItem('open RCON console')
         self.context_menu.add(rcon_menu_item)
-        self.context_menu.show_all()
-        
         rcon_menu_item.connect('activate', self.on_context_rcon_pressed)
+        
+        separator = gtk.SeparatorMenuItem()
+        self.context_menu.add(separator)
+        
+        #copy to clipboard functions
+        copy_address_menu_item = gtk.MenuItem('copy address to clipboard')
+        self.context_menu.add(copy_address_menu_item)
+        copy_address_menu_item.connect('activate',\
+                                      self.on_copy_address_to_clipboard_clicked)
+        
+        copy_name_and_address_menu_item = gtk.MenuItem('copy name and address '\
+                                                               + 'to clipboard')
+        self.context_menu.add(copy_name_and_address_menu_item)
+        copy_name_and_address_menu_item.connect('activate',\
+                             self.on_copy_name_and_address_to_clipboard_clicked)
+        
+        
+        self.context_menu.show_all()
  
     def on_connect_menu_item_clicked(self, menuitem):
         """
@@ -344,6 +363,34 @@ class ServerList(gtk.ScrolledWindow):
             gc = GuiController()
             gc.removeFavorite(server)
             self.liststore.remove(iter)
+ 
+ 
+    def on_copy_address_to_clipboard_clicked(self, menuitem):
+        """
+        Callback method of the "copy address to clipboard" menuitem
+        """
+        selection = self.serverlistview.get_selection()
+        result = selection.get_selected()
+        if result: 
+            iter = result[1]
+            server = self.liststore.get_value(iter, 8)
+            clipboard = gtk.clipboard_get()
+            clipboard.set_text(server.getaddress())
+            clipboard.store()
+    
+    def on_copy_name_and_address_to_clipboard_clicked(self, menuitem):
+        """
+        Callback method of the "copy name and address to clipboard" menuitem
+        """
+        selection = self.serverlistview.get_selection()
+        result = selection.get_selected()
+        if result: 
+            iter = result[1]
+            server = self.liststore.get_value(iter, 8)
+            clipboard = gtk.clipboard_get()
+            copytext = server.getaddress() + ' - ' + server.getName() 
+            clipboard.set_text(copytext)
+            clipboard.store()
  
     def on_add_fav_menu_item_clicked(self, menuitem):
         """
