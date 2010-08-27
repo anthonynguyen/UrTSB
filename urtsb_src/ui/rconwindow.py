@@ -43,6 +43,9 @@ class RconWindow(gtk.Window):
         self.add(vbox)
         vbox.set_border_width(5)
         
+        namelabel = gtk.Label(server.getName())
+        namelabel.set_line_wrap(True)
+        vbox.pack_start(namelabel, False, False)
         
         scrolled_window = gtk.ScrolledWindow()
         scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
