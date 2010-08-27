@@ -64,6 +64,28 @@ class QueryManager(object):
         
         self.abort = False
         
+    def start_serverlist_refresh(self, liststore, tab):
+        """
+        Refreshes the Serverlist of a tab
+        
+        @param liststore - the liststore which contains the servers to be 
+                           refreshed
+        @param tab - the tab requesting the refresh
+        """    
+        self.tab = tab
+        self.filter = None
+        
+        iter = liststore.iter_children(None)
+        while iter:
+            server = liststore.get_value(iter, 8)
+            self.serverqueue.put(server)
+            iter = liststore.iter_next(iter)
+        
+        self.servercount = self.serverqueue.qsize()
+        
+        gobject.idle_add(tab.clearServerList)
+        self.messageque.put('serverlist_loaded')
+        
     def startMasterServerQueryThread(self, filter, tab):
         """
         Starts the masterserver query.

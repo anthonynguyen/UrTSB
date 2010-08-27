@@ -200,6 +200,17 @@ class GuiController(object):
         tab.clearServerList()
         thread.start_new_thread(self.loadRecentServer, (tab,))
     
+    def execute_serverlist_refresh(self, liststore, tab):
+        """
+        Starts the execution of the refreshe of a serverlist 
+                
+        @param liststore - the liststore which contains the servers to be 
+                           refreshed
+        @param tab - the tab requesting the refresh
+        """
+        Log.log.info('[GuiController] execute_serverlist_refresh called...')
+        thread.start_new_thread(self.refresh_server_list, (liststore,tab))
+    
                   
     def setDetailServer(self, server, tab):
         """
@@ -244,7 +255,18 @@ class GuiController(object):
             gobject.idle_add(tab.append_buddy_to_list, name)
 
     
-
+    def refresh_server_list(self, liststore, tab):
+        """
+        Refreshes the Serverlist of a tab
+        
+        @param liststore - the liststore which contains the servers to be 
+                           refreshed
+        @param tab - the tab requesting the refresh
+        """
+        Log.log.debug('[GuiController] refresh_server_list called...')
+        qm = QueryManager()
+        tab.set_querymanager(qm)
+        qm.start_serverlist_refresh(liststore, tab)
 
     def loadFavorites(self, tab):
         """
@@ -256,7 +278,7 @@ class GuiController(object):
         @param tab - the tab requesting the favorite servers list
         """
         Log.log.debug('[GuiController] loadFavorites called...')
-        tab.clearServerList()
+        gobject.idle_add(tab.clearServerList)
         qm = QueryManager()
         tab.set_querymanager(qm)
         qm.startFavoritesLoadingThread(tab)
@@ -271,7 +293,7 @@ class GuiController(object):
         @param tab - the tab requesting the recent server list
         """
         Log.log.debug('[GuiController] loadRecentServer called...')
-        tab.clearServerList()
+        gobject.idle_add(tab.clearServerList)
         qm = QueryManager()
         tab.set_querymanager(qm)
         qm.startRecentServersLoadingThread(tab)
@@ -288,7 +310,7 @@ class GuiController(object):
         """
         Log.log.debug('[GuiController] loadMasterServerList called...')
         #clear the current serverlist
-        tab.clearServerList()
+        gobject.idle_add(tab.clearServerList)
         
         #perform the master server query
         qm = QueryManager()

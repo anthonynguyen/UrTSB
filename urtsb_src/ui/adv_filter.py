@@ -63,11 +63,18 @@ class AdvancedFilter(gtk.HBox):
         self.search_button.connect("clicked", self.on_search_clicked)
         self.search_button.set_border_width(5)
         
+        self.refresh_button = gtk.Button('Refresh')
+        self.pack_end(self.refresh_button, False, False)
+        self.refresh_button.set_border_width(5)
+        self.refresh_button.connect('clicked', self.on_refresh_clicked)
+        
         self.configfilter_button = gtk.Button('Configure Filter')
         self.pack_end(self.configfilter_button, False, False)
         self.configfilter_button.connect("clicked", self.\
                                                     on_configure_filter_clicked)
         self.configfilter_button.set_border_width(5)
+        
+        
        
         self.show_all()
   
@@ -114,12 +121,22 @@ class AdvancedFilter(gtk.HBox):
         filter_popup = AdvancedFilterWindow(None)
         filter_popup.run()
         
+    def on_refresh_clicked(self, button):
+        """
+        Callback of the refresh button
+        """    
+        self.lock()
+        guicontroller = GuiController()
+        liststore = self.parenttab.serverlist.liststore
+        guicontroller.execute_serverlist_refresh(liststore, self.parenttab)
+        
     def lock(self):
         """
         Locks the UI-Elements for Lookup and Search so no two concurrent 
         requests can be executed!
         """
         self.search_button.set_sensitive(False)
+        self.refresh_button.set_sensitive(False)
         self.lookupbutton.set_sensitive(False)
         
     def unlock(self):
@@ -129,3 +146,4 @@ class AdvancedFilter(gtk.HBox):
         """
         self.search_button.set_sensitive(True)
         self.lookupbutton.set_sensitive(True)
+        self.refresh_button.set_sensitive(True)
