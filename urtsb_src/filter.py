@@ -301,6 +301,8 @@ class Filter(object):
         @returns True if a buddy is playing on the server
         """
        
+        Log.log.debug('[Filter] checking server' + server.to_string() \
+                      + ' for playing buddies')
         playerlist = server.getPlayerList()
         
         #if there are no players on the server return true to hide the server
