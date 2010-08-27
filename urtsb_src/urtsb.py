@@ -24,6 +24,7 @@ from urtsb_src.globals import Globals
 from urtsb_src.guicontroller import GuiController
 from urtsb_src.log import Log
 from urtsb_src.ui.window import Window
+import getopt
 import gobject
 import gtk
 import logging
@@ -54,9 +55,37 @@ def determine_path ():
         print "I'm sorry, but something is wrong."
         print "There is no __file__ variable. Please contact the author."
         sys.exit ()
-       
+
+def usage():
+    """
+    Prints out usage information
+    Commandline parameters
+    """
+    print 'Available commandline options:'
+    print '\t-h or --help\tthis helptext'
+    print '\t-d or --debug\tactivating debug output'
+      
         
 def start ():
+        
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hd", ["help", "debug"])
+    except getopt.GetoptError, err:
+        # print help information and exit:
+        print str(err) # will print something like "option -a not recognized"
+        usage()
+        sys.exit(2)    
+        
+    loglevel = logging.INFO
+    
+    for o, a in opts:
+        if o in ("-d", "--debug"):
+            loglevel = logging.DEBUG
+        elif o in ("-h", "--help"):
+            usage()
+            sys.exit(1)
+        else:
+            assert False, "unhandled option"    
         
     try_gtk_imports()
    
@@ -67,10 +96,7 @@ def start ():
     Globals.initialize(determine_path())
     
     #init logging
-    #change this line to 
-    #logging = Log(logging.DEBUG)
-    #to enable debug output
-    Log(logging.INFO)
+    Log(loglevel)
     
     
     window = Window() # create the urtsb window
