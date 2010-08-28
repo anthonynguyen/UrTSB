@@ -23,6 +23,7 @@ from urtsb_src.filemanager import FileManager, cfgkey
 from urtsb_src.filter import Filter, FilterType
 from urtsb_src.globals import Globals
 from urtsb_src.guicontroller import GuiController
+from urtsb_src.log import Log
 from urtsb_src.ui.buddiestab import BuddiesTab
 from urtsb_src.ui.favoritestab import FavoritesTab
 from urtsb_src.ui.recenttab import RecentTab
@@ -41,6 +42,10 @@ class Window(gtk.Window):
     This class is the entry point of the UI part of UrTSB.
     It creates the GTK Window.
     """    
+    #override configure event to react in window resize
+    __gsignals__ = {
+        "configure-event" : "override"
+        }
     
     instance= None
     
@@ -52,12 +57,22 @@ class Window(gtk.Window):
         Window.instance = self
         
         #window creation and basic window settings
+        fm = FileManager()
+        window_sizing = fm.get_window_sizing()
         
         gc = GuiController()
         self.set_title(gc.appname + ' v.' + gc.appver + ' - ' + gc.appdesc)
         self.set_icon_from_file(Globals.icon_dir +'/logo.png')
-        self.set_default_size(1024, 768)
-        self.set_position(gtk.WIN_POS_CENTER)
+        
+        if window_sizing.maximized:
+            self.maximize()
+        else:
+            self.unmaximize()
+        self.set_default_size(window_sizing.width, window_sizing.height)
+        if None == window_sizing.x and None == window_sizing.y:
+            self.set_position(gtk.WIN_POS_CENTER)
+        else:
+            self.move(window_sizing.x, window_sizing.y)
         self.connect('destroy', gtk.main_quit)
           
           
@@ -111,10 +126,28 @@ class Window(gtk.Window):
         #connect key press event to be able to create keyboard shortcuts
         self.connect('key-press-event', self.on_key_pressed_event)
        
+        #connect window-state-event to handle maximize/demaximize
+        self.connect('window-state-event', self.on_window_state_changed)
         
         self.show_all()
 
-
+    def do_configure_event(self, event):
+        """
+        overrides the default do_configure_event method
+        handles window move and resize and stores this information
+        """
+        fm = FileManager()
+        window_sizing = fm.get_window_sizing()
+        window_sizing.width = event.width
+        window_sizing.height = event.height
+        window_sizing.x = event.x
+        window_sizing.y = event.y
+        
+        Log.log.debug('Window: size = ' + str(window_sizing.width) + 'x' +
+                      str(window_sizing.height) + '  position = ' +
+                      str(window_sizing.x) + ', ' + str(window_sizing.y))
+        
+        gtk.Window.do_configure_event(self, event)
        
     def on_tab_change(self, notebook, page, page_num):
         """
@@ -172,3 +205,17 @@ class Window(gtk.Window):
         # handle F5 key to call a refresh
         if 'F5' == gtk.gdk.keyval_name(event.keyval):
             self.refresh()
+            
+    def on_window_state_changed(self, window, event):
+        """
+        Callback of the def "window-state-event"
+        Needed to handle maximize/demaximize of the window
+        """
+        fm = FileManager()
+        window_sizing = fm.get_window_sizing()
+        if event.new_window_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            Log.log.debug('UrTSB Window maximized')
+            window_sizing.maximized = True
+        else:
+            Log.log.debug('UrTSB Window not maximized')
+            window_sizing.maximized = False

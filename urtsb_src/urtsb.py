@@ -30,6 +30,7 @@ import gtk
 import logging
 import os
 import sys
+from urtsb_src.filemanager import FileManager
 
 def try_gtk_imports():
     #gtk import stuff   
@@ -105,6 +106,11 @@ def start ():
        
     gtk.main() # run the gtk main loop
     
+    #on exit save the window size informations
+    Log.log.info('Exiting....')
+    fm = FileManager()
+    Log.log.debug('Saving window size informations')
+    fm.save_window_sizing()
     
 if __name__ == "__main__":
     start()

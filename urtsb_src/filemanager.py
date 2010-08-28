@@ -74,6 +74,20 @@ class filterkey:
     GT_FTL = 'gametype_ftl'
     GT_CAH = 'gametype_cah'
     GT_FFA = 'gametype_ffa'
+    
+class WindowSizing:
+    
+    def __init__(self):
+        """
+        Constructor
+        """
+        #defaults: 
+        self.height = 768
+        self.width = 1024
+        self.maximized = False
+        self.x = None
+        self.y = None
+        
 
 class FileManager(object):
     """
@@ -94,6 +108,7 @@ class FileManager(object):
     buddies = None
     filter = None
     rconpws = None
+    window_sizing = None
     
     #filenames
     conf_file = 'urtsb.cfg'
@@ -103,6 +118,7 @@ class FileManager(object):
     log_file = 'urtsb.log'
     filter_file = 'filter.pkl'
     rcon_file = 'rcon_pws.cfg'
+    window_size_file = 'window_size.pkl'
     
     
                   
@@ -126,9 +142,43 @@ class FileManager(object):
             self.buddies_file = Globals.config_dir+FileManager.buddies_file
             self.filter_file = Globals.config_dir+FileManager.filter_file
             self.rcon_file = Globals.config_dir+FileManager.rcon_file
+            self.window_size_file = Globals.config_dir+FileManager.\
+                                                                window_size_file
             
             #initialise ServerManager
             self.srvman = ServerManager()
+    
+    def get_window_sizing(self):
+        """
+        Loads the window size settings from the file or returnes a already 
+        loaded instance if available
+        """
+        if self.window_sizing:
+            return self.window_sizing
+        
+        
+    
+        pkl_file = None
+        try:
+            pkl_file = open(self.window_size_file, "rb") 
+        except IOError:
+            self.window_sizing = WindowSizing()
+            return self.window_sizing
+        
+        self.window_sizing = pickle.load(pkl_file)
+        
+        pkl_file.close()
+        return self.window_sizing
+    
+    def save_window_sizing(self):
+        """
+        Saves the window sizing instance in a file
+        """
+        pkl_file = open(self.window_size_file, "wb")
+         
+        pickle.dump(self.window_sizing, pkl_file, pickle.HIGHEST_PROTOCOL)
+        
+        pkl_file.close()
     
     def get_buddies(self):
         """
