@@ -356,7 +356,7 @@ class QueryManager(object):
             bartext = None
             if 1.0 == fraction:
                 bartext = 'finished getting server status - displaying ' \
-                         + str((self.processedserver-self.filterdcount)) + \
+                         + str((self.servercount-self.filterdcount)) + \
                          ' servers (' + str(self.filterdcount) + ' filtered)'
                 self.tab.statusbar.progressbar.set_fraction(0.0)
                 
