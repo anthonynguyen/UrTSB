@@ -1,6 +1,7 @@
 
 from distutils.core import setup
 from urtsb_src.globals import Globals
+import glob
 import sys
 try:
     import py2exe
@@ -45,11 +46,13 @@ if cmd == 'py2exe':
           console = ['urtsb'],
           options = {
                 'py2exe': {
-                        'packages': ['urtsb_src', 'urtsb_src/ui', 'urtsb_src/pygeoip','encodings'],
-                        'includes': 'cairo, pango, pangocairo, atk, gobject',
+                        'packages': ['encodings'],
+                        'includes': 'cairo, pango, pangocairo, atk, gobject, gio',
                           }
             },
-          data_files= files
+          data_files = [ ('urtsb_src/resource/flags', glob.glob('urtsb_src/resource/flags\\*.png')),
+                          ('urtsb_src/resource/icons', glob.glob('urtsb_src/resource/icons\\*.png')),
+                          ('urtsb_src/resource/geoip', ['GeoIP.dat']) ]
           )
 #py2app (MacOS) target
 elif cmd == 'py2app':
