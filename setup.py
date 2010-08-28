@@ -39,12 +39,17 @@ if cmd == 'py2exe':
           author = cfg['author'],
           author_email = cfg['author_email'],
           url = cfg['url'],
-          packages = ['urtsb_src', 'urtsb_src/ui', 'urtsb_src/pygeoip'],
-          package_data = {'UrTSB' : files },
           long_description = cfg['long_desc'],
           license = cfg['license'],
           platforms = ["Windows"],
-          windows = ['urtsb'] 
+          console = ['urtsb'],
+          options = {
+                'py2exe': {
+                        'packages': ['urtsb_src', 'urtsb_src/ui', 'urtsb_src/pygeoip','encodings'],
+                        'includes': 'cairo, pango, pangocairo, atk, gobject',
+                          }
+            },
+          data_files= files
           )
 #py2app (MacOS) target
 elif cmd == 'py2app':
