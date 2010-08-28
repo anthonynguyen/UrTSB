@@ -43,7 +43,7 @@ if cmd == 'py2exe':
           long_description = cfg['long_desc'],
           license = cfg['license'],
           platforms = ["Windows"],
-          console = [
+          windows = [
             {
                 "script": "urtsb",
                 "icon_resources": [(1, "urtsb_src/resource/icons/icon.ico")]
