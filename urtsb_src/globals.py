@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with UrTSB.  If not, see <http://www.gnu.org/licenses/>.
 #
+
 import os
 import sys
 
@@ -51,6 +52,21 @@ class Globals(object):
         Globals.app_root = os.path.normpath(os.path.join(Globals.package_dir,\
                                                                          '../'))
         Globals.resource_dir = os.path.join(Globals.package_dir, 'resource')
+        
+        if not os.path.exists( Globals.resource_dir ):
+            #this should be the case when building windows distribution using
+            #py2exe where the resource directory is not located inside the 
+            #package structure
+            #start with the packagedir minus two directories (this will be
+            #the dist dir of py2exe)
+            Globals.resource_dir = os.path.join(Globals.package_dir,\
+                                                               '../../resource')
+            #if this also does not exist break, program will not work and
+            #throw errors when the icons could not be loaded
+            if not os.path.exists( Globals.resource_dir ):
+                print('Resource directory not found ! Exiting ...')
+                sys.exit(2)
+                
         Globals.config_dir = Globals.__determine_config_dir()
         
         # resource dirs 
