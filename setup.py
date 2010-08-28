@@ -50,9 +50,9 @@ if cmd == 'py2exe':
                         'includes': 'cairo, pango, pangocairo, atk, gobject, gio',
                           }
             },
-          data_files = [ ('urtsb_src/resource/flags', glob.glob('urtsb_src/resource/flags\\*.png')),
-                          ('urtsb_src/resource/icons', glob.glob('urtsb_src/resource/icons\\*.png')),
-                          ('urtsb_src/resource/geoip', ['urtsb_src/resource/geoip/GeoIP.dat']) ]
+          data_files = [ ('resource/flags', glob.glob('urtsb_src/resource/flags\\*.png')),
+                          ('resource/icons', glob.glob('urtsb_src/resource/icons\\*.png')),
+                          ('resource/geoip', ['urtsb_src/resource/geoip/GeoIP.dat']) ]
           )
 #py2app (MacOS) target
 elif cmd == 'py2app':
