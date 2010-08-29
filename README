@@ -169,10 +169,12 @@ initial release
         - Direct server lookup by ip:port or url:port
   * added abort button to abort a query/search/refresh.
   * display servername on rcon window
-  * two new context menuitems: "copy address to clipboard" and "copy name and address to clipboard"
+  * two new context menuitems: "copy address to clipboard" and "copy name and 
+    address to clipboard"
   * added commandline option -d (or --debug) which activates debug output
   * added status icons to buddylist (online/offline)
   * removed update selected row on refresh
-  * added option to start a buddysearch on startup if the buddytab is set as the default tab
+  * added option to start a buddysearch on startup if the buddytab is set as the
+    default tab
   * window now remembers size and position
   
