@@ -32,6 +32,9 @@ Linux:
 
 Windows: 
 ----------------
+    This only applies if you want to use the source package.
+    The windows package of UrTSB contains already these dependencies.
+    
     Details on how to get PyGTK running on Windows is described here:
     ->  http://www.pygtk.org/downloads.html 
    
@@ -62,8 +65,8 @@ MacOS:
     
 ###############################################################################
 
-How to run/install:
-----------------
+How to run/install Linux:
+----------------------------
 
 run: 
     unpack and launch the python runner script 'urtsb' found in the project root
@@ -77,7 +80,12 @@ install:
     or when using sudo:
         sudo python setup.py install
 
-    
+   
+How to run/install Linux:
+----------------------------
+
+run: (windows package)
+    unzip and doubleclick the executable 'urtsb.exe'
 
 
 
@@ -141,3 +149,30 @@ initial release
   * new feature: RCON window for remote server administration
   * added contextmenus to the serverlist and the playerlist 
  
+ 
+= v.0.4 = 
+
+  * applied patch to make UrTSB work on windows (contributed by Courgette from 
+    the urbanterror.info forums) + some more changes needed to provide a windows
+    version of UrTSB
+  * make use of python distutils (UrTSB can now be installed by calling 
+    "python setup.py install")
+  * adding a server manually to the favorites now handles the host to be 
+    specified by url and not only by ip
+  * added logo/icon
+  * new filtering panel - advanced filter. The old basic filter panel remains 
+    the default. The new advanced filter panel can be activated in the settings.
+    Features:
+        - more filter options: g_gear (incl. g_gear calculator), custom variable
+          filtering, servername and mapnamefilter.
+        - Refresh of the Serverlist without new master server query
+        - Direct server lookup by ip:port or url:port
+  * added abort button to abort a query/search/refresh.
+  * display servername on rcon window
+  * two new context menuitems: "copy address to clipboard" and "copy name and address to clipboard"
+  * added commandline option -d (or --debug) which activates debug output
+  * added status icons to buddylist (online/offline)
+  * removed update selected row on refresh
+  * added option to start a buddysearch on startup if the buddytab is set as the default tab
+  * window now remembers size and position
+  

@@ -1,4 +1,4 @@
-include urtsb README
+include urtsb README license.html
 recursive-include urtsb_src/resource/flags *
 recursive-include urtsb_src/resource/icons *
 recursive-include urtsb_src/resource/win_gtk *

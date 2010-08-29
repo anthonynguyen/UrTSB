@@ -63,7 +63,9 @@ if cmd == 'py2exe':
                           ('resource/geoip', ['urtsb_src/resource/geoip/GeoIP.dat']),
                           ('resource/win_gtk', ['urtsb_src/resource/win_gtk/gtkrc']),
                           ('lib/gtk-2.0/2.10.0/engines', ['urtsb_src/resource/win_gtk/libwimp.dll']),
-                          ('lib/gtk-2.0/2.10.0/engines', ['urtsb_src/resource/win_gtk/libpixmap.dll']) ]
+                          ('lib/gtk-2.0/2.10.0/engines', ['urtsb_src/resource/win_gtk/libpixmap.dll']),
+                          ('', ['README']),
+                          ('', ['license.hzml']) ]
           )
 #py2app (MacOS) target
 elif cmd == 'py2app':
