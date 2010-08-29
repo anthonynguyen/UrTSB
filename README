@@ -81,7 +81,7 @@ install:
         sudo python setup.py install
 
    
-How to run/install Linux:
+How to run/install Windows:
 ----------------------------
 
 run: (windows package)
