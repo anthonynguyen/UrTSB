@@ -65,7 +65,7 @@ if cmd == 'py2exe':
                           ('lib/gtk-2.0/2.10.0/engines', ['urtsb_src/resource/win_gtk/libwimp.dll']),
                           ('lib/gtk-2.0/2.10.0/engines', ['urtsb_src/resource/win_gtk/libpixmap.dll']),
                           ('', ['README']),
-                          ('', ['license.hzml']) ]
+                          ('', ['license.html']) ]
           )
 #py2app (MacOS) target
 elif cmd == 'py2app':
