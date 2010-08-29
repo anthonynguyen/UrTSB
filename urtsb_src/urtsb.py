@@ -99,6 +99,11 @@ def start ():
     #init logging
     Log(loglevel)
     
+    if sys.platform == 'win32':
+        #apply gtk style for win32 (wimp theme)
+        gtkrcpath = os.path.normpath(os.path.join(Globals.resource_dir, \
+                                                               'win_gtk/gtkrc'))
+        gtk.rc_parse(gtkrcpath)
     
     window = Window() # create the urtsb window
     guicontroller = GuiController() # initialize the gui controller

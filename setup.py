@@ -29,7 +29,8 @@ except IndexError:
     print 'Usage: setup.py sdist|build|install|py2exe|py2app...'
     raise SystemExit
 
-files = ["resource/flags/*", "resource/icons/*", "resource/geoip/GeoIP.dat"]
+files = ["resource/flags/*", "resource/icons/*", \
+         "resource/geoip/GeoIP.dat", "resource/win_gtk/*"]
 
 #py2exe (Windows) target 
 #needs to be tested !
@@ -53,11 +54,16 @@ if cmd == 'py2exe':
                 'py2exe': {
                         'packages': ['encodings'],
                         'includes': 'cairo, pango, pangocairo, atk, gobject, gio',
+                        'unbuffered': True,
+                        'optimize': 2
                           }
             },
           data_files = [ ('resource/flags', glob.glob('urtsb_src/resource/flags\\*.png')),
                           ('resource/icons', glob.glob('urtsb_src/resource/icons\\*.png')),
-                          ('resource/geoip', ['urtsb_src/resource/geoip/GeoIP.dat']) ]
+                          ('resource/geoip', ['urtsb_src/resource/geoip/GeoIP.dat']),
+                          ('resource/win_gtk', ['urtsb_src/resource/win_gtk/gtkrc']),
+                          ('lib/gtk-2.0/2.10.0/engines', ['urtsb_src/resource/win_gtk/libwimp.dll']),
+                          ('lib/gtk-2.0/2.10.0/engines', ['urtsb_src/resource/win_gtk/libpixmap.dll']) ]
           )
 #py2app (MacOS) target
 elif cmd == 'py2app':

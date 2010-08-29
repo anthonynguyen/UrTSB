@@ -1,4 +1,5 @@
 include urtsb README
-recursive-include UrTSB/resource/flags *
-recursive-include UrTSB/resource/icons *
-include UrTSB/resource/geoip/GeoIP.dat
+recursive-include urtsb_src/resource/flags *
+recursive-include urtsb_src/resource/icons *
+recursive-include urtsb_src/resource/win_gtk *
+include urtsb_src/resource/geoip/GeoIP.dat
