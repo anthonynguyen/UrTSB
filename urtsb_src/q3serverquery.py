@@ -231,6 +231,7 @@ class Q3ServerQuery(object):
         
         @return - the server object with updated data based on the response
         """
+        response = unicode(response, errors='replace').decode('utf-8')
         
         # check if its a info or status response and delegate to the 
         # appropriate method 
