@@ -44,6 +44,7 @@ class Server(object):
         self.location = ''
         self.locationame = ''
         self.rconpass = ''
+        self.priv_slots = 0
        
     def setDefaults(self):
         """
@@ -88,16 +89,28 @@ class Server(object):
         return self.clientcount
     
     def setClientCount(self, clientcount):
-        self.clientcount = clientcount
+        self.clientcount = int(clientcount)
         
     def getMaxPlayers(self):
         return self.max_players
     
     def setMaxPlayers(self, maxplayers):
-        self.max_players = maxplayers
+        self.max_players = int(maxplayers)
+        
+    def set_private_slots(self, priv_slots):
+        self.priv_slots = int(priv_slots)
+        
+    def get_private_slots(self):
+        return self.priv_slots
     
     def getPlayerString(self):
-        return str(self.clientcount)+'/'+str(self.max_players)
+        players = str(self.clientcount)+'/'
+        if not self.priv_slots == 0:
+            players += str(self.max_players - self.priv_slots)
+            players += ' (+' + str(self.priv_slots) +')'
+        else:
+            players += str(self.max_players) 
+        return players
     
     def getMap(self):
         return self.map

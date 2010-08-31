@@ -136,6 +136,8 @@ class Q3ServerQuery(object):
             server.setMaxPlayers(vars['sv_maxclients'])
         if 'sv_maxClients' in vars:
             server.setMaxPlayers(vars['sv_maxClients'])
+        if 'sv_privateClients' in vars:
+            server.set_private_slots(vars['sv_privateClients'])
         
         # there is no explicit value for count of currently connected clients 
         # like the infoResponse provides so use the length of the player list
