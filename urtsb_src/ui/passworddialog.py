@@ -23,6 +23,12 @@ from urtsb_src.filemanager import FileManager, cfgkey
 from urtsb_src.guicontroller import GuiController
 import gtk
 
+class PassDialogType():
+    """
+    Class as enum like value definition of possible passworddialog types
+    """
+    SERVER_PASSWORD = 0
+    PRIV_SLOT_PASSWORD = 1
 
 class PasswordDialog(gtk.Dialog):
     """
@@ -30,16 +36,21 @@ class PasswordDialog(gtk.Dialog):
     """
 
 
-    def __init__(self, server):
+    def __init__(self, server, type):
         """
         Constructor
         
         @param server - the server which needs a password
+        @param type - value of PassDialogType to specify the type of the dialog
+                      two possible values:
+                         - SERVER_PASSWOR - enter password for private password
+                         - PRIV_SLOT_PASSWORD - enter password for private slots
         """
         gtk.Dialog.__init__(self, 'Server needs a password to connect!', None,\
                               gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
         
         self.server = server
+        self.diag_type = type
         #buttons
         okbutton = gtk.Button('OK')
         cancelbutton = gtk.Button('Cancel')
@@ -52,7 +63,13 @@ class PasswordDialog(gtk.Dialog):
         self.action_area.pack_start(okbutton, False, False)
         
         #content area
-        desc_label = gtk.Label('The server you are trying to connect needs a password')
+        desc_label = gtk.Label('Enter Password')
+        if PassDialogType.SERVER_PASSWORD == self.diag_type:
+            desc_label.set_text('The server you are trying to connect needs a '\
+                                +'password')
+        elif PassDialogType.PRIV_SLOT_PASSWORD == self.diag_type:
+            desc_label.set_text('The server is full. In order to use a private'\
+                            + 'slot please enter the private slot password')
         namelabel = gtk.Label('Servername: ' + server.getName())
         addresslabel = gtk.Label('Serveraddress: ' + server.getaddress())
         self.passentry = gtk.Entry()

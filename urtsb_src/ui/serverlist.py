@@ -23,7 +23,7 @@
 from urtsb_src.flagmanager import FlagManager
 from urtsb_src.globals import Globals
 from urtsb_src.guicontroller import GuiController
-from urtsb_src.ui.passworddialog import PasswordDialog
+from urtsb_src.ui.passworddialog import PasswordDialog, PassDialogType
 from urtsb_src.ui.rconpassdialog import RconPassDialog
 import gtk
 
@@ -238,7 +238,8 @@ class ServerList(gtk.ScrolledWindow):
         
         if server:
             if server.needsPassword():
-                passdialog = PasswordDialog(server)
+                passdialog = PasswordDialog(server, PassDialogType\
+                                                               .SERVER_PASSWORD)
                 passdialog.run()
             else:
                 gui.connectToServer(server)

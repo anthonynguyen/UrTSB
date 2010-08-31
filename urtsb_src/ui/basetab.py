@@ -23,6 +23,7 @@ from passworddialog import PasswordDialog
 from urtsb_src.filemanager import FileManager, cfgkey
 from urtsb_src.guicontroller import GuiController
 import gtk
+from urtsb_src.ui.passworddialog import PassDialogType
 
 class BaseTab(gtk.VBox):
     """
@@ -60,7 +61,8 @@ class BaseTab(gtk.VBox):
         server = self.detailsbox.current_server
         if server:
             if server.needsPassword():
-                passdialog = PasswordDialog(server)
+                passdialog = PasswordDialog(server,\
+                                                 PassDialogType.SERVER_PASSWORD)
                 passdialog.run()
             else:
                 gui.connectToServer(server)
