@@ -98,7 +98,13 @@ class Server(object):
         self.max_players = int(maxplayers)
         
     def set_private_slots(self, priv_slots):
-        self.priv_slots = int(priv_slots)
+        try:
+            self.priv_slots = int(priv_slots)
+        except:
+            #fallback
+            #there is one server which has the value 'ate123' as 
+            #sv_privateclients value...
+            self.priv_slots = 0
         
     def get_private_slots(self):
         return self.priv_slots
@@ -110,7 +116,7 @@ class Server(object):
             players += ' (+' + str(self.priv_slots) +')'
         else:
             players += str(self.max_players) 
-        return players
+        return str(self.clientcount)+'/'+str(self.max_players)+ '(' +str(self.priv_slots) + ')'
     
     def getMap(self):
         return self.map
