@@ -226,7 +226,29 @@ class ServerList(gtk.ScrolledWindow):
         self.sortorder = treecolumn.get_sort_order()
         self.sortcolumn = colnum
         
+        if colnum == 5:
+            self.liststore.set_sort_func(self.sortcolumn, self.player_sorter, colnum)
         self.liststore.set_sort_column_id(self.sortcolumn, self.sortorder)
+        
+    def player_sorter(self, liststr, iter1, iter2, user_data):
+        """
+        Sorting players by its integer value not by string
+        Contributed by Phoenix
+        """
+        #5th row (for now) is the player numbers (what we want to sort on)
+        colnum = 5
+        if user_data != None:
+            colnum = int(user_data)
+        #Get the value of the 'colnum' column in the first row
+        val1 = liststr.get_value(iter1, colnum)
+        val2 = liststr.get_value(iter2, colnum)
+        if(type(val1) == str):
+        #Check if the type is a string, if so, sort on the first part until the slash ('/'), casted to int
+            val1 = int(val1[:val1.find('/')])
+        if(type(val2) == str):
+            val2 = int(val2[:val2.find('/')])
+        #return the comparison of the first and the second
+        return cmp(val1,val2)        
         
     def on_row_double_clickdef(self, treeview, path, view_column):
         """
