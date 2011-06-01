@@ -20,10 +20,9 @@
 
 
 from passworddialog import PasswordDialog
-from urtsb_src.filemanager import FileManager, cfgkey
 from urtsb_src.guicontroller import GuiController
-import gtk
 from urtsb_src.ui.passworddialog import PassDialogType
+import gtk
 
 class BaseTab(gtk.VBox):
     """
