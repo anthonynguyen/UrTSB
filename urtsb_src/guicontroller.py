@@ -30,6 +30,7 @@ import os
 import shlex
 import subprocess
 import thread
+from connectionmanager import ConnectionManager
 
 
 class GuiController(object):
@@ -342,68 +343,10 @@ class GuiController(object):
         """
         Log.log.debug('[GuiController] connectToServer called...')
         
-        #check if there is already a running process
-        #if so display a dialog and inform the user
-        #but do not launch a second instance
-        if not None == self.urt_process:
-            self.urt_process.poll()
-            returncode = self.urt_process.returncode
-            if None == returncode:
-                
-                dialog = gtk.MessageDialog(
-                parent         = None,
-                flags          = gtk.DIALOG_DESTROY_WITH_PARENT,
-                type           = gtk.MESSAGE_INFO,
-                buttons        = gtk.BUTTONS_OK,
-                message_format = "Urban Terror is already running! Please exit" \
-                                 + " it before launching a new instance")
-                dialog.set_title('Urban Terror is already running')
-                dialog.connect('response', lambda dialog, response: dialog.destroy())
-                dialog.run()
-                return
+        cm = ConnectionManager()
+        cm.connectToServer(server)
+        
 
-        
-        fm = FileManager()
-        
-        
-        #build the connect parameters
-        #format of the commandline command:
-        #urbanterror + connect <address> + password <pw>
-        
-        #get the executablename, the path and the additional commands
-        #from the configuration
-        config = fm.getConfiguration()
-        executable = config[cfgkey.URT_EXE]
-        path = config[cfgkey.URT_EXE_PATH]
-        additionalcommands = config[cfgkey.URT_EXE_PARAMS]
-                
-        if not os.path.exists(os.path.join(path, executable)):
-            Log.log.warning('path to Urban Terror unreachable : ' + os.path.join(path, executable))
-        params = ' +connect ' + server.getaddress()
-        if server.needsPassword():
-            params = params + ' +password ' + server.getPassword()
-            if server.getRememberPassword():
-                if server.isFavorite():
-                    fm.saveFavorites()
-            else:
-                server.setPassword('')
-        
-        #add additional params    
-        params = params + ' ' + additionalcommands
-                
-        #add server to recent servers list
-        fm.addRecent(server)
-                
-        Log.log.info('launching UrT with cmd = ' + os.path.join(path,\
-                                                     executable) + ' ' + params)
-        #use shlex.split to turn the command string into a sequence
-        #that works with subprocess.popen
-        args = shlex.split(executable + ' ' + params)
-        
-        #finally execute the command 
-        self.urt_process = subprocess.Popen(args, executable=os.path.join(path,\
-                                        executable), cwd=os.path.normpath(path))
-        
     def send_rcon_command(self, server, command, console):
         """
         Initiates the sending of a rcon command to a server
