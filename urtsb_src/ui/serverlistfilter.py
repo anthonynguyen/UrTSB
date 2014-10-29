@@ -77,6 +77,9 @@ class ServerListFilter(gtk.HBox):
       
         self.minplayerentry = gtk.SpinButton()
         self.maxplayerentry = gtk.SpinButton()
+
+        self.minplayerentry.set_increments(1, 10)
+        self.maxplayerentry.set_increments(1, 10)
         
         self.minplayerentry.set_range(0,99)
         self.maxplayerentry.set_range(0,99)
