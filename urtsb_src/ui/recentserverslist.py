@@ -117,7 +117,8 @@ class RecentServersList(ServerList):
         flagmanager = FlagManager() 
         flag = flagmanager.get_flag(server.get_location())
         
-        self.liststore.append([needpw, flag, server.getName(), server.getaddress()
+        self.liststore.append([needpw, flag, server.getName(), server.getVersionString()
+                            , server.getaddress()
                             , server.getPing(), server.getPlayerString()
                             , server.getMap(), server.getGameTypeName()
                             , server, server.getConnections(), server.getLastConnect()]) 

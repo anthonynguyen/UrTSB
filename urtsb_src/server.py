@@ -118,6 +118,12 @@ class Server(object):
             players += str(self.max_players) 
         return str(self.clientcount)+'/'+str(self.max_players)+ ' (' +str(self.priv_slots) + ')'
     
+    def getVersionString(self):
+        try:
+            return self.vars["g_modversion"]
+        except:
+            return "Unknown"
+
     def getMap(self):
         return self.map
     

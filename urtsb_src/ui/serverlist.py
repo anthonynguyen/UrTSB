@@ -57,7 +57,7 @@ class ServerList(gtk.ScrolledWindow):
         
         self.parenttab = parenttab
         
-        self.liststore = gtk.ListStore(gtk.gdk.Pixbuf, gtk.gdk.Pixbuf, str, \
+        self.liststore = gtk.ListStore(gtk.gdk.Pixbuf, gtk.gdk.Pixbuf, str, str,\
                                                 str, int, str, str, str, object)
         
        
@@ -73,6 +73,7 @@ class ServerList(gtk.ScrolledWindow):
         self.column_number = gtk.TreeViewColumn('PW')
         self.column_flag = gtk.TreeViewColumn('')
         self.column_name = gtk.TreeViewColumn('Servername')
+        self.column_version = gtk.TreeViewColumn('Version')
         self.column_address = gtk.TreeViewColumn('Address')
         self.column_ping = gtk.TreeViewColumn('Ping')
         self.column_player = gtk.TreeViewColumn('Players')
@@ -90,7 +91,11 @@ class ServerList(gtk.ScrolledWindow):
         
         self.column_name.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
         self.column_name.set_expand(True)
-        self.column_name.set_fixed_width(250)
+        self.column_name.set_fixed_width(235)
+
+        self.column_version.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        self.column_version.set_expand(True)
+        self.column_version.set_fixed_width(15)
         
         self.column_address.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
         self.column_address.set_expand(True)
@@ -115,6 +120,7 @@ class ServerList(gtk.ScrolledWindow):
         self.serverlistview.append_column(self.column_number)
         self.serverlistview.append_column(self.column_flag)
         self.serverlistview.append_column(self.column_name)
+        self.serverlistview.append_column(self.column_version)
         self.serverlistview.append_column(self.column_address)
         self.serverlistview.append_column(self.column_ping)
         self.serverlistview.append_column(self.column_player)
@@ -129,26 +135,30 @@ class ServerList(gtk.ScrolledWindow):
         cell5=gtk.CellRendererText()
         cell6=gtk.CellRendererText()
         cell7=gtk.CellRendererText()
+        cell8=gtk.CellRendererText()
         
         self.column_number.pack_start(cell0, expand=False)
         self.column_flag.pack_start(cell1, expand=False)
         self.column_name.pack_start(cell2, expand=True)
-        self.column_address.pack_start(cell3, expand=False)
-        self.column_ping.pack_start(cell4, expand=False)
-        self.column_player.pack_start(cell5, expand=False)
-        self.column_map.pack_start(cell6, expand=False)
-        self.column_gametype.pack_start(cell7, expand=False)
+        self.column_version.pack_start(cell3, expand=True)
+        self.column_address.pack_start(cell4, expand=False)
+        self.column_ping.pack_start(cell5, expand=False)
+        self.column_player.pack_start(cell6, expand=False)
+        self.column_map.pack_start(cell7, expand=False)
+        self.column_gametype.pack_start(cell8, expand=False)
         
         self.column_number.add_attribute(cell0, 'pixbuf', 0)
         self.column_flag.add_attribute(cell1, 'pixbuf', 1)
-        self.column_name.add_attribute(cell2, 'text', 2)  
-        self.column_address.add_attribute(cell3, 'text', 3)
-        self.column_ping.add_attribute(cell4, 'text', 4)
-        self.column_player.add_attribute(cell5, 'text', 5)
-        self.column_map.add_attribute(cell6, 'text', 6)
-        self.column_gametype.add_attribute(cell7, 'text',7)
+        self.column_name.add_attribute(cell2, 'text', 2)
+        self.column_version.add_attribute(cell3, 'text', 3)
+        self.column_address.add_attribute(cell4, 'text', 4)
+        self.column_ping.add_attribute(cell5, 'text', 5)
+        self.column_player.add_attribute(cell6, 'text', 6)
+        self.column_map.add_attribute(cell7, 'text', 7)
+        self.column_gametype.add_attribute(cell8, 'text', 8)
         
         self.column_name.set_clickable(True)
+        self.column_version.set_clickable(True)
         self.column_address.set_clickable(True)
         self.column_ping.set_clickable(True)
         self.column_player.set_clickable(True)
@@ -157,17 +167,19 @@ class ServerList(gtk.ScrolledWindow):
         
         
         self.column_name.connect('clicked', self.on_table_column_clicked, 2)  
-        self.column_address.connect('clicked', self.on_table_column_clicked, 3)
-        self.column_ping.connect('clicked', self.on_table_column_clicked, 4)
-        self.column_player.connect('clicked', self.on_table_column_clicked, 5)
-        self.column_map.connect('clicked', self.on_table_column_clicked, 6)
-        self.column_gametype.connect('clicked', self.on_table_column_clicked,7)
+        self.column_version.connect('clicked', self.on_table_column_clicked, 3)
+        self.column_address.connect('clicked', self.on_table_column_clicked, 4)
+        self.column_ping.connect('clicked', self.on_table_column_clicked, 5)
+        self.column_player.connect('clicked', self.on_table_column_clicked, 6)
+        self.column_map.connect('clicked', self.on_table_column_clicked, 7)
+        self.column_gametype.connect('clicked', self.on_table_column_clicked, 8)
         
      
         
         self.column_number.set_reorderable(True)
         self.column_flag.set_reorderable(True)
-        self.column_name.set_reorderable(True)  
+        self.column_name.set_reorderable(True)
+        self.column_version.set_reorderable(True)
         self.column_address.set_reorderable(True)
         self.column_ping.set_reorderable(True)
         self.column_player.set_reorderable(True)
@@ -176,7 +188,7 @@ class ServerList(gtk.ScrolledWindow):
         
         # set intial values for sorting order and column
         self.sortorder = gtk.SORT_ASCENDING
-        self.sortcolumn = 4
+        self.sortcolumn = 5
         # and apply sorting
         self.liststore.set_sort_column_id(self.sortcolumn, self.sortorder)
         self.column_ping.set_sort_order(self.sortorder)
@@ -195,7 +207,8 @@ class ServerList(gtk.ScrolledWindow):
         """
         Reset all sort indicators of the table headers
         """
-        self.column_name.set_sort_indicator(False)  
+        self.column_name.set_sort_indicator(False)
+        self.column_version.set_sort_indicator(False)
         self.column_address.set_sort_indicator(False)
         self.column_ping.set_sort_indicator(False)
         self.column_player.set_sort_indicator(False)
@@ -226,7 +239,7 @@ class ServerList(gtk.ScrolledWindow):
         self.sortorder = treecolumn.get_sort_order()
         self.sortcolumn = colnum
         
-        if colnum == 5:
+        if colnum == 6:
             self.liststore.set_sort_func(self.sortcolumn, self.player_sorter, colnum)
         self.liststore.set_sort_column_id(self.sortcolumn, self.sortorder)
         
@@ -236,7 +249,7 @@ class ServerList(gtk.ScrolledWindow):
         Contributed by Phoenix
         """
         #5th row (for now) is the player numbers (what we want to sort on)
-        colnum = 5
+        colnum = 6
         if user_data != None:
             colnum = int(user_data)
         #Get the value of the 'colnum' column in the first row
@@ -255,7 +268,7 @@ class ServerList(gtk.ScrolledWindow):
         Callback for the row-activate signal (double-click, enter...)
         """    
         row =  self.liststore[path]
-        server = row[8]
+        server = row[9]
         gui = GuiController()
         
         if server:
@@ -275,7 +288,7 @@ class ServerList(gtk.ScrolledWindow):
         model, paths = selection.get_selected_rows()
         if paths:
             row =  model[paths[0][0]]
-            server = row[8]
+            server = row[9]
             guicontroller = GuiController()
             guicontroller.setDetailServer(server, self.parenttab)
            
@@ -298,7 +311,8 @@ class ServerList(gtk.ScrolledWindow):
         flagmanager = FlagManager() 
         flag = flagmanager.get_flag(server.get_location())
         
-        self.liststore.append([needpw, flag, server.getName(), server.getaddress()
+        self.liststore.append([needpw, flag, server.getName(), server.getVersionString()
+                            , server.getaddress()
                             , server.getPing(), server.getPlayerString()
                             , server.getMap(), server.getGameTypeName()
                             , server]) 
@@ -382,7 +396,7 @@ class ServerList(gtk.ScrolledWindow):
         result = selection.get_selected()
         if result: 
             iter = result[1]
-            server = self.liststore.get_value(iter, 8)
+            server = self.liststore.get_value(iter, 9)
             gc = GuiController()
             gc.removeFavorite(server)
             self.liststore.remove(iter)
@@ -396,7 +410,7 @@ class ServerList(gtk.ScrolledWindow):
         result = selection.get_selected()
         if result: 
             iter = result[1]
-            server = self.liststore.get_value(iter, 8)
+            server = self.liststore.get_value(iter, 9)
             clipboard = gtk.clipboard_get()
             clipboard.set_text(server.getaddress())
             clipboard.store()
@@ -409,7 +423,7 @@ class ServerList(gtk.ScrolledWindow):
         result = selection.get_selected()
         if result: 
             iter = result[1]
-            server = self.liststore.get_value(iter, 8)
+            server = self.liststore.get_value(iter, 9)
             clipboard = gtk.clipboard_get()
             copytext = server.getaddress() + ' - ' + server.getName() 
             clipboard.set_text(copytext)
@@ -443,7 +457,7 @@ class ServerList(gtk.ScrolledWindow):
         result = selection.get_selected()
         if result: 
             iter = result[1]
-            server = self.liststore.get_value(iter, 8)
+            server = self.liststore.get_value(iter, 9)
             return server
         return None
                 
@@ -452,10 +466,11 @@ class ServerList(gtk.ScrolledWindow):
         result = selection.get_selected()
         if result: 
             iter = result[1]
-            self.liststore.set_value(iter, 4, server.getPing())
-            self.liststore.set_value(iter, 5, server.getPlayerString())
-            self.liststore.set_value(iter, 6, server.getMap())
-            self.liststore.set_value(iter, 7, server.getGameTypeName())
+            self.liststore.set_value(iter, 4, server.getVersionString())
+            self.liststore.set_value(iter, 5, server.getPing())
+            self.liststore.set_value(iter, 6, server.getPlayerString())
+            self.liststore.set_value(iter, 7, server.getMap())
+            self.liststore.set_value(iter, 8, server.getGameTypeName())
             
     def on_treeview_button_press_event(self, treeview, event):
         """
