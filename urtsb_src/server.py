@@ -116,7 +116,7 @@ class Server(object):
             players += ' (+' + str(self.priv_slots) +')'
         else:
             players += str(self.max_players) 
-        return str(self.clientcount)+'/'+str(self.max_players)+ '(' +str(self.priv_slots) + ')'
+        return str(self.clientcount)+'/'+str(self.max_players)+ ' (' +str(self.priv_slots) + ')'
     
     def getMap(self):
         return self.map
@@ -135,23 +135,25 @@ class Server(object):
         Returns a string representation of the gametype number.
         This is UrT specific!
         """
+
+        _GAMETYPES = [
+            "Free For All",
+            "Last Man Standing",
+            "Unknown: 2",
+            "Team Deathmatch",
+            "Team Survivor",
+            "Follow the Leader",
+            "Capture and Hold",
+            "Capture the Flag",
+            "Bomb Mode",
+            "Jump",
+            "Freeze Tag"
+        ]
         
-        if self.gametype == '8':
-            return "Bomb"
-        elif self.gametype == '6':
-            return 'Capture & Hold'
-        elif self.gametype == '7': 
-            return 'Capture the Flag'
-        elif self.gametype == '0':
-            return 'Free For All'
-        elif self.gametype == '3':
-            return 'Team Deathmatch'
-        elif self.gametype == '4':
-            return 'Team Survivor'
-        elif self.gametype == '5':
-            return 'Follow the Leader'
-        else:
-            return 'Unknown: '+ self.gametype
+        try:
+            return _GAMETYPES[int(self.gametype)]
+        except:
+            return "Unknown: " + self.gametype
         
     def getPlayerList(self):
         return self.playerlist
