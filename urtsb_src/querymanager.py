@@ -247,7 +247,7 @@ class QueryManager(object):
         
         #query the urban terror master server
         serverlist = query.getServerList('master.urbanterror.info'
-                                         ,27950
+                                         ,27900
                                          ,empty
                                          ,full)
         #put all servers in the serverqueue

@@ -138,7 +138,7 @@ class Filter(object):
         @return True if server is a UrT server, otherwise False is returned
         """
         vars = server.getServerVars()
-        if 'gamename' in vars and vars['gamename'] == 'q3ut4':
+        if 'gamename' in vars and vars['gamename'] == 'q3urt42':
             return True
         else:
             return False

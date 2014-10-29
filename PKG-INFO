@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: UrTSB
+Version: 0.4
+Summary: a Urban Terror Server Browser
+Home-page: http://code.google.com/p/urtsb/
+Author: Sorcerer
+Author-email: sorcerersr@googlemail.com
+License: GPLv3
+Description: UrTSB is a Game Server Browser for the FPS Urban Terror ( http://www.urbanterror.info )
+Platform: Linux
+Platform: Windows
