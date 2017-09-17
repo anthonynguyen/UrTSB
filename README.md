@@ -38,12 +38,12 @@ initial release
  + fixed a bug that causes servers to appear multiple times in the serverlist after multiple searches
  + a lock-icon is now displayed for passworded servers instead of the string 'yes'
  + the selected row in a serverlist is now updated too, if the refresh-button in the details area is clicked.
- + plus some minor bugfixes 
+ + plus some minor bugfixes
 
 ### 0.2.1 ###
 
  + spelling of some labels
- + added 'Add to Favorites' button to the serverdetails area on the 'Buddies' tab 
+ + added 'Add to Favorites' button to the serverdetails area on the 'Buddies' tab
 
 ### 0.3 ###
 
@@ -58,7 +58,7 @@ initial release
  + playerlist and server var list are now sortable
  + now launching UrT in a subprocess (to avoid that UrTSB is blocked while UrT is running)
  + new feature: RCON window for remote server administration
- + added contextmenus to the serverlist and the playerlist 
+ + added contextmenus to the serverlist and the playerlist
 
 ### 0.4 ###
 
@@ -66,10 +66,10 @@ initial release
  + make use of python distutils (UrTSB can now be installed by calling "python setup.py install")
  + adding a server manually to the favorites now handles the host to be specified by url and not only by ip
  + added logo/icon
- + new filtering panel - advanced filter. The old basic filter panel remains the default. The new advanced filter panel can be activated in the settings. Features: 
-   - more filter options: g_gear (incl. g_gear calculator), custom variable filtering, servername and mapnamefilter. 
-   - Refresh of the Serverlist without new master server query 
-   - Direct server lookup by ip:port or url:port 
+ + new filtering panel - advanced filter. The old basic filter panel remains the default. The new advanced filter panel can be activated in the settings. Features:
+   - more filter options: g_gear (incl. g_gear calculator), custom variable filtering, servername and mapnamefilter.
+   - Refresh of the Serverlist without new master server query
+   - Direct server lookup by ip:port or url:port
  + added abort button to abort a query/search/refresh.
  + display servername on rcon window
  + two new context menuitems: "copy address to clipboard" and "copy name and address to clipboard"
@@ -77,11 +77,11 @@ initial release
  + added status icons to buddylist (online/offline)
  + removed update selected row on refresh
  + added option to start a buddysearch on startup if the buddytab is set as the default tab
- + window now remembers size and position 
+ + window now remembers size and position
 
 ### 0.5 (in development) ###
  + display private slots (issue #1)
  + fixed server sorting by playercount ( issue #3 )
- + Works with Urban Terror 4.2
+ + Works with Urban Terror 4.2 / 4.3
  + Version column
  + Password column is sortable
